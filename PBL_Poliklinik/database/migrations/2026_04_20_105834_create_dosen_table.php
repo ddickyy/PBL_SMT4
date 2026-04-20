@@ -11,12 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('penilaian', function (Blueprint $table) {
-            $table->id('id_penilaian');
-            $table->foreignId('id_reservasi')->unique()->constrained('reservasi', 'id_reservasi')->cascadeOnDelete();
-            $table->text('kritik')->nullable();
-            $table->text('saran')->nullable();
+        Schema::create('dosen', function (Blueprint $table) {
+            $table->id('id_dosen');
+            $table->foreignId('id_user')->unique()->constrained('users', 'id_user')->cascadeOnDelete();
+
+            $table->string('nidn')->unique();
+            $table->string('no_hp')->nullable();
+
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -25,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('penilaian');
+        Schema::dropIfExists('dosen');
     }
 };

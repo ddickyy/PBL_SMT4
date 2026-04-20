@@ -11,13 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('kuota_harian', function (Blueprint $table) {
-            $table->id('id_kuota');
-            $table->foreignId('id_jadwal')->constrained('jadwal_dokter', 'id_jadwal')->cascadeOnDelete();
-            $table->date('tanggal');
-            $table->integer('kuota_terisi')->default(0);
-            $table->integer('kuota_maksimal');
+        Schema::create('prodi', function (Blueprint $table) {
+            $table->id('id_prodi');
+            $table->foreignId('id_jurusan')->constrained('jurusan', 'id_jurusan')->cascadeOnDelete();
+
+            $table->string('nama_prodi');
+
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->unique(['id_jurusan', 'nama_prodi']);
         });
     }
 
@@ -26,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('kuota_harian');
+        Schema::dropIfExists('prodi');
     }
 };
