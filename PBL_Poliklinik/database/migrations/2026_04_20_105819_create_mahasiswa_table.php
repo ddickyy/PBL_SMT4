@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('mahasiswa', function (Blueprint $table) {
             $table->id('id_mahasiswa');
+            $table->foreignId('id_user')->unique()->constrained('users', 'id_user')->cascadeOnDelete();
+            $table->foreignId('id_prodi')->constrained('prodi', 'id_prodi');
+
             $table->string('nim')->unique();
-            $table->string('nama');
-            $table->string('email')->unique();
-            $table->string('no_hp');
-            $table->string('jurusan');
-            $table->string('prodi');
-            $table->string('password');
+            $table->string('no_hp')->nullable();
+
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

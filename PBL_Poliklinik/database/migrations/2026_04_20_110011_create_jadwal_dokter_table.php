@@ -14,12 +14,15 @@ return new class extends Migration
         Schema::create('jadwal_dokter', function (Blueprint $table) {
             $table->id('id_jadwal');
             $table->foreignId('id_dokter')->constrained('dokter', 'id_dokter')->cascadeOnDelete();
+
             $table->string('hari');
             $table->time('jam_mulai');
             $table->time('jam_selesai');
             $table->integer('durasi_menit');
             $table->boolean('aktif')->default(true);
+
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -11,15 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('reservasi', function (Blueprint $table) {
-            $table->id('id_reservasi');
-            $table->foreignId('id_mahasiswa')->constrained('mahasiswa', 'id_mahasiswa')->cascadeOnDelete();
+        Schema::create('kuota_harian', function (Blueprint $table) {
+            $table->id('id_kuota');
             $table->foreignId('id_jadwal')->constrained('jadwal_dokter', 'id_jadwal')->cascadeOnDelete();
-            $table->date('tanggal_reservasi');
-            $table->integer('nomor_antrian');
-            $table->time('estimasi_jam');
-            $table->string('status');
+
+            $table->date('tanggal');
+            $table->integer('kuota_terisi')->default(0);
+            $table->integer('kuota_maksimal');
+
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->unique(['id_jadwal', 'tanggal']);
         });
     }
 
@@ -28,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('reservasi');
+        Schema::dropIfExists('kuota_harian');
     }
 };

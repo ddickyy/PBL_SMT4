@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('admin', function (Blueprint $table) {
             $table->id('id_admin');
-            $table->string('nama');
-            $table->string('username')->unique();
-            $table->string('password');
-            $table->string('email')->unique();
-            $table->string('role');
+            $table->foreignId('id_user')->unique()->constrained('users', 'id_user')->cascadeOnDelete();
+
+            $table->string('tipe_admin');
+
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
