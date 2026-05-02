@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>@yield('title')</title>
 </head>
+
 <body>
 
-    @include('partial.navbar')
+    @if (!isset($hideNavbar))
+        @include('partial.navbar')
+    @endif
 
     @yield('hero')
 
@@ -13,6 +17,9 @@
         @yield('content')
     </main>
 
-    @include('partial.footer')
+    @if (!isset($hideNavbar))
+        @include('partial.footer')
+    @endif
 </body>
+
 </html>
