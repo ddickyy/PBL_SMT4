@@ -1,0 +1,56 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class Reservasi extends Model
+{
+    use SoftDeletes;
+
+    protected $table = 'reservasi';
+    protected $primaryKey = 'id_reservasi';
+
+    protected $fillable = [
+        'id_user',
+        'id_jadwal',
+        'tanggal_reservasi',
+        'nomor_antrian',
+        'estimasi_jam',
+        'status',
+    ];
+
+    protected $casts = [
+        'tanggal_reservasi' => 'date',
+        'estimasi_jam' => 'datetime:H:i:s',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'id_user');
+    }
+
+    public function jadwal()
+    {
+        return $this->belongsTo(JadwalDokter::class, 'id_jadwal');
+    }
+
+    public function rekamMedis()
+    {
+        return $this->hasOne(RekamMedis::class, 'id_reservasi');
+    }
+
+    public function riwayatStatus()
+    {
+        return $this->hasMany(RiwayatStatusReservasi::class, 'id_reservasi');
+    }
+
+    public function penilaian()
+    {
+        return $this->hasOne(Penilaian::class, 'id_reservasi');
+    }
+}
