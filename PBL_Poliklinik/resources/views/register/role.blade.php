@@ -1,5 +1,5 @@
-@extends('layout.app')
 @php($hideNavbar = true)
+@extends('layout.app')
 
 @section('title', 'Pilih Identitas')
 
@@ -21,14 +21,10 @@
                 <div class="options-grid">
                     <article class="option-card">
                         <div class="icon-badge" aria-hidden="true">
-                            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M20 26V19L32 14L44 19V26" stroke="#f6c40b" stroke-width="4" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                                <path d="M26 21L32 28L38 21" stroke="#f6c40b" stroke-width="4" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                                <path d="M22 50C24 42 28.5 38 32 38C35.5 38 40 42 42 50" stroke="#f6c40b" stroke-width="4"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                                <circle cx="32" cy="31" r="6" stroke="#f6c40b" stroke-width="4" />
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#f6c40b" stroke-width="2"
+                                viewBox="0 0 24 24" width="44" height="44">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M15.75 6.75a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a7.5 7.5 0 0115 0" />
                             </svg>
                         </div>
                         <h2 class="option-title">Mahasiswa</h2>
@@ -40,13 +36,13 @@
 
                     <article class="option-card">
                         <div class="icon-badge" aria-hidden="true">
-                            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M14 24L32 14L50 24L32 34L14 24Z" stroke="#f6c40b" stroke-width="4"
-                                    stroke-linejoin="round" />
-                                <path d="M22 28V39C22 39 26 43 32 43C38 43 42 39 42 39V28" stroke="#f6c40b" stroke-width="4"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                                <path d="M50 24V39" stroke="#f6c40b" stroke-width="4" stroke-linecap="round" />
-                            </svg>
+                            <div class="icon-badge">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#f6c40b" stroke-width="2"
+                                    viewBox="0 0 24 24" width="44" height="44">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M12 14l9-5-9-5-9 5 9 5zm0 0v6m0-6l6-3" />
+                                </svg>
+                            </div>
                         </div>
                         <h2 class="option-title">Dosen</h2>
                         <p class="option-desc">Akses layanan kesehatan khusus bagi tenaga pendidik Polinema.</p>
@@ -57,14 +53,13 @@
 
                     <article class="option-card">
                         <div class="icon-badge" aria-hidden="true">
-                            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect x="16" y="20" width="32" height="24" rx="3" stroke="#f6c40b" stroke-width="4" />
-                                <path d="M25 20V15H39V20" stroke="#f6c40b" stroke-width="4" stroke-linecap="round"
-                                    stroke-linejoin="round" />
-                                <path d="M24 30H40" stroke="#f6c40b" stroke-width="4" stroke-linecap="round" />
-                                <path d="M24 36H35" stroke="#f6c40b" stroke-width="4" stroke-linecap="round" />
-                                <circle cx="44" cy="33" r="3" fill="#f6c40b" />
-                            </svg>
+                            <div class="icon-badge">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#f6c40b" stroke-width="2"
+                                    viewBox="0 0 24 24" width="44" height="44">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M9 6V4h6v2m-9 0h12a2 2 0 012 2v9a2 2 0 01-2 2H6a2 2 0 01-2-2V8a2 2 0 012-2z" />
+                                </svg>
+                            </div>
                         </div>
                         <h2 class="option-title">Tendik</h2>
                         <p class="option-desc">Akses layanan kesehatan bagi tenaga kependidikan dan staf non-akademik.</p>
@@ -161,7 +156,7 @@
 
         .hero-card {
             width: min(1360px, calc(100vw - 60px));
-            min-height: 760px;
+            min-height: 650px;
             background: var(--card);
             border-radius: 36px;
             box-shadow: var(--shadow);

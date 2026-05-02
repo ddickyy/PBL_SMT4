@@ -54,6 +54,12 @@
         padding: 15px 30px;
         background: #f5f5f5;
         border-radius: 12px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
     .menu {
