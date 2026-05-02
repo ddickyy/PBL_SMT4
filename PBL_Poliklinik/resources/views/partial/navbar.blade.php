@@ -1,6 +1,6 @@
 <nav class="navbar">
     <div class="logo">
-        <a href="{{ route('beranda') }}">
+        <a href="{{ route('pasien.beranda') }}">
             <img src="{{ asset('images/logo.png') }}" alt="Logo" class="logo-img">
             <span>Poliklinik Polinema</span>
         </a>
@@ -8,31 +8,31 @@
 
     <ul class="menu">
         <li>
-            <a href="{{ route('beranda') }}" class="{{ request()->routeIs('beranda') ? 'active' : '' }}">
+            <a href="{{ route('pasien.beranda') }}" class="{{ request()->routeIs('pasien.beranda') ? 'active' : '' }}">
                 Beranda
             </a>
         </li>
 
         <li>
-            <a href="{{ route('reservasi') }}" class="{{ request()->routeIs('reservasi') ? 'active' : '' }}">
+            <a href="{{ route('pasien.reservasi') }}" class="{{ request()->routeIs('pasien.reservasi') ? 'active' : '' }}">
                 Reservasi
             </a>
         </li>
 
         <li>
-            <a href="{{ route('riwayat') }}" class="{{ request()->routeIs('riwayat') ? 'active' : '' }}">
+            <a href="{{ route('pasien.riwayat') }}" class="{{ request()->routeIs('pasien.riwayat') ? 'active' : '' }}">
                 Riwayat
             </a>
         </li>
 
         <li>
-            <a href="{{ route('profil') }}" class="{{ request()->routeIs('profil') ? 'active' : '' }}">
+            <a href="{{ route('pasien.profil.show') }}" class="{{ request()->routeIs('pasien.profil.show') ? 'active' : '' }}">
                 Profil
             </a>
         </li>
 
         <li>
-            <a href="{{ route('jadwal') }}" class="{{ request()->routeIs('jadwal') ? 'active' : '' }}">
+            <a href="{{ route('pasien.jadwal') }}" class="{{ request()->routeIs('pasien.jadwal') ? 'active' : '' }}">
                 Jadwal
             </a>
         </li>
