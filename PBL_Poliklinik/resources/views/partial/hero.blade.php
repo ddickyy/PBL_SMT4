@@ -66,6 +66,7 @@
         max-width: 720px;
         color: #ffffff;
         padding: 64px 72px;
+        font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
 
     .hero-badge {
