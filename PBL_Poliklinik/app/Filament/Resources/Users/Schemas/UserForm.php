@@ -2,7 +2,11 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
 use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\TextInput;
 
 class UserForm
 {
@@ -10,7 +14,47 @@ class UserForm
     {
         return $schema
             ->components([
-                //
+
+                Section::make('Informasi Pengguna')
+                    ->icon('heroicon-o-identification')
+                    ->description('Masukkan informasi utama pengguna.')
+                    ->schema([
+
+                        TextInput::make('nama')
+                            ->label('Nama Pengguna')
+                            ->placeholder('Contoh: Esatovin')
+                            ->required()
+                            ->maxLength(50),
+
+                        TextInput::make('email')
+                            ->label('Email Pengguna')
+                            ->placeholder('Contoh: esatovin@example.com')
+                            ->helperText('Email harus unik.')
+                            ->required()
+                            ->email()
+                            ->unique(ignoreRecord: true)
+                            ->maxLength(50),
+
+                        TextInput::make('password')
+                            ->label('Password Pengguna')
+                            ->password()
+                            ->required()
+                            ->maxLength(50),
+                        
+                        Select::make('id_role')
+                            ->label('Role Pengguna')
+                            ->relationship('role', 'nama_role')
+                            ->required()
+                            ->searchable()
+                            ->preload(),
+
+                        FileUpload::make('foto')
+                            ->label('Foto Pengguna')
+                            ->image()
+                            ->columnSpanFull()
+                    ])
+                    ->columns(2)
+                    ->columnSpanFull()
             ]);
     }
 }
