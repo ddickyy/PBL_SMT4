@@ -70,4 +70,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(RiwayatStatusReservasi::class, 'diubah_oleh');
     }
+
+
+    public function getNameAttribute(): string
+    {
+        return $this->nama;
+    }
 }
