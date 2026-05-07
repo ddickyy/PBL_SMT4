@@ -14,7 +14,8 @@
         </li>
 
         <li>
-            <a href="{{ route('pasien.reservasi') }}" class="{{ request()->routeIs('pasien.reservasi') ? 'active' : '' }}">
+            <a href="{{ route('pasien.reservasi') }}"
+                class="{{ request()->routeIs('pasien.reservasi') ? 'active' : '' }}">
                 Reservasi
             </a>
         </li>
@@ -26,14 +27,9 @@
         </li>
 
         <li>
-            <a href="{{ route('pasien.profil.show') }}" class="{{ request()->routeIs('pasien.profil.show') ? 'active' : '' }}">
+            <a href="{{ route('pasien.profil.show') }}"
+                class="{{ request()->routeIs('pasien.profil.show') ? 'active' : '' }}">
                 Profil
-            </a>
-        </li>
-
-        <li>
-            <a href="{{ route('pasien.jadwal') }}" class="{{ request()->routeIs('pasien.jadwal') ? 'active' : '' }}">
-                Jadwal
             </a>
         </li>
     </ul>
@@ -88,13 +84,41 @@
         border-radius: 2px;
     }
 
+    .menu a:hover {
+        color: #132b5c;
+    }
+
+    .menu a:hover::after {
+        width: 100%;
+        transform: translateY(+5px);
+    }
+
+    .menu a::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 0;
+        height: 4px;
+        background: #facc15;
+        border-radius: 999px;
+        transition: width .3s ease;
+    }
+
     .logout button {
         background: #1e3a8a;
         color: white;
-        padding: 8px 18px;
+        padding: 10px 20px;
         border: none;
         border-radius: 10px;
         cursor: pointer;
+        font-weight: 600;
+    }
+
+    .logout button:hover {
+        background: #132b5c;
+        transform-box: fill-box;
+        transform: translateY(-2px);
     }
 
     .logo {

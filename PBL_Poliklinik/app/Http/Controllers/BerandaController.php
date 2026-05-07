@@ -4,20 +4,35 @@ namespace App\Http\Controllers;
 
 use App\Models\Dokter;
 use App\Models\JadwalDokter;
+use Carbon\Carbon;
 
 class BerandaController extends Controller
 {
     public function index()
     {
-        // ambil dokter + spesialisasi
-        $dokter = Dokter::with('spesialisasi')->limit(3)->get();
+        $dokters = Dokter::with(['user', 'spesialisasi', 'jadwalDokter'])->get();
 
-        // ambil jadwal aktif
+        $spesialisasiGroups = $dokters->groupBy(function ($dokter) {
+            return optional($dokter->spesialisasi)->nama_spesialisasi ?? '-';
+        });
+
+        $now = Carbon::now('Asia/Jakarta');
+        $day = $now->dayOfWeekIso;
+        $time = $now->format('H:i');
+
+        $isOpen = false;
+
+        if (in_array($day, [1, 2, 3, 4])) {
+            $isOpen = $time >= '08:00' && $time <= '16:00';
+        } elseif ($day === 5) {
+            $isOpen = $time >= '08:00' && $time <= '14:00';
+        }
+
         $jadwal = JadwalDokter::with('dokter')
             ->where('aktif', true)
             ->limit(3)
             ->get();
 
-        return view('patient.beranda', compact('dokter', 'jadwal'));
+        return view('pasien.beranda', compact('dokters', 'spesialisasiGroups', 'isOpen', 'jadwal'));
     }
 }
