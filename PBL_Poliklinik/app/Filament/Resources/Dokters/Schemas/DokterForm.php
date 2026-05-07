@@ -43,7 +43,7 @@ class DokterForm
                             ->label('Nomor Handphone')
                             ->placeholder('Contoh: 08123456789')
                             ->required()
-                            ->maxLength(20),
+                            ->maxLength(50),
 
                     ])
                     ->columnSpanFull(),

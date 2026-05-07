@@ -17,7 +17,7 @@ class ViewTendik extends ViewRecord
     {
         return [
             Action::make('Kembali') 
-                ->url(JabatanTendikResource::getUrl('index'))
+                ->url(TendikResource::getUrl('index'))
                 ->color('success'),
             EditAction::make(),
         ];

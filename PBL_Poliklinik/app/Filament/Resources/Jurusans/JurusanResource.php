@@ -24,7 +24,7 @@ class JurusanResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'nama_jurusan';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Master Data';
+    protected static string|\UnitEnum|null $navigationGroup = 'Status';
 
     protected static ?string $navigationLabel = 'Jurusan';
 

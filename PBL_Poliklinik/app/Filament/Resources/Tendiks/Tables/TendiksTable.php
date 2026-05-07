@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Tendiks\Tables;
 
+use Dom\Text;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -27,6 +28,9 @@ class TendiksTable
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('user.nama')
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('jabatan.nama_jabatan')
                     ->numeric()
                     ->sortable(),

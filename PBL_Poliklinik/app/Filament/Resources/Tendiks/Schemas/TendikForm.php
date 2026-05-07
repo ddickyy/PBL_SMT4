@@ -43,11 +43,9 @@ class TendikForm
 
                         TextInput::make('no_hp')
                             ->label('Nomor Handphone')
-                            ->required()
                             ->placeholder('Contoh : 08123456789')
                             ->numeric()
-                            ->maxLength(50)
-                            ->helperText('Nomor Handphone harus unik.'),
+                            ->maxLength(50),
 
                     ])
                     ->columns(2)

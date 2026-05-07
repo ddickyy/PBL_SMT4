@@ -24,7 +24,7 @@ class SpesialisasiResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'nama_spesialisasi';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Master Data - Dokter';
+    protected static string|\UnitEnum|null $navigationGroup = 'Status';
 
     protected static ?string $navigationLabel = 'Spesialisasi';
 

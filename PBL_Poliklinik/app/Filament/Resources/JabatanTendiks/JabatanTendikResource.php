@@ -24,7 +24,7 @@ class JabatanTendikResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'nama_jabatan';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Master Data Tendik';
+    protected static string|\UnitEnum|null $navigationGroup = 'Status';
 
     protected static ?string $navigationLabel = 'Jabatan Tendik';
 
