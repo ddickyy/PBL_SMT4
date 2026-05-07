@@ -4,7 +4,7 @@
     'desc' => 'Kami menyediakan layanan kesehatan yang profesional dan terintegrasi di lingkungan kampus untuk mendukung kebutuhan kesehatan Anda.',
     'buttonText' => null,
     'buttonLink' => '#',
-    'bg' => asset('images/poliklinik.jpg')
+    'bg' => asset('.../images/poliklinik.jpg')
 ])
 
 <section class="hero-section">
@@ -14,7 +14,7 @@
         <div class="hero-content">
             <span class="hero-badge">{{ $badge }}</span>
 
-            <h1>{{ $title }}</h1>
+            <h1>{!! $title !!}</h1>
 
             <p>{{ $desc }}</p>
 

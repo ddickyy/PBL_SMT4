@@ -2,13 +2,20 @@
 @extends('layout.app')
 
 @section('title', 'Pilih Identitas')
-
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pilih Identitas</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/logo-2.png') }}">
+    <script src="https://unpkg.com/heroicons@2.0.18/dist/heroicons.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
 @section('content')
 
     <div class="page-wrap">
         <header class="topbar">
             <a href="#" class="brand" aria-label="Poliklinik Polinema">
-                <img src="{{ asset('images/logo.png') }}" alt="Logo" class="logo-img">
+                <img src="{{ asset('/images/logo.png') }}" alt="Logo" class="logo-img">
                 <span>Poliklinik Polinema</span>
             </a>
         </header>

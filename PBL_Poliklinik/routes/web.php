@@ -73,3 +73,8 @@ Route::middleware(['auth'])->prefix('pasien')->name('pasien.')->group(function (
 });
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// Coba
+Route::get('/beranda', [BerandaController::class, 'index'])->name('beranda');
+Route::get('/dokter', [DokterController::class, 'index'])->name('dokter.index');
+Route::get('/penilaian', [PenilaianController::class, 'index'])->name('penilaian.index');

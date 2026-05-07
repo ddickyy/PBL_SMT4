@@ -14,6 +14,6 @@ class DokterController extends Controller
             'jadwal'
         ])->get();
 
-        return view('patient.dokter.index', compact('dokter'));
+        return view('pasien.dokter', compact('dokter'));
     }
 }
