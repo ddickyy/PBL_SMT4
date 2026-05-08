@@ -4,7 +4,7 @@
     'desc' => 'Kami menyediakan layanan kesehatan yang profesional dan terintegrasi di lingkungan kampus untuk mendukung kebutuhan kesehatan Anda.',
     'buttonText' => null,
     'buttonLink' => '#',
-    'bg' => asset('images/poliklinik.jpg')
+    'bg' => asset('.../images/poliklinik.jpg')
 ])
 
 <section class="hero-section">
@@ -14,12 +14,12 @@
         <div class="hero-content">
             <span class="hero-badge">{{ $badge }}</span>
 
-            <h1>{{ $title }}</h1>
+            <h1>{!! $title !!}</h1>
 
             <p>{{ $desc }}</p>
 
             @if($buttonText)
-                <a href="{{ $buttonLink }}" class="hero-btn">
+                <a href="/preview-reservasi" class="hero-btn">
                     {{ $buttonText }} →
                 </a>
             @endif
@@ -66,6 +66,7 @@
         max-width: 720px;
         color: #ffffff;
         padding: 64px 72px;
+        font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
 
     .hero-badge {

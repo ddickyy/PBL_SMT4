@@ -46,6 +46,10 @@ Route::middleware('guest')->group(function () {
     });
 });
 
+Route::view('/preview-reservasi', 'pasien.reservasi');
+Route::view('/preview-bukti', 'pasien.buktiReservasi');
+Route::view('/preview-riwayat', 'pasien.riwayat');
+
 // Pasien
 Route::middleware(['auth'])->prefix('pasien')->name('pasien.')->group(function () {
 
@@ -53,7 +57,10 @@ Route::middleware(['auth'])->prefix('pasien')->name('pasien.')->group(function (
     Route::get('/beranda', [BerandaController::class, 'index'])->name('beranda');
 
     // Reservasi
-    Route::get('/reservasi', [ReservasiController::class, 'index'])->name('reservasi'); // <-- FIX ;
+    Route::get('/reservasi', [ReservasiController::class, 'index'])->name('reservasi'); 
+    Route::get('/bukti-reservasi', function () {
+        return view('pasien.buktiReservasi');
+    })->name('bukti');
     Route::get('/riwayat', [ReservasiController::class, 'riwayat'])->name('riwayat');
 
     // Jadwal
@@ -73,3 +80,10 @@ Route::middleware(['auth'])->prefix('pasien')->name('pasien.')->group(function (
 });
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// Coba
+Route::get('/beranda', [BerandaController::class, 'index'])->name('beranda');
+Route::get('/dokter', [DokterController::class, 'index'])->name('dokter.index');
+Route::get('/penilaian', [PenilaianController::class, 'index'])->name('penilaian.index');
+Route::get('/profil', [ProfilController::class, 'show'])->name('profil.show');
+Route::get('/profil/edit', [ProfilController::class, 'edit'])->name('profil.edit');
