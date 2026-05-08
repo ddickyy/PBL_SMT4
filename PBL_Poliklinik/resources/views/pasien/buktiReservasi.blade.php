@@ -5,7 +5,7 @@
 @section('hero')
     @include('partial.hero', [
         'badge'      => 'Layanan Kesehatan',
-        'title'      => "Atur Waktu\nPemulihan Anda",
+        'title'      => "Atur Waktu\nPemeriksaan Anda",
         'desc'       => "Pilih layanan spesialis yang Anda butuhkan.\nKami memastikan setiap kunjungan terasa personal, tenang, dan profesional.",
         'buttonText' => null,
         'bg'         => asset('images/poliklinik.jpg')

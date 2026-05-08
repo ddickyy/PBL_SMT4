@@ -183,19 +183,7 @@ $dokters = collect([
 
                                 <i class="fa-solid fa-tooth"></i>
 
-                            @elseif(str_contains($spesialisasiLower, 'mata'))
-
-                                <i class="fa-solid fa-eye"></i>
-
-                            @elseif(str_contains($spesialisasiLower, 'anak'))
-
-                                <i class="fa-solid fa-baby"></i>
-
-                            @elseif(str_contains($spesialisasiLower, 'jantung'))
-
-                                <i class="fa-solid fa-heart-pulse"></i>
-
-                            @else
+                            @elseif(str_contains($spesialisasiLower, 'umum'))
 
                                 <i class="fa-solid fa-stethoscope"></i>
 
