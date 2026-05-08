@@ -271,7 +271,7 @@ $dokters = collect([
                         <div class="doctor-profile">
 
                             <img
-                                src="{{ asset('images/default-doctor.png') }}"
+                                src="{{ asset('images/default-doctor.jpg') }}"
                                 alt="Doctor"
                             >
 
@@ -370,7 +370,9 @@ $dokters = collect([
     }
 
     .home-container {
-        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 32px;
     }
 
     .info-grid {
