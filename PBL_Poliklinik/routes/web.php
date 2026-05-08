@@ -85,3 +85,5 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/beranda', [BerandaController::class, 'index'])->name('beranda');
 Route::get('/dokter', [DokterController::class, 'index'])->name('dokter.index');
 Route::get('/penilaian', [PenilaianController::class, 'index'])->name('penilaian.index');
+Route::get('/profil', [ProfilController::class, 'show'])->name('profil.show');
+Route::get('/profil/edit', [ProfilController::class, 'edit'])->name('profil.edit');
