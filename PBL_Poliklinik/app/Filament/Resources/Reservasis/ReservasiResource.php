@@ -8,6 +8,7 @@ use App\Filament\Resources\Reservasis\Pages\ListReservasis;
 use App\Filament\Resources\Reservasis\Pages\ViewReservasi;
 use App\Filament\Resources\Reservasis\Schemas\ReservasiForm;
 use App\Filament\Resources\Reservasis\Tables\ReservasisTable;
+use App\Filament\Resources\Reservasis\Schemas\ReservasiInfolist;
 use App\Models\Reservasi;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -47,6 +48,11 @@ class ReservasiResource extends Resource
     public static function table(Table $table): Table
     {
         return ReservasisTable::configure($table);
+    }
+
+    public static function infolist(Schema $schema): Schema
+    {
+        return ReservasiInfolist::configure($schema);
     }
 
     public static function getRelations(): array

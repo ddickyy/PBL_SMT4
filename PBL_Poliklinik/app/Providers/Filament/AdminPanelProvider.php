@@ -28,6 +28,10 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+
+            ->brandName('StayAlive')
+            // ->brandLogo(asset('images/StayAlive.jpg'))
+
             ->colors([
                 'primary' => Color::Indigo,
                 'secondary' => Color::Slate,

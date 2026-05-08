@@ -22,7 +22,7 @@ class TendikResource extends Resource
 {
     protected static ?string $model = Tendik::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::WrenchScrewdriver;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::Briefcase;
 
     protected static ?string $recordTitleAttribute = 'user.nama';
 
