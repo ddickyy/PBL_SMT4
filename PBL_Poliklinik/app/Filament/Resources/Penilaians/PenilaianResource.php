@@ -8,6 +8,7 @@ use App\Filament\Resources\Penilaians\Pages\ListPenilaians;
 use App\Filament\Resources\Penilaians\Pages\ViewPenilaian;
 use App\Filament\Resources\Penilaians\Schemas\PenilaianForm;
 use App\Filament\Resources\Penilaians\Tables\PenilaiansTable;
+use App\Filament\Resources\Penilaians\Schemas\PenilaianInfolist;
 use App\Models\Penilaian;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -21,7 +22,7 @@ class PenilaianResource extends Resource
 {
     protected static ?string $model = Penilaian::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::Star;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedStar;
 
     protected static ?string $recordTitleAttribute = 'reservasi.user.nama';
 
@@ -37,7 +38,7 @@ class PenilaianResource extends Resource
 
     protected static ?string $label = 'Penilaian';
 
-    protected static ?int $navigationSort = 11;
+    protected static ?int $navigationSort = 14;
 
     public static function form(Schema $schema): Schema
     {
@@ -47,6 +48,11 @@ class PenilaianResource extends Resource
     public static function table(Table $table): Table
     {
         return PenilaiansTable::configure($table);
+    }
+
+    public static function infolist(Schema $schema): Schema
+    {
+        return PenilaianInfolist::configure($schema);
     }
 
     public static function getRelations(): array
