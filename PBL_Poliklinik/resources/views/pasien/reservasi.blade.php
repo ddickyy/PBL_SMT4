@@ -5,7 +5,7 @@
 @section('hero')
     @include('partial.hero', [
         'badge'      => 'Layanan Kesehatan',
-        'title'      => "Atur Waktu\nPemulihan Anda",
+        'title'      => "Atur Waktu\nPemeriksaan Anda",
         'desc'       => "Pilih layanan spesialis yang Anda butuhkan.\nKami memastikan setiap kunjungan terasa personal, tenang, dan profesional.",
         'buttonText' => null,
         'bg'         => asset('images/poliklinik.jpg')
@@ -31,11 +31,9 @@
 
             <div class="dokter-card" data-id="umum" onclick="pilihDokter(this)">
                 <div class="dokter-top">
-                    <div class="dokter-icon">
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"d="M19.428 15.428a4 4 0 00-5.656 0L12 17.2l-1.772-1.772a4 4 0 10-5.656 5.656L12 28l7.428-7.116a4 4 0 000-5.656z" />
-                        </svg>
-                    </div>
+                    <div class="service-icon">
+                            <i class="fa-solid fa-stethoscope"></i>
+                        </div>
                     <span class="kuota-badge">KUOTA MINGGU INI <b>3/5</b></span>
                 </div>
                 <h3 class="dokter-nama">Dokter Umum</h3>
@@ -45,10 +43,8 @@
 
             <div class="dokter-card selected" data-id="gigi" onclick="pilihDokter(this)">
                 <div class="dokter-top">
-                    <div class="dokter-icon">
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"d="M12 3C8 3 6 5.5 6 9c0 2.2 1.2 4.2 2 5.5.6 1 1 2 1 3.5 0 .6.4 1 1 1 .5 0 .9-.3 1-.8l1-3.2 1 3.2c.1.5.5.8 1 .8.6 0 1-.4 1-1 0-1.5.4-2.5 1-3.5.8-1.3 2-3.3 2-5.5 0-3.5-2-6-6-6z" />
-                        </svg>
+                    <div class="service-icon">
+                        <i class="fa-solid fa-tooth"></i>
                     </div>
                     <span class="kuota-badge kuota-tipis">KUOTA TIPIS <b>2/3</b></span>
                 </div>
@@ -160,6 +156,18 @@
         font-size: 1rem;
         color: #6f7380;
         margin: 0;
+    }
+
+    .service-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
+        background: #eef4ff;
+        color: #1d4ed8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
     }
 
     .step-block {
