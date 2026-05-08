@@ -13,7 +13,7 @@ class PenilaianController extends Controller
         $reservasi = Reservasi::with(['jadwal.dokter.user', 'jadwal.dokter.spesialisasi'])
             ->findOrFail($reservasi);
 
-        return view('patient.penilaian.create', compact('reservasi'));
+        return view('pasien.penilaian', compact('reservasi'));
     }
 
     public function store(Request $request)
@@ -31,5 +31,10 @@ class PenilaianController extends Controller
         ]);
 
         return redirect()->route('pasien.beranda')->with('success', 'Terima kasih, penilaian berhasil dikirim.');
+    }
+
+    public function index()
+    {
+        return view('pasien.penilaian');
     }
 }
