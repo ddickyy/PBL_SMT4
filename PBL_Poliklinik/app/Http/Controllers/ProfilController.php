@@ -11,17 +11,19 @@ class ProfilController extends Controller
 {
     public function show()
     {
-        $user = User::with('mahasiswa.prodi.jurusan')->findOrFail(Auth::id());
+        // $user = User::with('mahasiswa.prodi.jurusan')->findOrFail(Auth::id());
 
-        return view('patient.profil.show', compact('user'));
-    }
+        // return view('pasien.profil.show', compact('user'));
+        return view('pasien.profil.show');
+        }
 
     public function edit()
     {
-        $user = User::with('mahasiswa')->findOrFail(Auth::id());
-        $prodi = Prodi::all();
+        // $user = User::with('mahasiswa')->findOrFail(Auth::id());
+        // $prodi = Prodi::all();
 
-        return view('patient.profil.edit', compact('user', 'prodi'));
+        // return view('pasien.profil.edit', compact('user', 'prodi'));
+        return view('pasien.profil.edit');
     }
 
     public function update(Request $request)
