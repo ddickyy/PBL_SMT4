@@ -90,12 +90,12 @@
                         <p class="profile-meta prodi">Prodi: {{ $profil['prodi'] }}</p>
 
                         <div class="profile-actions">
-                            <a href="{{ route('pasien.profil.edit') }}" class="btn-primary">
+                            <a href="{{ route('profil.edit') }}" class="btn-primary">
                                 Edit Profil
                             </a>
 
-                            <a href="{{ route('pasien.reservasi') }}" class="btn-secondary">
-                                Buat Janji
+                            <a href="/preview-reservasi" class="btn-secondary">
+                                Buat Reservasi
                             </a>
                         </div>
                     </div>

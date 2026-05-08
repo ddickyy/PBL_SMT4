@@ -86,11 +86,17 @@
         </div>
     </div>
 
-    <div class="confirm-wrap">
+    {{-- <div class="confirm-wrap">
         <a href="{{ route('pasien.bukti') }}" class="btn-confirm">
             Konfirmasi Reservasi ▶
         </a>
-    </div>
+    </div> --}}
+
+        <div class="confirm-wrap">
+            <a href="/preview-bukti" class="btn-confirm">
+                Konfirmasi Reservasi ▶
+            </a>
+        </div>
 
 </div>
 

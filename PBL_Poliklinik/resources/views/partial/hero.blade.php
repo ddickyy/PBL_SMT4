@@ -19,7 +19,7 @@
             <p>{{ $desc }}</p>
 
             @if($buttonText)
-                <a href="{{ $buttonLink }}" class="hero-btn">
+                <a href="/preview-reservasi" class="hero-btn">
                     {{ $buttonText }} →
                 </a>
             @endif
