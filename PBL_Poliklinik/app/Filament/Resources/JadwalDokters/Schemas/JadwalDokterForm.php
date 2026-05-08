@@ -8,6 +8,7 @@ use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use App\Models\Dokter;
 
 class JadwalDokterForm
 {
@@ -21,10 +22,14 @@ class JadwalDokterForm
                     ->schema([
                         Select::make('id_dokter')
                             ->label('Dokter')
-                            ->relationship('dokter', 'user.nama')
-                            ->required()
+                            ->options(
+                                Dokter::with('user')
+                                    ->get()
+                                    ->pluck('user.nama', 'id_dokter')
+                            )
                             ->searchable()
-                            ->preload(),
+                            ->preload()
+                            ->required(),
 
                         Select::make('hari')
                             ->label('Hari')
@@ -54,11 +59,6 @@ class JadwalDokterForm
                             ->required()
                             ->minValue(1)
                             ->maxValue(1440),
-
-                        Toggle::make('aktif')
-                            ->label('Aktif')
-                            ->default(true),
-
                     ])
                     ->columnSpanFull(),
             ]);

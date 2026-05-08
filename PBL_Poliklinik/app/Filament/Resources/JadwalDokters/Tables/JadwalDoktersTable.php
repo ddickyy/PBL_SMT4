@@ -42,9 +42,6 @@ class JadwalDoktersTable
                 TextColumn::make('durasi_menit')
                     ->numeric()
                     ->sortable(),
-                IconColumn::make('aktif')
-                    ->boolean()
-                    ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

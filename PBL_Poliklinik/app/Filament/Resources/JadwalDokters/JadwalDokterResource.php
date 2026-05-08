@@ -8,6 +8,7 @@ use App\Filament\Resources\JadwalDokters\Pages\ListJadwalDokters;
 use App\Filament\Resources\JadwalDokters\Pages\ViewJadwalDokter;
 use App\Filament\Resources\JadwalDokters\Schemas\JadwalDokterForm;
 use App\Filament\Resources\JadwalDokters\Tables\JadwalDoktersTable;
+use App\Filament\Resources\JadwalDokters\Schemas\JadwalDokterInfolist;
 use App\Models\JadwalDokter;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -25,7 +26,7 @@ class JadwalDokterResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'dokter.user.nama';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Personalitas';
+    protected static string|\UnitEnum|null $navigationGroup = 'Reservasi';
 
     protected static ?string $navigationLabel = 'Jadwal Dokter';
 
@@ -47,6 +48,11 @@ class JadwalDokterResource extends Resource
     public static function table(Table $table): Table
     {
         return JadwalDoktersTable::configure($table);
+    }
+
+    public static function infolist(Schema $schema): Schema
+    {
+        return JadwalDokterInfolist::configure($schema);
     }
 
     public static function getRelations(): array
