@@ -31,6 +31,8 @@ class AuthController extends Controller
         return back()->withErrors([
             'email' => 'Email atau password salah'
         ])->onlyInput('email');
+        
+        return redirect()->route('beranda');
     }
 
     // logout

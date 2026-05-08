@@ -62,9 +62,9 @@
                 </label>
             </div>
 
-            <button type="submit" class="btn-primary">
+            <a href="{{ route('beranda') }}" class="btn-primary">
                 Masuk Sekarang →
-            </button>
+            </a>
 
             <p class="auth-redirect">
                 Belum memiliki akun? <a href="{{ route('daftar.role') }}">Daftar Sekarang</a>
@@ -300,6 +300,11 @@
         width: 100%;
         letter-spacing: 0.02em;
         transition: all 0.2s;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-decoration: none;
+        box-sizing: border-box;
     }
 
     .btn-primary:hover {

@@ -1,4 +1,4 @@
-<nav class="navbar">
+{{-- <nav class="navbar">
     <div class="logo">
         <a href="{{ route('pasien.beranda') }}">
             <img src="{{ asset('images/logo.png') }}" alt="Logo" class="logo-img">
@@ -29,6 +29,52 @@
         <li>
             <a href="{{ route('pasien.profil.show') }}"
                 class="{{ request()->routeIs('pasien.profil.show') ? 'active' : '' }}">
+                Profil
+            </a>
+        </li>
+    </ul>
+
+    <div class="logout">
+        <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button type="submit">Logout</button>
+        </form>
+    </div>
+</nav> --}}
+
+<nav class="navbar">
+    <div class="logo">
+        <a href="{{ route('beranda') }}">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo" class="logo-img">
+            <span>Poliklinik Polinema</span>
+        </a>
+    </div>
+
+    <ul class="menu">
+        <li>
+            <a href="{{ route('beranda') }}"
+                class="{{ request()->routeIs('beranda') ? 'active' : '' }}">
+                Beranda
+            </a>
+        </li>
+
+        <li>
+            <a href="/preview-reservasi"
+                class="{{ request()->is('preview-reservasi') ? 'active' : '' }}">
+                Reservasi
+            </a>
+        </li>
+
+        <li>
+            <a href="/preview-riwayat"
+                class="{{ request()->is('preview-riwayat') ? 'active' : '' }}">
+                Riwayat
+            </a>
+        </li>
+
+        <li>
+            <a href="{{ route('profil.show') }}"
+                class="{{ request()->routeIs('profil.show') ? 'active' : '' }}">
                 Profil
             </a>
         </li>

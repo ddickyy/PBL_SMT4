@@ -16,6 +16,54 @@
 @endsection
 
 @section('content')
+@php
+
+$spesialisasiGroups = collect([
+    'Dokter Umum' => collect([1]),
+    'Dokter Gigi' => collect([1]),
+]);
+
+$dokters = collect([
+
+    (object)[
+        'user' => (object)[
+            'name' => 'Dr. Amanda Putri'
+        ],
+
+        'spesialisasi' => (object)[
+            'nama_spesialisasi' => 'Dokter Umum'
+        ],
+
+        'jadwalDokter' => collect([
+            (object)[
+                'jam_mulai' => '08:00',
+                'jam_selesai' => '12:00',
+                'aktif' => true
+            ]
+        ])
+    ],
+
+    (object)[
+        'user' => (object)[
+            'name' => 'Dr. Budi Santoso'
+        ],
+
+        'spesialisasi' => (object)[
+            'nama_spesialisasi' => 'Dokter Gigi'
+        ],
+
+        'jadwalDokter' => collect([
+            (object)[
+                'jam_mulai' => '13:00',
+                'jam_selesai' => '16:00',
+                'aktif' => true
+            ]
+        ])
+    ],
+
+]);
+
+@endphp
 
 <section class="home-section">
 
@@ -736,5 +784,4 @@
     }
 
 </style>
-
 @endsection
