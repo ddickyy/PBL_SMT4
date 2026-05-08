@@ -1,0 +1,74 @@
+<?php
+
+namespace App\Filament\Resources\JabatanTendiks;
+
+use App\Filament\Resources\JabatanTendiks\Pages\CreateJabatanTendik;
+use App\Filament\Resources\JabatanTendiks\Pages\EditJabatanTendik;
+use App\Filament\Resources\JabatanTendiks\Pages\ListJabatanTendiks;
+use App\Filament\Resources\JabatanTendiks\Schemas\JabatanTendikForm;
+use App\Filament\Resources\JabatanTendiks\Tables\JabatanTendiksTable;
+use App\Models\JabatanTendik;
+use BackedEnum;
+use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+
+class JabatanTendikResource extends Resource
+{
+    protected static ?string $model = JabatanTendik::class;
+
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::BuildingOffice;
+
+    protected static ?string $recordTitleAttribute = 'nama_jabatan';
+
+    protected static string|\UnitEnum|null $navigationGroup = 'Status';
+
+    protected static ?string $navigationLabel = 'Jabatan Tendik';
+
+    protected static ?string $slug = 'jabatan-tendik';
+
+    protected static ?string $pluralLabel = 'Jabatan Tendik';
+
+    protected static ?string $pluralSlug = 'jabatan-tendik';
+
+    protected static ?string $label = 'Jabatan Tendik';
+
+    protected static ?int $navigationSort = 5;
+
+    public static function form(Schema $schema): Schema
+    {
+        return JabatanTendikForm::configure($schema);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return JabatanTendiksTable::configure($table);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            //
+        ];
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => ListJabatanTendiks::route('/'),
+            'create' => CreateJabatanTendik::route('/create'),
+            'edit' => EditJabatanTendik::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getRecordRouteBindingEloquentQuery(): Builder
+    {
+        return parent::getRecordRouteBindingEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
+    }
+}

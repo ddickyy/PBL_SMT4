@@ -14,7 +14,7 @@ class Dosen extends Model
 
     protected $fillable = [
         'id_user',
-        'nip',
+        'nidn',
         'no_hp',
     ];
 
