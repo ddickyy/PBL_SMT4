@@ -19,7 +19,7 @@ class RekamMedisTable
     {
         return $table
             ->columns([
-                TextColumn::make('id')
+                TextColumn::make('id_rekam')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('id_reservasi')

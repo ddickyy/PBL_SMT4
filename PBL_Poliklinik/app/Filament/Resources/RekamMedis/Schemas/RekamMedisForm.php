@@ -7,6 +7,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use App\Models\Dokter;
 
 class RekamMedisForm
 {
@@ -27,10 +28,14 @@ class RekamMedisForm
 
                         Select::make('id_dokter')
                             ->label('Dokter')
-                            ->relationship('dokter', 'user.nama')
-                            ->required()
+                            ->options(
+                                Dokter::with('user')
+                                    ->get()
+                                    ->pluck('user.nama', 'id_dokter')
+                            )
                             ->searchable()
-                            ->preload(),
+                            ->preload()
+                            ->required(),
 
                         Textarea::make('diagnosis')
                             ->label('Diagnosis')

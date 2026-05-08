@@ -8,6 +8,7 @@ use App\Filament\Resources\RekamMedis\Pages\ListRekamMedis;
 use App\Filament\Resources\RekamMedis\Pages\ViewRekamMedis;
 use App\Filament\Resources\RekamMedis\Schemas\RekamMedisForm;
 use App\Filament\Resources\RekamMedis\Tables\RekamMedisTable;
+use App\Filament\Resources\RekamMedis\Schemas\RekamMedisInfolist;
 use App\Models\RekamMedis;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -47,6 +48,11 @@ class RekamMedisResource extends Resource
     public static function table(Table $table): Table
     {
         return RekamMedisTable::configure($table);
+    }
+
+    public static function infolist(Schema $schema): Schema
+    {
+        return RekamMedisInfolist::configure($schema);
     }
 
     public static function getRelations(): array
