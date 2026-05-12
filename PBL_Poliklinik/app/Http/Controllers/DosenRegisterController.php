@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Dosen;
-use App\Models\Role;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
@@ -18,39 +17,32 @@ class DosenRegisterController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'nama' => 'required',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6',
-            'nip' => 'required|unique:dosen,nip',
-            'no_hp' => 'required'
+        $data = $request->validate([
+            'nidn' => ['required', 'string', 'max:30', 'unique:dosen,nip'],
+            'nama' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'min:8', 'confirmed'],
+            'telepon' => ['required', 'string', 'max:20'],
         ]);
 
-        DB::beginTransaction();
-
-        try {
-            $role = Role::where('nama_role', 'dosen')->first();
-
+        DB::transaction(function () use ($data) {
             $user = User::create([
-                'id_role' => $role->id_role,
-                'nama' => $request->nama,
-                'email' => $request->email,
-                'password' => Hash::make($request->password)
+                'id_role' => 4, // pasien
+                'nama' => $data['nama'],
+                'email' => $data['email'],
+                'password' => Hash::make($data['password']),
+                'foto' => null,
             ]);
 
             Dosen::create([
                 'id_user' => $user->id_user,
-                'nip' => $request->nip,
-                'no_hp' => $request->no_hp
+                'nip' => $data['nidn'],
+                'no_hp' => $data['telepon'],
             ]);
+        });
 
-            DB::commit();
-
-            return redirect()->route('login')->with('success', 'Registrasi berhasil');
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            return back()->withErrors('Gagal daftar: ' . $e->getMessage());
-        }
+        return redirect()
+            ->route('login')
+            ->with('success', 'Pendaftaran dosen berhasil. Silakan login.');
     }
 }

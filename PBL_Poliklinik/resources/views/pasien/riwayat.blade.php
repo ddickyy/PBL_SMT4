@@ -11,6 +11,200 @@
         'bg'         => asset('images/poliklinik.jpg')
     ])
 @endsection
+```blade id="k5v9ns"
+@extends('layout.app')
+
+@section('title', 'Riwayat Reservasi')
+
+@section('hero')
+@include('partial.hero', [
+    'badge' => 'Layanan Kesehatan',
+    'title' => "Riwayat\nReservasi",
+    'desc' => "Pantau status reservasi aktif Anda dan lihat riwayat kunjungan medis sebelumnya secara mudah.",
+    'buttonText' => null,
+    'bg' => asset('images/poliklinik.jpg')
+])
+@endsection
+
+@section('content')
+
+@php use Carbon\Carbon; @endphp
+
+<div class="riwayat-wrap">
+
+    {{-- RESERVASI AKTIF --}}
+    <div class="riwayat-section-block">
+
+        <div class="riwayat-section-header">
+            <h2 class="riwayat-section-title">Reservasi Aktif</h2>
+        </div>
+
+        @php
+            $reservasiAktif = $reservasis->whereIn('status', ['menunggu', 'dikonfirmasi'])->first();
+        @endphp
+
+        @if($reservasiAktif)
+            <div class="aktif-card">
+                <div class="aktif-left">
+                    <span class="status-badge badge-dikonfirmasi">
+                        <span class="status-badge-dot"></span>
+                        {{ strtoupper($reservasiAktif->status) }}
+                    </span>
+                    <h3 class="aktif-layanan">
+                        {{ optional(optional($reservasiAktif->jadwal)->dokter)->spesialisasi->nama_spesialisasi ?? '-' }}
+                    </h3>
+                    <p class="aktif-dokter">
+                        {{ optional(optional($reservasiAktif->jadwal)->dokter->user)->nama ?? 'Dokter' }}
+                    </p>
+                    <div class="aktif-info-row">
+                        <div class="aktif-info-item">
+                            <span class="aktif-info-label">Tanggal</span>
+                            <span class="aktif-info-value">
+                                {{ Carbon::parse($reservasiAktif->tanggal_reservasi)->translatedFormat('d F Y') }}
+                            </span>
+                        </div>
+
+                        <div class="aktif-info-item">
+                            <span class="aktif-info-label">Waktu</span>
+                            <span class="aktif-info-value">
+                                {{ Carbon::parse($reservasiAktif->estimasi_jam)->format('H:i') }} WIB
+                            </span>
+                        </div>
+
+                        <div class="aktif-info-item">
+                            <span class="aktif-info-label">Lokasi</span>
+                            <span class="aktif-info-value">
+                                Poliklinik Polinema
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="aktif-btn-row">
+                        <a href="{{ route('pasien.reservasi.show', $reservasiAktif->id_reservasi) }}"
+                           class="btn-lihat-detail">
+                            Lihat Detail
+                        </a>
+
+                        <a href="{{ route('pasien.reservasi') }}"
+                           class="btn-ubah-jadwal">
+                            Mengubah Jadwal
+                        </a>
+                    </div>
+                </div>
+
+                <div class="aktif-right">
+                    <div class="antrian-label">
+                        NO. ANTRIAN
+                    </div>
+                    <div class="antrian-num">
+                        #{{ $reservasiAktif->nomor_antrian }}
+                    </div>
+                </div>
+            </div>
+
+        @else
+            <div class="empty-riwayat">
+                <div class="empty-icon">
+                    <i class="fa-solid fa-calendar-xmark"></i>
+                </div>
+                <h3>Belum Ada Reservasi Aktif</h3>
+                <p>
+                    Anda belum memiliki reservasi aktif saat ini.
+                </p>
+            </div>
+        @endif
+    </div>
+
+    {{-- RIWAYAT --}}
+    <div class="riwayat-section-block">
+        <div class="riwayat-section-header">
+            <div class="riwayat-section-meta">
+                <svg class="riwayat-section-icon"
+                     fill="none"
+                     viewBox="0 0 24 24"
+                     stroke="currentColor">
+                    <path stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <h2 class="riwayat-section-title">
+                    Riwayat Kunjungan
+                </h2>
+            </div>
+        </div>
+
+        <div class="riwayat-grid">
+            @forelse($reservasis as $item)
+                <div class="riwayat-card">
+                    <div class="riwayat-card-top">
+                        <h4 class="riwayat-dokter-nama">
+                            {{ optional(optional($item->jadwal)->dokter)->spesialisasi->nama_spesialisasi ?? '-' }}
+                        </h4>
+
+                        @php
+                            $badgeClass = match($item->status) {
+                                'selesai' => 'badge-selesai',
+                                'dibatalkan' => 'badge-batal',
+                                default => 'badge-dikonfirmasi'
+                            };
+                        @endphp
+
+                        <span class="status-badge {{ $badgeClass }}">
+                            <span class="status-badge-dot"></span>
+                            {{ strtoupper($item->status) }}
+                        </span>
+                    </div>
+
+                    <p class="riwayat-desc">
+                        Reservasi dengan
+                        {{ optional(optional($item->jadwal)->dokter->user)->nama ?? 'Dokter' }}
+                        pada tanggal
+                        {{ Carbon::parse($item->tanggal_reservasi)->translatedFormat('d F Y') }}.
+                    </p>
+
+                    @if($item->status === 'selesai')
+                        <a href="{{ route('pasien.penilaian.create', $item->id_reservasi) }}"
+                           class="btn-penilaian">
+                            BERIKAN PENILAIAN
+                        </a>
+
+                    @elseif($item->status === 'dibatalkan')
+                        <a href="{{ route('pasien.reservasi') }}"
+                           class="btn-reschedule">
+                            RESCHEDULE
+                        </a>
+
+                    @else
+                        <form action="{{ route('pasien.reservasi.cancel', $item->id_reservasi) }}"
+                              method="POST">
+                            @csrf
+                            @method('PUT')
+
+                            <button type="submit"
+                                    class="btn-reschedule">
+                                BATALKAN RESERVASI
+                            </button>
+                        </form>
+                    @endif
+                </div>
+
+                @empty
+                <div class="empty-riwayat">
+                    <div class="empty-icon">
+                        <i class="fa-solid fa-file-circle-xmark"></i>
+                    </div>
+
+                    <h3>Belum Ada Riwayat Reservasi</h3>
+                    <p>
+                        Anda belum pernah melakukan reservasi.
+                    </p>
+                </div>
+
+            @endforelse
+        </div>
+    </div>
+</div>
 
 @section('content')
 

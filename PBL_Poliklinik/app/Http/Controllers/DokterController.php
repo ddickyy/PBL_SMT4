@@ -8,12 +8,12 @@ class DokterController extends Controller
 {
     public function index()
     {
-        $dokter = Dokter::with([
+        $dokters = Dokter::with([
             'user',
             'spesialisasi',
-            'jadwal'
+            'jadwalDokter'
         ])->get();
 
-        return view('pasien.dokter', compact('dokter'));
+        return view('pasien.dokter', compact('dokters'));
     }
 }

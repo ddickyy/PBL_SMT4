@@ -35,7 +35,7 @@ class Dokter extends Model
         return $this->belongsTo(Spesialisasi::class, 'id_spesialisasi');
     }
 
-    public function jadwal()
+    public function jadwalDokter()
     {
         return $this->hasMany(JadwalDokter::class, 'id_dokter');
     }
