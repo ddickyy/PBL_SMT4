@@ -43,7 +43,6 @@ class ProfilController extends Controller
 
         // VALIDASI
         $validated = $request->validate([
-
             'nama' => 'required|string|max:255',
 
             'email' => 'required|email|max:255|unique:users,email,' . $user->id_user . ',id_user',
@@ -51,6 +50,8 @@ class ProfilController extends Controller
             'no_hp' => 'nullable|string|max:20',
 
             'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+
+            'password' => 'nullable|min:8|confirmed',
         ]);
 
         // UPDATE USER
@@ -65,6 +66,12 @@ class ProfilController extends Controller
                 ->store('foto-profil', 'public');
 
             $user->foto = $path;
+        }
+
+        // UPDATE PASSWORD
+        if ($request->filled('password')) {
+
+            $user->password = bcrypt($request->password);
         }
 
         $user->save();
