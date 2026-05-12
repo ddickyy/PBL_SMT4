@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Tendik;
-use App\Models\Role;
+use App\Models\JabatanTendik;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
@@ -13,48 +13,47 @@ class TendikRegisterController extends Controller
 {
     public function create()
     {
-        $jabatan = \App\Models\JabatanTendik::all();
-
-        return view('register.tendik', compact('jabatan'));
+        return view('register.tendik');
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'nama' => 'required',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6',
-            'nip' => 'required|unique:tendik,nip',
-            'no_hp' => 'required',
-            'id_jabatan' => 'required|exists:jabatan_tendik,id_jabatan'
+        $data = $request->validate([
+            'nip' => ['required', 'string', 'max:30', 'unique:tendik,nip'],
+            'nama' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'jabatan' => ['required', 'string', 'max:255'],
+            'password' => ['required', 'min:8', 'confirmed'],
+            'telepon' => ['required', 'string', 'max:20'],
         ]);
 
-        DB::beginTransaction();
+        $jabatan = JabatanTendik::where('nama_jabatan', $data['jabatan'])->first();
 
-        try {
-            $role = Role::where('nama_role', 'tendik')->first();
+        if (!$jabatan) {
+            return back()
+                ->withErrors(['jabatan' => 'Jabatan tidak ditemukan.'])
+                ->withInput();
+        }
 
+        DB::transaction(function () use ($data, $jabatan) {
             $user = User::create([
-                'id_role' => $role->id_role,
-                'nama' => $request->nama,
-                'email' => $request->email,
-                'password' => Hash::make($request->password)
+                'id_role' => 4, // pasien
+                'nama' => $data['nama'],
+                'email' => $data['email'],
+                'password' => Hash::make($data['password']),
+                'foto' => null,
             ]);
 
             Tendik::create([
                 'id_user' => $user->id_user,
-                'id_jabatan' => $request->id_jabatan,
-                'nip' => $request->nip,
-                'no_hp' => $request->no_hp
+                'id_jabatan' => $jabatan->id_jabatan,
+                'nip' => $data['nip'],
+                'no_hp' => $data['telepon'],
             ]);
+        });
 
-            DB::commit();
-
-            return redirect()->route('login')->with('success', 'Registrasi berhasil');
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            return back()->withErrors('Gagal daftar: ' . $e->getMessage());
-        }
+        return redirect()
+            ->route('login')
+            ->with('success', 'Pendaftaran tendik berhasil. Silakan login.');
     }
 }

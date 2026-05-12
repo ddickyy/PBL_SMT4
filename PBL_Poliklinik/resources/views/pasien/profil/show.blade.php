@@ -1,338 +1,372 @@
 @extends('layout.app')
-@section('partial.navbar')
 
-@section('title', 'Profil Mahasiswa')
-@endsection
+@section('title', 'Profil Saya')
 
 @section('content')
+
     @php
-        $profil = [
-            'nama' => 'Sheilandra Zarawiba',
-            'nim' => '2100000000',
-            'prodi' => 'Teknik Informatika',
-            'jurusan' => 'Teknologi Informasi',
-            'angkatan' => '2024',
-            'status' => 'Mahasiswa Aktif',
-            'email' => 'xx@gmail.com',
-            'avatar' => null,
-        ];
-
-        $rekamMedis = [
-            [
-                'judul' => 'Alergi Paracetamol',
-                'kategori' => 'Alergi',
-                'detail' => 'Reaksi: Ruam & gatal',
-                'ikon' => 'fa-triangle-exclamation',
-                'warna' => 'danger',
-            ],
-            [
-                'judul' => 'Alergi Antibiotik',
-                'kategori' => 'Alergi',
-                'detail' => 'Reaksi: Sesak napas',
-                'ikon' => 'fa-triangle-exclamation',
-                'warna' => 'danger',
-            ],
-            [
-                'judul' => 'Maag',
-                'kategori' => 'Penyakit',
-                'detail' => 'Terakhir kontrol: 12 Jan 2025',
-                'ikon' => 'fa-notes-medical',
-                'warna' => 'warning',
-            ],
-        ];
-
-        $aktivitas = [
-            [
-                'judul' => 'Pemeriksaan Umum',
-                'subjudul' => 'Poliklinik - Dr. Satra',
-                'tanggal' => '12 Okt 2025',
-                'status' => 'Selesai',
-                'ikon' => 'fa-kit-medical',
-            ],
-            [
-                'judul' => 'Pengambilan Surat Sehat',
-                'subjudul' => 'Poliklinik',
-                'tanggal' => '05 Okt 2025',
-                'status' => 'Selesai',
-                'ikon' => 'fa-file-medical',
-            ],
-        ];
+        $user = auth()->user();
     @endphp
 
     <section class="profile-page">
-        <div class="page-container">
 
-            {{-- HERO / PROFILE CARD --}}
+        <div class="profile-container">
 
-            <div class="hero-section">
-                <div class="profile-hero card">
-                    <div class="profile-avatar-wrap">
-                        @if(!empty($profil['avatar']))
-                            <img src="{{ $profil['avatar'] }}" alt="Foto Profil" class="profile-avatar">
-                        @else
-                            <div class="profile-avatar profile-avatar-placeholder">
-                                <span>{{ strtoupper(substr($profil['nama'], 0, 1)) }}</span>
+            {{-- HERO PROFILE --}}
+            <div class="hero-card">
+
+                {{-- AVATAR --}}
+                <div class="hero-avatar">
+                    @if($user->foto)
+                        <img src="{{ asset('storage/' . $user->foto) }}" alt="Foto Profil">
+                    @else
+                        {{ strtoupper(substr($user->nama, 0, 1)) }}
+
+                    @endif
+
+                    <a href="{{ route('pasien.profil.edit') }}" class="edit-avatar">
+                    </a>
+                </div>
+
+                {{-- HERO INFO --}}
+                <div class="hero-info">
+                    <span class="role-badge">
+                        @if($user->mahasiswa)
+                            MAHASISWA AKTIF
+                        @elseif($user->dosen)
+                            DOSEN AKTIF
+                        @elseif($user->tendik)
+                            TENDIK AKTIF
+                        @endif
+                    </span>
+
+                    <h1>{{ $user->nama }}</h1>
+                    {{-- MAHASISWA --}}
+                    @if($user->mahasiswa)
+                        <p>
+                            NIM:
+                            {{ $user->mahasiswa->nim }}
+                        </p>
+
+                        <p class="highlight">
+                            Prodi:
+                            {{ optional($user->mahasiswa->prodi)->nama_prodi }}
+                        </p>
+                    @endif
+
+                    {{-- DOSEN --}}
+                    @if($user->dosen)
+                        <p>
+                            NIDN / NIP:
+                            {{ $user->dosen->nip }}
+                        </p>
+
+                        <p class="highlight">
+                            Dosen Politeknik Negeri Malang
+                        </p>
+                    @endif
+
+                    {{-- TENDIK --}}
+                    @if($user->tendik)
+                        <p>
+                            NIP:
+                            {{ $user->tendik->nip }}
+                        </p>
+
+                        <p class="highlight">
+                            {{ optional($user->tendik->jabatan)->nama_jabatan }}
+                        </p>
+                    @endif
+
+                    {{-- ACTION --}}
+                    <div class="hero-actions">
+                        <a href="{{ route('pasien.profil.edit') }}" class="btn-primary">
+                            Edit Profil
+                        </a>
+                    </div>
+
+                </div>
+
+            </div>
+
+            {{-- INFORMASI --}}
+            <div class="profile-grid">
+                {{-- INFORMASI AKUN --}}
+                <div class="info-card">
+                    <div class="section-header">
+                        <h2>
+                            <i class="fa-solid fa-user-graduate"></i>
+                            Informasi Akun
+                        </h2>
+                    </div>
+
+                    <div class="info-grid">
+                        {{-- MAHASISWA --}}
+                        @if($user->mahasiswa)
+                            <div class="info-box">
+                                <span>Program Studi</span>
+                                <strong>
+                                    {{ optional($user->mahasiswa->prodi)->nama_prodi }}
+                                </strong>
+                            </div>
+
+                            <div class="info-box">
+                                <span>Status</span>
+                                <strong>Mahasiswa</strong>
+                            </div>
+
+                            <div class="info-box">
+                                <span>Email</span>
+                                <strong>{{ $user->email }}</strong>
+                            </div>
+
+                            <div class="info-box">
+                                <span>Nomor HP</span>
+                                <strong>{{ $user->mahasiswa->no_hp }}</strong>
                             </div>
                         @endif
 
-                        <button type="button" class="avatar-edit" aria-label="Edit Foto">
-                            <i class="fa-solid fa-pen"></i>
-                        </button>
+                        {{-- DOSEN --}}
+                        @if($user->dosen)
+                            <div class="info-box">
+                                <span>Status</span>
+                                <strong>Dosen</strong>
+                            </div>
+
+                            <div class="info-box">
+                                <span>Email</span>
+                                <strong>{{ $user->email }}</strong>
+                            </div>
+
+                            <div class="info-box">
+                                <span>NIDN / NIP</span>
+                                <strong>{{ $user->dosen->nip }}</strong>
+                            </div>
+
+                            <div class="info-box">
+                                <span>Nomor HP</span>
+                                <strong>{{ $user->dosen->no_hp }}</strong>
+                            </div>
+                        @endif
+
+                        {{-- TENDIK --}}
+                        @if($user->tendik)
+                            <div class="info-box">
+                                <span>Status</span>
+                                <strong>Tendik</strong>
+                            </div>
+
+                            <div class="info-box">
+                                <span>Jabatan</span>
+                                <strong>
+                                    {{ optional($user->tendik->jabatan)->nama_jabatan }}
+                                </strong>
+                            </div>
+
+                            <div class="info-box">
+                                <span>Email</span>
+                                <strong>{{ $user->email }}</strong>
+                            </div>
+
+                            <div class="info-box">
+                                <span>Nomor HP</span>
+                                <strong>{{ $user->tendik->no_hp }}</strong>
+                            </div>
+                        @endif
                     </div>
 
-                    <div class="profile-main">
-                        <span class="badge-status">
-                            {{ $profil['status'] }}
-                        </span>
-
-                        <h1>Nama: {{ $profil['nama'] }}</h1>
-                        <p class="profile-meta">NIM: {{ $profil['nim'] }}</p>
-                        <p class="profile-meta prodi">Prodi: {{ $profil['prodi'] }}</p>
-
-                        <div class="profile-actions">
-                            <a href="{{ route('profil.edit') }}" class="btn-primary">
-                                Edit Profil
-                            </a>
-
-                            <a href="/preview-reservasi" class="btn-secondary">
-                                Buat Reservasi
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="info-grid">
-                {{-- INFORMASI AKADEMIK --}}
-                <div class="card info-card">
-                    <div class="section-title">
-                        <div class="section-icon orange">
-                            <i class="fa-solid fa-graduation-cap"></i>
-                        </div>
-                        <h2>Informasi Akademik</h2>
-                    </div>
-
-                    <div class="info-box-grid">
-                        <div class="info-box">
-                            <span>JURUSAN</span>
-                            <strong>{{ $profil['jurusan'] }}</strong>
-                        </div>
-
-                        <div class="info-box">
-                            <span>ANGKATAN</span>
-                            <strong>{{ $profil['angkatan'] }}</strong>
-                        </div>
-
-                        <div class="info-box">
-                            <span>STATUS</span>
-                            <strong class="text-blue">{{ $profil['status'] }}</strong>
-                        </div>
-
-                        <div class="info-box">
-                            <span>EMAIL</span>
-                            <strong>{{ $profil['email'] }}</strong>
-                        </div>
-                    </div>
                 </div>
 
                 {{-- REKAM MEDIS --}}
-                <div class="card medical-card">
-                    <div class="section-title light">
-                        <div class="section-icon yellow">
-                            <i class="fa-solid fa-notes-medical"></i>
-                        </div>
+                <div class="medical-card">
+                    <div class="section-header">
                         <h2>Rekam Medis</h2>
                     </div>
 
                     <div class="medical-list">
-                        @forelse($rekamMedis as $item)
+                        @forelse($rekamMedis ?? [] as $item)
                             <div class="medical-item">
-                                <div class="medical-item-left">
-                                    <div class="medical-icon {{ $item['warna'] }}">
-                                        <i class="fa-solid {{ $item['ikon'] }}"></i>
-                                    </div>
-
-                                    <div>
-                                        <h3>{{ $item['judul'] }}</h3>
-                                        <p>{{ $item['kategori'] }} • {{ $item['detail'] }}</p>
-                                    </div>
+                                <div class="medical-icon">
+                                    <i class="fa-solid fa-triangle-exclamation"></i>
                                 </div>
 
-                                <button type="button" class="plus-box" aria-label="Tambah">
-                                    <i class="fa-solid fa-plus"></i>
-                                </button>
+                                <div>
+                                    <h3>{{ $item }}</h3>
+                                    <p>
+                                        Data rekam medis hanya dapat
+                                        dikelola oleh dokter.
+                                    </p>
+                                </div>
                             </div>
                         @empty
-                            <div class="empty-state small">
-                                <i class="fa-solid fa-folder-open"></i>
-                                <h3>Belum Ada Rekam Medis</h3>
-                                <p>Data rekam medis belum tersedia.</p>
+
+                            <div class="medical-empty">
+                                <i class="fa-solid fa-notes-medical"></i>
+                                <p>
+                                    Belum ada data rekam medis.
+                                </p>
                             </div>
                         @endforelse
+
                     </div>
+
                 </div>
+
             </div>
 
-            {{-- AKTIVITAS TERAKHIR --}}
-            <div class="section-header-row">
+        </div>
+
+        {{-- AKTIVITAS TERAKHIR --}}
+        <div class="activity-section">
+            <div class="activity-header">
                 <h2>Aktivitas Terakhir</h2>
-                <a href="{{ route('pasien.riwayat') }}">Lihat Semua Riwayat</a>
+                <a href="{{ route('pasien.riwayat') }}">
+                    Lihat Semua Riwayat
+                </a>
             </div>
 
             <div class="activity-list">
-                @forelse($aktivitas as $item)
-                    <div class="activity-item">
+                @forelse($reservasiTerakhir ?? [] as $item)
+                    <div class="activity-card">
                         <div class="activity-left">
                             <div class="activity-icon">
-                                <i class="fa-solid {{ $item['ikon'] }}"></i>
+                                <i class="fa-solid fa-stethoscope"></i>
                             </div>
-
-                            <div>
-                                <h3>{{ $item['judul'] }}</h3>
-                                <p>{{ $item['subjudul'] }}</p>
+                            <div class="activity-info">
+                                <h3>
+                                    {{ optional($item->jadwal->dokter)->nama ?? 'Pemeriksaan' }}
+                                </h3>
+                                <p>
+                                    {{ optional(optional($item->jadwal)->dokter)->spesialisasi->nama_spesialisasi ?? 'Poliklinik' }}
+                                </p>
                             </div>
                         </div>
 
                         <div class="activity-right">
-                            <strong>{{ $item['tanggal'] }}</strong>
-                            <span class="status-pill">{{ $item['status'] }}</span>
+                            <strong>
+                                {{ \Carbon\Carbon::parse($item->tanggal_reservasi)->translatedFormat('d M Y') }}
+                            </strong>
+                            <span class="status-badge">
+                                {{ ucfirst($item->status) }}
+                            </span>
                         </div>
                     </div>
+
                 @empty
-                    <div class="empty-state">
-                        <i class="fa-solid fa-clock-rotate-left"></i>
-                        <h3>Belum Ada Aktivitas</h3>
-                        <p>Riwayat aktivitas akan tampil di sini setelah Anda menggunakan layanan poliklinik.</p>
+                    <div class="activity-empty">
+                        <i class="fa-regular fa-calendar-xmark"></i>
+                        <p>
+                            Belum ada aktivitas reservasi.
+                        </p>
                     </div>
                 @endforelse
-            </div>
 
+            </div>
         </div>
+
     </section>
 
     <style>
         .profile-page {
-            padding: 28px 24px 64px;
             background: #f5f7fb;
+            min-height: 100vh;
+            padding: 28px 24px 60px;
         }
 
-        .page-container {
-            max-width: 1200px;
+        .profile-container {
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 0 32px;
-        }
-
-        .card {
-            background: #fff;
-            border-radius: 28px;
-            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.06);
-        }
-
-        .hero-section {
-            background: #f3f4f6;
             padding-top: 100px;
         }
 
-        .profile-hero {
+        .hero-card {
+            background: white;
+            border-radius: 28px;
+            padding: 42px;
             display: flex;
-            position: relative;
-            width: 100%;
             align-items: center;
-            gap: 34px;
-            padding: 34px;
+            gap: 40px;
             margin-bottom: 28px;
+            box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
         }
 
-        .profile-avatar-wrap {
+        .hero-avatar {
             position: relative;
-            flex-shrink: 0;
-        }
-
-        .profile-avatar {
-            width: 210px;
-            height: 210px;
+            width: 180px;
+            height: 180px;
             border-radius: 50%;
-            object-fit: cover;
-            display: block;
-            border: 4px solid #fbe4e6;
             background: #102b57;
-        }
-
-        .profile-avatar-placeholder {
+            color: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 72px;
+            font-size: 64px;
             font-weight: 900;
-            color: #fff;
+            overflow: hidden;
+            flex-shrink: 0;
         }
 
-        .avatar-edit {
-            position: absolute;
-            right: 8px;
-            bottom: 12px;
-            width: 38px;
-            height: 38px;
-            border: none;
-            border-radius: 50%;
-            background: #fff;
-            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.15);
-            color: #facc15;
-            cursor: pointer;
+        .hero-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
-        .profile-main h1 {
-            margin: 12px 0 8px;
-            font-size: 56px;
-            line-height: 1.05;
-            font-weight: 900;
-            color: #2d3137;
+        .hero-info {
+            flex: 1;
         }
 
-        .badge-status {
+        .role-badge {
             display: inline-flex;
             align-items: center;
+            padding: 8px 16px;
+            border-radius: 999px;
             background: #facc15;
             color: #102b57;
-            padding: 7px 14px;
-            border-radius: 999px;
             font-size: 12px;
             font-weight: 900;
-            letter-spacing: .06em;
+            margin-bottom: 14px;
         }
 
-        .profile-meta {
-            margin: 0;
-            font-size: 20px;
-            color: #5a6170;
-            line-height: 1.7;
+        .hero-info h1 {
+            margin: 0 0 12px;
+            font-size: 54px;
+            line-height: 1.1;
+            color: #2d3137;
+            font-weight: 900;
         }
 
-        .profile-meta.prodi {
-            color: #33559a;
-            font-weight: 700;
+        .hero-info p {
+            margin: 6px 0;
+            color: #4b5563;
+            font-size: 16px;
+            font-weight: 600;
         }
 
-        .profile-actions {
+        .hero-info .highlight {
+            color: #1d4ed8;
+            font-weight: 800;
+        }
+
+        .hero-actions {
             display: flex;
-            gap: 14px;
-            margin-top: 26px;
-            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 24px;
         }
 
         .btn-primary,
         .btn-secondary {
+            padding: 16px 28px;
+            border-radius: 18px;
             text-decoration: none;
-            border-radius: 16px;
-            padding: 14px 28px;
             font-weight: 800;
             transition: .25s ease;
         }
 
         .btn-primary {
             background: #102b57;
-            color: #fff;
-            box-shadow: 0 10px 24px rgba(16, 43, 87, .14);
+            color: white;
+            box-shadow: 0 12px 24px rgba(16, 43, 87, 0.18);
         }
 
         .btn-primary:hover {
@@ -340,363 +374,327 @@
         }
 
         .btn-secondary {
-            background: #aeb7c8;
+            background: #cbd5e1;
             color: #102b57;
         }
 
         .btn-secondary:hover {
-            background: #98a3b7;
-            transform: translateY(-2px);
+            background: #b8c4d6;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 26px;
+        }
+
+        .info-card,
+        .medical-card {
+            border-radius: 24px;
+            padding: 28px;
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
+        }
+
+        .info-card {
+            background: white;
+        }
+
+        .medical-card {
+            background: #102b57;
+            color: white;
+        }
+
+        .section-header {
+            margin-bottom: 24px;
+        }
+
+        .section-header h2 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 900;
+        }
+
+        .medical-card .section-header h2 {
+            color: #facc15;
         }
 
         .info-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 24px;
-            margin-bottom: 28px;
-        }
-
-        .info-card,
-        .medical-card {
-            padding: 26px;
-        }
-
-        .section-title {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 18px;
-        }
-
-        .section-title h2 {
-            margin: 0;
-            font-size: 18px;
-            font-weight: 800;
-            color: #2d3137;
-        }
-
-        .section-title.light h2 {
-            color: #fff;
-        }
-
-        .section-icon {
-            width: 28px;
-            height: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 8px;
-            font-size: 14px;
-        }
-
-        .section-icon.orange {
-            color: #f59e0b;
-        }
-
-        .section-icon.yellow {
-            color: #facc15;
-        }
-
-        .medical-card {
-            background: #102b57;
-            color: #fff;
-        }
-
-        .info-box-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
+            gap: 18px;
         }
 
         .info-box {
-            background: #f8fafc;
-            border-radius: 14px;
-            padding: 16px 14px;
+            background: #f4f4f6;
+            border-radius: 18px;
+            padding: 18px;
         }
 
         .info-box span {
             display: block;
-            font-size: 11px;
-            font-weight: 800;
-            color: #8892a6;
-            letter-spacing: .08em;
-            margin-bottom: 4px;
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-transform: uppercase;
         }
 
         .info-box strong {
-            font-size: 16px;
             color: #2d3137;
-            line-height: 1.4;
-        }
-
-        .text-blue {
-            color: #33559a !important;
+            font-size: 18px;
+            font-weight: 800;
         }
 
         .medical-list {
             display: grid;
-            gap: 12px;
+            gap: 16px;
         }
 
         .medical-item {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
             gap: 14px;
             background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.10);
-            border-radius: 16px;
-            padding: 14px 16px;
-        }
-
-        .medical-item-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            min-width: 0;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 18px;
+            padding: 18px;
         }
 
         .medical-icon {
-            width: 38px;
-            height: 38px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            font-size: 15px;
-        }
-
-        .medical-icon.danger {
-            color: #ef4444;
-            background: rgba(239, 68, 68, .12);
-        }
-
-        .medical-icon.warning {
-            color: #facc15;
-            background: rgba(250, 204, 21, .12);
+            color: #f87171;
+            font-size: 18px;
+            padding-top: 2px;
         }
 
         .medical-item h3 {
-            margin: 0 0 3px;
-            font-size: 15px;
-            color: #fff;
+            margin: 0 0 6px;
+            font-size: 18px;
+            font-weight: 800;
         }
 
         .medical-item p {
             margin: 0;
-            font-size: 12px;
-            color: rgba(255, 255, 255, .58);
+            color: rgba(255, 255, 255, 0.72);
+            font-size: 13px;
+            line-height: 1.6;
         }
 
-        .plus-box {
-            width: 46px;
-            height: 46px;
-            border-radius: 14px;
-            border: 1px solid rgba(255, 255, 255, .14);
-            background: rgba(255, 255, 255, .04);
+        .medical-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .medical-empty i {
+            font-size: 42px;
+            margin-bottom: 14px;
             color: #facc15;
-            font-size: 18px;
-            cursor: pointer;
-            flex-shrink: 0;
         }
 
-        .section-header-row {
+        .activity-section {
+            margin-top: 36px;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .activity-header {
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            gap: 16px;
-            margin: 18px 0 16px;
+            align-items: center;
+            margin-bottom: 22px;
+            gap: 20px;
         }
 
-        .section-header-row h2 {
+        .activity-header h2 {
             margin: 0;
-            font-size: 30px;
-            font-weight: 900;
+            font-size: 34px;
             color: #2d3137;
+            font-weight: 900;
         }
 
-        .section-header-row a {
-            color: #f7b500;
+        .activity-header a {
+            color: #f59e0b;
             font-weight: 700;
             text-decoration: none;
         }
 
-        .activity-list {
-            display: grid;
-            gap: 14px;
+        .activity-header a:hover {
+            text-decoration: underline;
         }
 
-        .activity-item {
-            background: #fff;
-            border-radius: 22px;
-            padding: 18px 22px;
+        .activity-list {
+            display: grid;
+            gap: 18px;
+        }
+
+        .activity-card {
+            background: white;
+            border-radius: 24px;
+            padding: 22px 24px;
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            gap: 16px;
-            box-shadow: 0 14px 28px rgba(15, 23, 42, 0.04);
+            align-items: center;
+            gap: 18px;
+            box-shadow: 0 14px 32px rgba(15, 23, 42, 0.05);
+            transition: .25s ease;
+        }
+
+        .activity-card:hover {
+            transform: translateY(-2px);
         }
 
         .activity-left {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 18px;
         }
 
         .activity-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 999px;
-            background: #dce6ff;
-            color: #102b57;
+            width: 58px;
+            height: 58px;
+            border-radius: 18px;
+            background: #dbeafe;
+            color: #1d4ed8;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 22px;
             flex-shrink: 0;
         }
 
-        .activity-left h3 {
-            margin: 0;
-            font-size: 16px;
+        .activity-info h3 {
+            margin: 0 0 4px;
             color: #2d3137;
+            font-size: 20px;
+            font-weight: 800;
         }
 
-        .activity-left p {
-            margin: 4px 0 0;
-            font-size: 13px;
-            color: #8b93a3;
+        .activity-info p {
+            margin: 0;
+            color: #64748b;
+            font-size: 14px;
         }
 
         .activity-right {
-            text-align: right;
             display: flex;
             flex-direction: column;
-            gap: 8px;
             align-items: flex-end;
+            gap: 10px;
         }
 
         .activity-right strong {
             color: #2d3137;
-            font-size: 14px;
+            font-size: 18px;
         }
 
-        .status-pill {
-            display: inline-flex;
-            align-items: center;
-            background: #dbe4ff;
-            color: #a7b4d5;
+        .status-badge {
+            padding: 8px 14px;
             border-radius: 999px;
-            padding: 5px 11px;
-            font-size: 11px;
+            background: #dbeafe;
+            color: #1d4ed8;
+            font-size: 12px;
             font-weight: 800;
-            letter-spacing: .08em;
         }
 
-        .empty-state {
-            background: #fff;
-            border-radius: 22px;
+        .activity-empty {
+            background: white;
+            border-radius: 24px;
             padding: 40px 20px;
             text-align: center;
-            box-shadow: 0 14px 28px rgba(15, 23, 42, 0.04);
-            color: #6f7380;
+            color: #64748b;
+            box-shadow: 0 14px 32px rgba(15, 23, 42, 0.05);
         }
 
-        .empty-state.small {
-            padding: 28px 18px;
-            background: rgba(255, 255, 255, 0.06);
-            color: rgba(255, 255, 255, .72);
-            box-shadow: none;
+        .activity-empty i {
+            font-size: 42px;
+            margin-bottom: 14px;
+            color: #94a3b8;
         }
 
-        .empty-state i {
-            font-size: 32px;
-            margin-bottom: 10px;
-            color: #9fb2df;
-        }
+        @media (max-width: 768px) {
 
-        .empty-state h3 {
-            margin: 0 0 8px;
-            font-size: 18px;
-            color: inherit;
-        }
-
-        .empty-state p {
-            margin: 0;
-            line-height: 1.7;
-            color: inherit;
-        }
-
-        @media (max-width: 1100px) {
-            .profile-hero {
+            .activity-header {
+                flex-direction: column;
                 align-items: flex-start;
             }
 
-            .profile-main h1 {
+            .activity-header h2 {
+                font-size: 28px;
+            }
+
+            .activity-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .activity-right {
+                width: 100%;
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 1200px) {
+
+            .hero-info h1 {
+                font-size: 42px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+
+            .profile-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .hero-info h1 {
+                font-size: 36px;
+            }
+        }
+
+        @media (max-width: 768px) {
+
+            .profile-page {
+                padding: 18px 14px 40px;
+            }
+
+            .profile-container {
+                padding-top: 90px;
+            }
+
+            .hero-card {
+                padding: 24px;
+            }
+
+            .hero-avatar {
+                width: 130px;
+                height: 130px;
                 font-size: 42px;
             }
 
-            .profile-avatar {
-                width: 170px;
-                height: 170px;
+            .hero-info h1 {
+                font-size: 30px;
+            }
+
+            .hero-actions {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                width: 100%;
+                text-align: center;
             }
 
             .info-grid {
                 grid-template-columns: 1fr;
             }
         }
-
-        @media (max-width: 768px) {
-            .profile-page {
-                padding: 18px 14px 50px;
-            }
-
-            .profile-hero {
-                flex-direction: column;
-                padding: 24px;
-            }
-
-            .profile-main h1 {
-                font-size: 30px;
-            }
-
-            .profile-meta {
-                font-size: 16px;
-            }
-
-            .profile-avatar {
-                width: 140px;
-                height: 140px;
-            }
-
-            .profile-actions {
-                width: 100%;
-            }
-
-            .btn-primary,
-            .btn-secondary {
-                flex: 1;
-                text-align: center;
-            }
-
-            .section-header-row {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-
-            .activity-item {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .activity-right {
-                align-items: flex-start;
-                text-align: left;
-            }
-
-            .info-box-grid {
-                grid-template-columns: 1fr;
-            }
-        }
     </style>
+
 @endsection

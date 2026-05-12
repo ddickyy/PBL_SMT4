@@ -2,6 +2,7 @@
 @extends('layout.app')
 
 @section('title', 'Pilih Identitas')
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -37,7 +38,7 @@
                         <h2 class="option-title">Mahasiswa</h2>
                         <p class="option-desc">Akses layanan kesehatan dan pendaftaran bagi seluruh mahasiswa aktif.</p>
                         <div class="option-action">
-                            <a href="{{ route('daftar.mhs') }}" class="btn-identitas">Pilih Mahasiswa</a>
+                            <a href="{{ route('daftar.mhs.create') }}" class="btn-identitas">Pilih Mahasiswa</a>
                         </div>
                     </article>
 
@@ -54,7 +55,7 @@
                         <h2 class="option-title">Dosen</h2>
                         <p class="option-desc">Akses layanan kesehatan khusus bagi tenaga pendidik Polinema.</p>
                         <div class="option-action">
-                            <a href="{{ route('daftar.dosen') }}" class="btn-identitas">Pilih Dosen</a>
+                            <a href="{{ route('daftar.dosen.create') }}" class="btn-identitas">Pilih Dosen</a>
                         </div>
                     </article>
 
@@ -71,14 +72,16 @@
                         <h2 class="option-title">Tendik</h2>
                         <p class="option-desc">Akses layanan kesehatan bagi tenaga kependidikan dan staf non-akademik.</p>
                         <div class="option-action">
-                            <a href="{{ route('daftar.tendik') }}" class="btn-identitas">Pilih Tendik</a>
+                            <a href="{{ route('daftar.tendik.create') }}" class="btn-identitas">Pilih Tendik</a>
                         </div>
                     </article>
                 </div>
             </section>
         </main>
 
-        <footer class="footer">© 2026 Poliklinik Polinema • Sistem Reservasi Poliklinik Polinema</footer>
+        <div class="auth-footer">
+            © 2026 POLIKLINIK POLINEMA • SISTEM RESERVASI POLIKLINIK POLINEMA
+        </div>
     </div>
 
     <style>
@@ -163,7 +166,7 @@
 
         .hero-card {
             width: min(1360px, calc(100vw - 60px));
-            min-height: 650px;
+            min-height: auto;
             background: var(--card);
             border-radius: 36px;
             box-shadow: var(--shadow);
@@ -199,13 +202,19 @@
         .option-card {
             background: var(--soft);
             border-radius: 18px;
-            /* min-height: 392px; */
             padding: 32px 28px 30px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: flex-start;
             box-shadow: inset 0 0 0 1px rgba(16, 43, 87, .02);
+        }
+
+        .auth-footer {
+            font-size: 12px;
+            color: #94a3b8;
+            text-align: center;
+            padding-bottom: 18px;
         }
 
         .icon-badge {
@@ -269,16 +278,6 @@
             transform: translateY(-1px);
             box-shadow: 0 16px 32px rgba(16, 43, 87, .24);
             opacity: .98;
-        }
-
-        .footer {
-            text-align: center;
-            padding: 22px 16px 18px;
-            color: #c5c7d2;
-            font-size: .84rem;
-            letter-spacing: .28em;
-            text-transform: uppercase;
-            font-weight: 600;
         }
 
         @media (max-width: 1200px) {

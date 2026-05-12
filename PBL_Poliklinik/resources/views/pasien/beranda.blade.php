@@ -16,77 +16,23 @@
 @endsection
 
 @section('content')
-@php
-
-$spesialisasiGroups = collect([
-    'Dokter Umum' => collect([1]),
-    'Dokter Gigi' => collect([1]),
-]);
-
-$dokters = collect([
-
-    (object)[
-        'user' => (object)[
-            'name' => 'Dr. Amanda Putri'
-        ],
-
-        'spesialisasi' => (object)[
-            'nama_spesialisasi' => 'Dokter Umum'
-        ],
-
-        'jadwalDokter' => collect([
-            (object)[
-                'jam_mulai' => '08:00',
-                'jam_selesai' => '12:00',
-                'aktif' => true
-            ]
-        ])
-    ],
-
-    (object)[
-        'user' => (object)[
-            'name' => 'Dr. Budi Santoso'
-        ],
-
-        'spesialisasi' => (object)[
-            'nama_spesialisasi' => 'Dokter Gigi'
-        ],
-
-        'jadwalDokter' => collect([
-            (object)[
-                'jam_mulai' => '13:00',
-                'jam_selesai' => '16:00',
-                'aktif' => true
-            ]
-        ])
-    ],
-
-]);
-
-@endphp
 
 <section class="home-section">
-
     <div class="home-container">
 
-        {{-- INFO SECTION --}}
+        {{-- INFO --}}
         <div class="info-grid">
 
-            {{-- JAM OPERASIONAL --}}
+            {{-- OPERASIONAL --}}
             <div class="card">
-
                 <div class="card-header">
-
                     <div class="icon-box blue">
                         <i class="fa-regular fa-clock"></i>
                     </div>
-
                     <h3>Jam Operasional Poliklinik</h3>
-
                 </div>
 
                 <div class="schedule-list">
-
                     <div class="schedule-item">
                         <span>Senin - Kamis</span>
                         <strong>08:00 - 16:00</strong>
@@ -101,32 +47,25 @@ $dokters = collect([
                         <span>Sabtu - Minggu</span>
                         <strong>Tutup</strong>
                     </div>
-
                 </div>
 
                 <div class="status-operational">
-
                     <span class="status-dot {{ $isOpen ? 'open' : 'close' }}"></span>
 
                     <span>
                         {{ $isOpen ? 'Saat ini sedang beroperasi' : 'Saat ini tutup' }}
                     </span>
-
                 </div>
-
             </div>
 
             {{-- EMERGENCY --}}
             <div class="card">
-
                 <div class="card-header">
-
                     <div class="icon-box red">
                         <i class="fa-solid fa-asterisk"></i>
                     </div>
 
                     <h3>Emergency Call</h3>
-
                 </div>
 
                 <span class="emergency-badge">
@@ -143,211 +82,140 @@ $dokters = collect([
                 </p>
 
                 <a href="tel:085707029645" class="btn-emergency">
-
                     <i class="fa-solid fa-phone"></i>
-
                     Call Now
-
                 </a>
-
             </div>
-
         </div>
 
         {{-- LAYANAN --}}
         <div class="section-heading">
-
             <h2>Layanan Spesialis</h2>
-
-            <p>
-                Pilih layanan kesehatan sesuai dengan kebutuhan Anda
-            </p>
-
+            <p>Pilih layanan kesehatan sesuai dengan kebutuhan Anda</p>
         </div>
-
         <div class="service-grid">
-
             @forelse($spesialisasiGroups as $namaSpesialisasi => $group)
 
                 @php
                     $spesialisasiLower = strtolower($namaSpesialisasi ?? '');
                 @endphp
-
+                
                 <div class="service-card">
-
                     <div class="service-top">
-
                         <div class="service-icon">
-
                             @if(str_contains($spesialisasiLower, 'gigi'))
-
                                 <i class="fa-solid fa-tooth"></i>
-
                             @elseif(str_contains($spesialisasiLower, 'umum'))
-
                                 <i class="fa-solid fa-stethoscope"></i>
-
+                            @else
+                                <i class="fa-solid fa-user-doctor"></i>
                             @endif
-
                         </div>
-
                         <span class="service-label">
                             LAYANAN SPESIALIS
                         </span>
-
                     </div>
 
-                    <h3>{{ $namaSpesialisasi ?? '-' }}</h3>
-
+                    <h3>{{ $namaSpesialisasi }}</h3>
                     <p>
                         Layanan kesehatan profesional dengan tenaga medis
-                        berpengalaman untuk mendukung kesehatan mahasiswa.
+                        berpengalaman untuk mendukung kesehatan mahasiswa,
+                        dosen, dan tendik.
                     </p>
 
                     <div class="doctor-count">
                         {{ $group->count() }} Dokter Tersedia
                     </div>
-
                 </div>
-
-            @empty
-
-                {{-- EMPTY SERVICE --}}
+            
+                @empty
                 <div class="empty-service">
-
                     <div class="empty-service-icon">
                         <i class="fa-solid fa-hospital"></i>
                     </div>
-
                     <h3>Belum Ada Layanan Tersedia</h3>
-
                     <p>
                         Saat ini layanan spesialis belum tersedia.
-                        Silakan kembali beberapa saat lagi.
                     </p>
-
                 </div>
-
             @endforelse
-
         </div>
 
         {{-- DAFTAR DOKTER --}}
         <div class="doctor-section">
-
             <div class="doctor-left">
-
                 <h2>Daftar Dokter</h2>
-
                 <p>
                     Lihat daftar dokter yang tersedia di poliklinik
                     untuk memudahkan kunjungan Anda.
                 </p>
-
             </div>
 
             <div class="doctor-right">
-
                 @forelse($dokters->take(3) as $dokter)
 
                     @php
-                        $jadwalAktif = optional($dokter->jadwalDokter)->first();
+                        $jadwalAktif = $dokter->jadwalDokter->firstWhere('aktif', true);
+                        $fotoDokter = optional($dokter->user)->foto;
                     @endphp
 
                     <div class="doctor-item">
-
                         <div class="doctor-profile">
-
                             <img
-                                src="{{ asset('images/default-doctor.jpg') }}"
-                                alt="Doctor"
-                            >
-
+                                src="{{ $fotoDokter ? asset('storage/' . $fotoDokter) : asset('images/default-doctor.jpg') }}"
+                                alt="Foto Dokter">
                             <div>
-
                                 <h4>
-                                    {{ optional($dokter->user)->name ?? 'Dokter' }}
+                                    {{ optional($dokter->user)->nama ?? 'Dokter' }}
                                 </h4>
-
                                 <p>
                                     {{ optional($dokter->spesialisasi)->nama_spesialisasi ?? '-' }}
                                 </p>
-
                             </div>
-
                         </div>
-
                         <div class="doctor-time">
-
                             <small>WAKTU</small>
-
                             <strong>
-
                                 {{ $jadwalAktif->jam_mulai ?? '--:--' }}
                                 -
                                 {{ $jadwalAktif->jam_selesai ?? '--:--' }}
-
                             </strong>
-
                         </div>
-
                         <div>
-
                             @if($jadwalAktif && $jadwalAktif->aktif)
-
                                 <span class="badge available">
                                     Tersedia
                                 </span>
-
                             @else
-
                                 <span class="badge full">
                                     Tidak Tersedia
                                 </span>
-
                             @endif
-
                         </div>
-
                     </div>
 
-                @empty
-
-                    {{-- EMPTY DOCTOR --}}
+                    @empty
                     <div class="empty-doctor-home">
-
                         <div class="empty-doctor-home-icon">
                             <i class="fa-solid fa-user-doctor"></i>
                         </div>
-
                         <h3>Belum Ada Dokter Tersedia</h3>
-
                         <p>
                             Saat ini belum ada jadwal dokter yang tersedia.
                         </p>
-
                     </div>
-
                 @endforelse
 
                 @if($dokters->count() > 0)
-
                     <div class="doctor-more">
-
                         <a href="{{ route('pasien.jadwal') }}">
                             Lihat lebih lengkap
                         </a>
-
                     </div>
-
                 @endif
-
             </div>
-
         </div>
-
     </div>
-
 </section>
 
 <style>
