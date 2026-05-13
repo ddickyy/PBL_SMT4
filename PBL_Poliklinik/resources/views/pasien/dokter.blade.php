@@ -3,7 +3,6 @@
 @section('title', 'Daftar Dokter')
 
 @section('hero')
-
 @include('partial.hero', [
     'badge' => 'Layanan Kesehatan Kampus',
     'title' => 'Daftar & Jadwal <br><span style="color:#facc15;">Dokter Poliklinik</span>',
@@ -11,156 +10,124 @@
     'buttonText' => null,
     'bg' => asset('images/poliklinik.jpg')
 ])
-
 @endsection
 
 @section('content')
-
 <section class="doctor-page">
-
     <div class="doctor-container">
-
-        {{-- TITLE --}}
         <div class="section-heading">
             <h2>Tenaga Medis Berpengalaman</h2>
         </div>
 
-        {{-- LIST DOKTER --}}
         <div class="doctor-grid">
-
-            @forelse($dokter as $item)
-
+            @forelse($dokters as $item)
                 @php
-                    $jadwal = optional($item->jadwal)->first();
-
                     $spesialisasi = strtolower(
                         optional($item->spesialisasi)->nama_spesialisasi ?? ''
                     );
+
+                    $foto = optional($item->user)->foto;
                 @endphp
 
                 <div class="doctor-card">
-
-                    {{-- IMAGE --}}
                     <div class="doctor-image">
-                        <img
-                            src="{{ asset('images/default-doctor.png') }}"
-                            alt="Doctor"
-                        >
+                        @if($foto)
+
+                            <img src="{{ asset('storage/' . $foto) }}"
+                                 alt="Doctor">
+                        @else
+                            <img src="{{ asset('images/default-doctor.png') }}"
+                                 alt="Doctor">
+                        @endif
                     </div>
 
-                    {{-- CONTENT --}}
                     <div class="doctor-content">
-
-                        {{-- BADGE --}}
                         <span class="doctor-badge">
                             {{ optional($item->spesialisasi)->nama_spesialisasi ?? 'POLI UMUM' }}
                         </span>
-
-                        {{-- NAME --}}
                         <h3>
-                            {{ optional($item->user)->name ?? 'Dokter' }}
+                            {{ optional($item->user)->nama ?? 'Dokter' }}
                         </h3>
-
-                        {{-- SPECIALIST --}}
                         <div class="doctor-specialist">
-
                             @if(str_contains($spesialisasi, 'gigi'))
-
                                 <i class="fa-solid fa-tooth"></i>
-
                             @elseif(str_contains($spesialisasi, 'mata'))
-
                                 <i class="fa-solid fa-eye"></i>
-
                             @elseif(str_contains($spesialisasi, 'anak'))
-
                                 <i class="fa-solid fa-baby"></i>
-
                             @elseif(str_contains($spesialisasi, 'jantung'))
-
                                 <i class="fa-solid fa-heart-pulse"></i>
-
                             @else
-
                                 <i class="fa-solid fa-stethoscope"></i>
-
                             @endif
 
                             <span>
                                 {{ optional($item->spesialisasi)->nama_spesialisasi ?? '-' }}
                             </span>
+                        </div>
+
+                        <div class="doctor-schedule-list">
+                            @forelse($item->jadwalDokter as $jadwal)
+                                <div class="doctor-schedule">
+                                    <div class="schedule-icon">
+                                        <i class="fa-regular fa-calendar"></i>
+                                    </div>
+
+                                    <div>
+                                        <small>JADWAL PRAKTIK</small>
+                                        <strong>
+                                            {{ $jadwal->hari }}
+                                        </strong>
+
+                                        <span>
+                                            {{ $jadwal->jam_mulai }}
+                                            -
+                                            {{ $jadwal->jam_selesai }}
+                                            WIB
+                                        </span>
+                                    </div>
+                                </div>
+
+                            @empty
+
+                                <div class="empty-schedule">
+                                    Jadwal belum tersedia.
+                                </div>
+
+                            @endforelse
 
                         </div>
 
-                        {{-- JADWAL --}}
-                        <div class="doctor-schedule">
-
-                            <div class="schedule-icon">
-                                <i class="fa-regular fa-calendar"></i>
-                            </div>
-
-                            <div>
-
-                                <small>JADWAL PRAKTIK</small>
-
-                                <strong>
-                                    {{ $jadwal->hari ?? '-' }}
-                                </strong>
-
-                                <span>
-                                    {{ $jadwal->jam_mulai ?? '--:--' }}
-                                    -
-                                    {{ $jadwal->jam_selesai ?? '--:--' }}
-                                    WIB
-                                </span>
-
-                            </div>
-
-                        </div>
-
-                        {{-- DESCRIPTION --}}
                         <p class="doctor-description">
                             Dokter profesional dengan pengalaman di layanan kesehatan
                             untuk membantu menjaga kesehatan pasien secara menyeluruh.
                         </p>
 
-                        {{-- BUTTON --}}
-                        <a
-                            href="{{ route('pasien.reservasi') }}"
-                            class="btn-book"
-                        >
-                            Buat Janji
+                        <a href="{{ route('pasien.reservasi') }}"
+                           class="btn-book">
+                            Buat Reservasi
                             <i class="fa-solid fa-arrow-right"></i>
                         </a>
-
                     </div>
-
                 </div>
 
             @empty
-
-                {{-- EMPTY STATE --}}
                 <div class="empty-doctor">
-
                     <div class="empty-icon">
                         <i class="fa-solid fa-user-doctor"></i>
                     </div>
-
-                    <h3>Belum Ada Dokter Tersedia</h3>
-
+                    <h3>
+                        Belum Ada Dokter Tersedia
+                    </h3>
                     <p>
                         Saat ini data dokter belum tersedia.
                         Silakan kembali beberapa saat lagi.
                     </p>
-
                 </div>
-
             @endforelse
 
         </div>
-
     </div>
-
 </section>
 
 <style>
@@ -258,11 +225,16 @@
         color: #102b57;
     }
 
+    .doctor-schedule-list {
+        display: grid;
+        gap: 14px;
+        margin-bottom: 24px;
+    }
+
     .doctor-schedule {
         display: flex;
         align-items: flex-start;
         gap: 14px;
-        margin-bottom: 24px;
     }
 
     .schedule-icon {
@@ -293,6 +265,14 @@
     }
 
     .doctor-schedule span {
+        color: #64748b;
+        font-size: 14px;
+    }
+
+    .empty-schedule {
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 14px;
         color: #64748b;
         font-size: 14px;
     }
@@ -372,6 +352,10 @@
             padding: 24px 14px 60px;
         }
 
+        .doctor-container {
+            padding: 0;
+        }
+
         .section-heading h2 {
             font-size: 32px;
         }
@@ -391,6 +375,4 @@
     }
 
 </style>
-
 @endsection
-```

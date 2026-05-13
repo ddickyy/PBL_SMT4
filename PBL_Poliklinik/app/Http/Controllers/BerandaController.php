@@ -10,10 +10,14 @@ class BerandaController extends Controller
 {
     public function index()
     {
-        $dokters = Dokter::with(['user', 'spesialisasi', 'jadwalDokter'])->get();
+        $dokters = Dokter::with([
+            'user',
+            'spesialisasi',
+            'jadwalDokter'
+        ])->get();
 
         $spesialisasiGroups = $dokters->groupBy(function ($dokter) {
-            return optional($dokter->spesialisasi)->nama_spesialisasi ?? '-';
+            return optional($dokter->spesialisasi)->nama_spesialisasi ?? 'Lainnya';
         });
 
         $now = Carbon::now('Asia/Jakarta');
@@ -28,11 +32,20 @@ class BerandaController extends Controller
             $isOpen = $time >= '08:00' && $time <= '14:00';
         }
 
-        $jadwal = JadwalDokter::with('dokter')
-            ->where('aktif', true)
-            ->limit(3)
-            ->get();
+        $jadwal = JadwalDokter::with([
+            'dokter.user',
+            'dokter.spesialisasi'
+        ])
+        ->where('aktif', true)
+        ->orderBy('jam_mulai')
+        ->limit(3)
+        ->get();
 
-        return view('pasien.beranda', compact('dokters', 'spesialisasiGroups', 'isOpen', 'jadwal'));
+        return view('pasien.beranda', compact(
+            'dokters',
+            'spesialisasiGroups',
+            'isOpen',
+            'jadwal'
+        ));
     }
 }

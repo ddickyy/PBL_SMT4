@@ -12,55 +12,73 @@ use App\Http\Controllers\PenilaianController;
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\ReservasiController;
 use App\Http\Controllers\JadwalController;
+use App\Http\Controllers\PasswordResetController;
 
 Route::get('/', function () {
     return redirect()->route('login');
 });
 
 // Guest
+
 Route::middleware('guest')->group(function () {
 
     // Login
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->name('login.process');
 
-    // Daftar
+    // Lupa Password
+    Route::get('/forgot-password', [PasswordResetController::class, 'request'])
+        ->name('password.request');
+
+    Route::post('/forgot-password', [PasswordResetController::class, 'email'])
+        ->name('password.email');
+
+    Route::get('/reset-password/{token}', [PasswordResetController::class, 'reset'])
+        ->name('password.reset');
+
+    Route::post('/reset-password', [PasswordResetController::class, 'update'])
+        ->name('password.update');
+
+    // Register
     Route::prefix('daftar')->name('daftar.')->group(function () {
 
         Route::get('/role', [RoleSelectionController::class, 'index'])->name('role');
 
-        Route::prefix('mahasiswa')->group(function () {
-            Route::get('/', [MahasiswaRegisterController::class, 'create'])->name('mhs');
-            Route::post('/', [MahasiswaRegisterController::class, 'store'])->name('mhs.store');
+        // Mahasiswa
+        Route::prefix('mahasiswa')->name('mhs.')->group(function () {
+            Route::get('/', [MahasiswaRegisterController::class, 'create'])->name('create');
+            Route::post('/', [MahasiswaRegisterController::class, 'store'])->name('store');
         });
 
-        Route::prefix('dosen')->group(function () {
-            Route::get('/', [DosenRegisterController::class, 'create'])->name('dosen');
-            Route::post('/', [DosenRegisterController::class, 'store'])->name('dosen.store');
+        // Dosen
+        Route::prefix('dosen')->name('dosen.')->group(function () {
+            Route::get('/', [DosenRegisterController::class, 'create'])->name('create');
+            Route::post('/', [DosenRegisterController::class, 'store'])->name('store');
         });
 
-        Route::prefix('tendik')->group(function () {
-            Route::get('/', [TendikRegisterController::class, 'create'])->name('tendik');
-            Route::post('/', [TendikRegisterController::class, 'store'])->name('tendik.store');
+        // Tendik
+        Route::prefix('tendik')->name('tendik.')->group(function () {
+            Route::get('/', [TendikRegisterController::class, 'create'])->name('create');
+            Route::post('/', [TendikRegisterController::class, 'store'])->name('store');
         });
     });
 });
 
-Route::view('/preview-reservasi', 'pasien.reservasi');
-Route::view('/preview-bukti', 'pasien.buktiReservasi');
-Route::view('/preview-riwayat', 'pasien.riwayat');
+// Authenticated User
 
-// Pasien
-Route::middleware(['auth'])->prefix('pasien')->name('pasien.')->group(function () {
+Route::middleware('auth')->prefix('pasien')->name('pasien.')->group(function () {
 
     // Beranda
     Route::get('/beranda', [BerandaController::class, 'index'])->name('beranda');
 
     // Reservasi
-    Route::get('/reservasi', [ReservasiController::class, 'index'])->name('reservasi'); 
+    Route::get('/reservasi', [ReservasiController::class, 'index'])->name('reservasi');
+    Route::post('/reservasi', [ReservasiController::class, 'store'])->name('reservasi.store');
+
     Route::get('/bukti-reservasi', function () {
         return view('pasien.buktiReservasi');
     })->name('bukti');
+
     Route::get('/riwayat', [ReservasiController::class, 'riwayat'])->name('riwayat');
 
     // Jadwal
@@ -70,20 +88,18 @@ Route::middleware(['auth'])->prefix('pasien')->name('pasien.')->group(function (
     Route::get('/dokter', [DokterController::class, 'index'])->name('dokter.index');
 
     // Penilaian
-    Route::get('/penilaian/{reservasi}', [PenilaianController::class, 'create'])->name('penilaian.create');
-    Route::post('/penilaian', [PenilaianController::class, 'store'])->name('penilaian.store');
+    Route::get('/penilaian/{reservasi}', [PenilaianController::class, 'create'])
+        ->name('penilaian.create');
+
+    Route::post('/penilaian', [PenilaianController::class, 'store'])
+        ->name('penilaian.store');
 
     // Profil
-    Route::get('/profil', [ProfilController::class, 'show'])->name('profil.show');
-    Route::get('/profil/edit', [ProfilController::class, 'edit'])->name('profil.edit');
-    Route::put('/profil', [ProfilController::class, 'update'])->name('profil.update');
+    Route::prefix('profil')->name('profil.')->group(function () {
+        Route::get('/', [ProfilController::class, 'show'])->name('show');
+        Route::get('/edit', [ProfilController::class, 'edit'])->name('edit');
+        Route::put('/', [ProfilController::class, 'update'])->name('update');
+    });
 });
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
-// Coba
-Route::get('/beranda', [BerandaController::class, 'index'])->name('beranda');
-Route::get('/dokter', [DokterController::class, 'index'])->name('dokter.index');
-Route::get('/penilaian', [PenilaianController::class, 'index'])->name('penilaian.index');
-Route::get('/profil', [ProfilController::class, 'show'])->name('profil.show');
-Route::get('/profil/edit', [ProfilController::class, 'edit'])->name('profil.edit');

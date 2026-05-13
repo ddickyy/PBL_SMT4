@@ -3,140 +3,122 @@
 @section('title', 'Beri Penilaian')
 
 @section('hero')
-
 @include('partial.hero', [
     'badge' => 'Layanan Kesehatan Kampus',
     'title' => 'Penilaian <br><span style="color:#facc15;">Konsultasi Medis</span>',
-    'desc' => 'Berikan ulasan objektif mengenai layanan yang Anda terima dari dokter kami. Partisipasi Anda dalam mengisi survei kepuasan ini sangat membantu dalam memantau kualitas layanan kesehatan di poliklinik.',
+    'desc' => 'Berikan ulasan objektif mengenai layanan yang Anda terima dari dokter kami. Partisipasi Anda sangat membantu dalam meningkatkan kualitas layanan kesehatan poliklinik.',
     'buttonText' => null,
     'bg' => asset('images/poliklinik.jpg')
 ])
-
 @endsection
 
 @section('content')
 
 <section class="penilaian-page">
-
     <div class="penilaian-container">
-
-        {{-- ALERT SUCCESS --}}
         @if(session('success'))
-
             <div class="alert-success">
-
                 <i class="fa-solid fa-circle-check"></i>
-
-                <span>
-                    {{ session('success') }}
-                </span>
-
+                <span>{{ session('success') }}</span>
             </div>
-
         @endif
 
-        {{-- ALERT ERROR --}}
         @if($errors->any())
-
             <div class="alert-error">
-
                 <i class="fa-solid fa-circle-exclamation"></i>
-
                 <div>
-
-                    <strong>
-                        Terjadi kesalahan:
-                    </strong>
-
+                    <strong>Terjadi kesalahan:</strong>
                     <ul>
-
                         @foreach($errors->all() as $error)
-
                             <li>{{ $error }}</li>
-
                         @endforeach
-
                     </ul>
+                </div>
+            </div>
+        @endif
 
+        @if(isset($reservasi))
+            <div class="reservation-info">
+                <div class="reservation-header">
+                    <div class="doctor-avatar">
+                        @if(optional(optional($reservasi->jadwal)->dokter->user)->foto)
+                            <img src="{{ asset('storage/' . $reservasi->jadwal->dokter->user->foto) }}"
+                                 alt="Foto Dokter">
+                        @else
+                            {{ strtoupper(substr(optional(optional($reservasi->jadwal)->dokter->user)->nama ?? 'D', 0, 1)) }}
+                        @endif
+                    </div>
+
+                    <div>
+                        <h3>{{ optional(optional($reservasi->jadwal)->dokter->user)->nama ?? 'Dokter' }}</h3>
+                        <p>{{ optional(optional($reservasi->jadwal)->dokter)->spesialisasi->nama_spesialisasi ?? '-' }}</p>
+                    </div>
                 </div>
 
-            </div>
+                <div class="reservation-detail">
+                    <div class="detail-item">
+                        <span>Tanggal Reservasi</span>
+                        <strong>
+                            {{ \Carbon\Carbon::parse($reservasi->tanggal_reservasi)->translatedFormat('d F Y') }}
+                        </strong>
+                    </div>
 
+                    <div class="detail-item">
+                        <span>Nomor Antrian</span>
+                        <strong>#{{ $reservasi->nomor_antrian }}</strong>
+                    </div>
+
+                    <div class="detail-item">
+                        <span>Status</span>
+                        <strong class="status-badge">
+                            {{ ucfirst($reservasi->status) }}
+                        </strong>
+                    </div>
+                </div>
+            </div>
         @endif
 
-        {{-- FORM --}}
         <div class="penilaian-card">
-
-            <form
-                action="{{ route('pasien.penilaian.store') }}"
-                method="POST"
-            >
-
+            <form action="{{ route('pasien.penilaian.store') }}"
+                  method="POST">
                 @csrf
 
-                {{-- RESERVASI --}}
-                @if(isset($reservasi) && optional($reservasi)->id)
-
-                    <input
-                        type="hidden"
-                        name="reservasi_id"
-                        value="{{ $reservasi->id }}"
-                    >
-
+                @if(isset($reservasi) && $reservasi->id_reservasi)
+                    <input type="hidden"
+                           name="id_reservasi"
+                           value="{{ $reservasi->id_reservasi }}">
                 @endif
 
-                {{-- KRITIK --}}
                 <div class="form-group">
-
                     <label for="kritik">
                         KRITIK
                     </label>
 
-                    <textarea
-                        id="kritik"
-                        name="kritik"
-                        placeholder="Apa yang perlu kami perbaiki hari ini?"
-                    >{{ old('kritik') }}</textarea>
-
+                    <textarea id="kritik"
+                              name="kritik"
+                              placeholder="Apa yang perlu kami perbaiki hari ini?">{{ old('kritik') }}</textarea>
                 </div>
 
-                {{-- SARAN --}}
                 <div class="form-group">
-
                     <label for="saran">
                         SARAN
                     </label>
-
-                    <textarea
-                        id="saran"
-                        name="saran"
-                        placeholder="Ide atau harapan Anda untuk layanan kami ke depan..."
-                    >{{ old('saran') }}</textarea>
-
+                    <textarea id="saran"
+                              name="saran"
+                              placeholder="Ide atau harapan Anda untuk layanan kami ke depan...">{{ old('saran') }}</textarea>
                 </div>
 
-                {{-- BUTTON --}}
-                <button
-                    type="submit"
-                    class="btn-submit"
-                >
-
+                <button type="submit"
+                        class="btn-submit">
                     <i class="fa-solid fa-paper-plane"></i>
-
                     Kirim Penilaian
-
                 </button>
-
             </form>
-
         </div>
-
     </div>
-
 </section>
 
 <style>
-
     * {
         box-sizing: border-box;
     }
@@ -180,12 +162,91 @@
         padding-left: 18px;
     }
 
+    .reservation-info {
+        background: white;
+        border-radius: 28px;
+        padding: 28px;
+        margin-bottom: 24px;
+        box-shadow: 0 20px 40px rgba(15, 23, 42, 0.06);
+    }
+
+    .reservation-header {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        margin-bottom: 24px;
+    }
+
+    .doctor-avatar {
+        width: 72px;
+        height: 72px;
+        border-radius: 18px;
+        background: #102b57;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 24px;
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+
+    .doctor-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .reservation-header h3 {
+        margin: 0 0 4px;
+        color: #102b57;
+        font-size: 24px;
+        font-weight: 900;
+    }
+
+    .reservation-header p {
+        margin: 0;
+        color: #64748b;
+    }
+
+    .reservation-detail {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+    }
+
+    .detail-item {
+        background: #f8fafc;
+        border-radius: 16px;
+        padding: 18px;
+    }
+
+    .detail-item span {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 12px;
+        color: #64748b;
+        font-weight: 700;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+    }
+
+    .detail-item strong {
+        color: #102b57;
+        font-size: 16px;
+        font-weight: 800;
+    }
+
+    .status-badge {
+        color: #1d4ed8 !important;
+    }
+
     .penilaian-card {
         background: white;
         border-radius: 28px;
         padding: 34px;
         box-shadow: 0 20px 40px rgba(15, 23, 42, 0.06);
-        margin-bottom: 40px;
     }
 
     .form-group {
@@ -248,46 +309,28 @@
         transform: translateY(-2px);
     }
 
-    .section-heading {
-        margin-bottom: 24px;
-    }
-
-    .section-heading h2 {
-        margin: 0 0 8px;
-        font-size: 32px;
-        font-weight: 900;
-        color: #102b57;
-    }
-
-    .section-heading p {
-        margin: 0;
-        color: #64748b;
-    }
-
     @media (max-width: 768px) {
 
         .penilaian-page {
             padding: 20px 14px 60px;
         }
 
-        .penilaian-card {
-            padding: 24px;
+        .penilaian-container {
+            padding: 0;
         }
 
-        .section-heading h2 {
-            font-size: 26px;
+        .reservation-detail {
+            grid-template-columns: 1fr;
         }
 
-        .history-card {
-            padding: 22px;
-        }
-
-        .history-top {
+        .reservation-header {
             align-items: flex-start;
         }
 
+        .penilaian-card,
+        .reservation-info {
+            padding: 24px;
+        }
     }
-
 </style>
-
 @endsection
