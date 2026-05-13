@@ -26,7 +26,7 @@ class DosenResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'user.nama';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Personalitas';
+    protected static string|\UnitEnum|null $navigationGroup = 'Pasien';
 
     protected static ?string $navigationLabel = 'Dosen';
 

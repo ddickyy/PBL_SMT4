@@ -41,6 +41,7 @@ class JadwalDoktersTable
                     ->time()
                     ->sortable(),
                 TextColumn::make('durasi_menit')
+                    ->label('Durasi per sesi (menit)')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('created_at')

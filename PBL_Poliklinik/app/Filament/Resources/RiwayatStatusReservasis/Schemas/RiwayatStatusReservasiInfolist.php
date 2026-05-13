@@ -20,7 +20,6 @@ class RiwayatStatusReservasiInfolist
                     ->description('Informasi utama mengenai riwayat status reservasi.')
                     ->schema([
 
-                        // ROW 1
                         Section::make('Data Reservasi')
                             ->icon('heroicon-o-information-circle')
                             ->compact()
@@ -73,7 +72,6 @@ class RiwayatStatusReservasiInfolist
                             ])
                             ->columnSpan(1),
 
-                        // FULL WIDTH
                         Section::make('Data Rekam Medis')
                             ->icon('heroicon-o-document-text')
                             ->collapsible()
@@ -81,15 +79,18 @@ class RiwayatStatusReservasiInfolist
 
                                 TextEntry::make('reservasi.rekamMedis.tanggal_periksa')
                                     ->label('Tanggal Periksa')
+                                    ->placeholder('-')
                                     ->date('d F Y'),
 
                                 TextEntry::make('reservasi.rekamMedis.diagnosis')
                                     ->label('Diagnosis')
                                     ->markdown()
+                                    ->placeholder('-')
                                     ->columnSpanFull(),
 
                                 TextEntry::make('reservasi.rekamMedis.catatan')
                                     ->label('Catatan Tambahan')
+                                    ->placeholder('-')
                                     ->markdown()
                                     ->columnSpanFull(),
                             ])
@@ -103,16 +104,17 @@ class RiwayatStatusReservasiInfolist
                             ->schema([
                                 TextEntry::make('reservasi.penilaian.kritik')
                                     ->label('Kritik')
+                                    ->placeholder('-')
                                     ->markdown(),
 
                                 TextEntry::make('reservasi.penilaian.saran')
                                     ->label('Saran')
+                                    ->placeholder('-')
                                     ->markdown(),
                             ])
                             ->columns(2)
                             ->columnSpanFull(),
 
-                        // LAST ROW
                         Section::make('Riwayat Status')
                             ->icon('heroicon-o-clock')
                             ->compact()

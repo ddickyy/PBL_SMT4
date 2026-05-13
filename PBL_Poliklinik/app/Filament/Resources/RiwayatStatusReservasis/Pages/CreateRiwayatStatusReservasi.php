@@ -13,4 +13,13 @@ class CreateRiwayatStatusReservasi extends CreateRecord
     {
         return $this->getResource()::getUrl('view', ['record' => $this->record]);
     }
+
+    protected function afterCreate(): void
+    {
+        $reservasi = $this->record->reservasi;
+
+        $reservasi->update([
+            'status' => $this->record->status_baru,
+        ]);
+    }
 }

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Reservasis\Schemas;
 
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
@@ -37,7 +38,7 @@ class ReservasiForm
                             ->label('Tanggal Reservasi')
                             ->required(),
 
-                        TextInput::make('nomor_antrian')
+                        Hidden::make('nomor_antrian')
                             ->disabled()
                             ->dehydrated(false),
 

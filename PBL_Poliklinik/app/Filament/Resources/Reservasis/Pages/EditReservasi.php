@@ -12,6 +12,11 @@ class EditReservasi extends EditRecord
 {
     protected static string $resource = ReservasiResource::class;
 
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('view', ['record' => $this->record]);
+    }
+
     protected function getHeaderActions(): array
     {
         return [

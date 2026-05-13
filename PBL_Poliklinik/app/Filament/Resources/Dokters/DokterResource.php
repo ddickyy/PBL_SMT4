@@ -26,7 +26,7 @@ class DokterResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'user.nama';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Personalitas';
+    protected static string|\UnitEnum|null $navigationGroup = 'Pengelola';
 
     protected static ?string $navigationLabel = 'Dokter';
 

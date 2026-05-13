@@ -8,6 +8,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use App\Models\Dokter;
+use Carbon\Carbon;
 
 class RekamMedisForm
 {
@@ -21,10 +22,21 @@ class RekamMedisForm
                     ->schema([
                         Select::make('id_reservasi')
                             ->label('Reservasi')
-                            ->relationship('reservasi', 'id_reservasi')
-                            ->required()
+                            ->options(
+                                \App\Models\Reservasi::with('user')
+                                    ->get()
+                                    ->mapWithKeys(fn ($reservasi) => [
+                                        $reservasi->id_reservasi =>
+                                            'Antrian #' . $reservasi->nomor_antrian .
+                                            ' - ' .
+                                            Carbon::parse($reservasi->tanggal_reservasi)->format('d F Y') .
+                                            ' - ' .
+                                            $reservasi->user->nama
+                                    ])
+                            )
                             ->searchable()
-                            ->preload(),
+                            ->preload()
+                            ->required(),
 
                         Select::make('id_dokter')
                             ->label('Dokter')

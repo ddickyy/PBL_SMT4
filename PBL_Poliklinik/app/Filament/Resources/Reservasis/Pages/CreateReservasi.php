@@ -8,4 +8,9 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateReservasi extends CreateRecord
 {
     protected static string $resource = ReservasiResource::class;
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('view', ['record' => $this->record]);
+    }
 }
