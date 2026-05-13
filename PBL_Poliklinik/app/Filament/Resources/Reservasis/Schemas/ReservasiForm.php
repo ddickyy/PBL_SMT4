@@ -38,10 +38,8 @@ class ReservasiForm
                             ->required(),
 
                         TextInput::make('nomor_antrian')
-                            ->label('Nomor Antrian')
-                            ->numeric()
-                            ->required()
-                            ->minValue(1),
+                            ->disabled()
+                            ->dehydrated(false),
 
                         TimePicker::make('estimasi_jam')
                             ->label('Estimasi Jam')
@@ -51,9 +49,9 @@ class ReservasiForm
                             ->label('Status')
                             ->options([
                                 'pending' => 'Pending',
-                                'confirmed' => 'Confirmed',
-                                'completed' => 'Completed',
-                                'cancelled' => 'Cancelled',
+                                'dikonfirmasi' => 'Dikonfirmasi',
+                                'selesai' => 'Selesai',
+                                'dibatalkan' => 'Dibatalkan'
                             ])
                             ->required()
                             ->searchable(),

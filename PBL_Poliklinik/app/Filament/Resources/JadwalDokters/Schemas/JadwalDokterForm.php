@@ -54,7 +54,8 @@ class JadwalDokterForm
                             ->required(),
 
                         TextInput::make('durasi_menit')
-                            ->label('Durasi Menit')
+                            ->label('Durasi per sesi (menit)')
+                            ->placeholder('Masukkan estimasi durasi per sesi (menit)')
                             ->numeric()
                             ->required()
                             ->minValue(1)

@@ -22,15 +22,20 @@ class RekamMedisInfolist
                     ->schema([
 
                         Group::make([
-
                             TextEntry::make('reservasi.id_reservasi')
                                 ->label('ID Reservasi')
                                 ->badge()
                                 ->color('primary')
                                 ->placeholder('-'),
 
+                            TextEntry::make('reservasi.user.nama')
+                                ->label('Pasien')
+                                ->badge()
+                                ->color('success')
+                                ->placeholder('-'),
+
                             TextEntry::make('dokter.user.nama')
-                                ->label('Dokter Pemeriksa')
+                                ->label('Dokter')
                                 ->badge()
                                 ->color('success')
                                 ->placeholder('-'),
@@ -57,13 +62,6 @@ class RekamMedisInfolist
                         ->columnSpan(2),
 
                         Group::make([
-
-                            IconEntry::make('reservasi.status')
-                                ->label('Status Reservasi')
-                                ->boolean()
-                                ->trueIcon('heroicon-o-check-circle')
-                                ->falseIcon('heroicon-o-x-circle'),
-
                             TextEntry::make('created_at')
                                 ->label('Tanggal Dibuat')
                                 ->dateTime('d F Y, H:i')

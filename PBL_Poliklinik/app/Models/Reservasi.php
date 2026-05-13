@@ -53,4 +53,17 @@ class Reservasi extends Model
     {
         return $this->hasOne(Penilaian::class, 'id_reservasi');
     }
+
+    protected static function booted()
+    {
+        static::creating(function ($reservasi) {
+
+            $lastQueue = self::whereDate(
+                'tanggal_reservasi',
+                $reservasi->tanggal_reservasi
+            )->max('nomor_antrian');
+
+            $reservasi->nomor_antrian = ($lastQueue ?? 0) + 1;
+        });
+    }
 }

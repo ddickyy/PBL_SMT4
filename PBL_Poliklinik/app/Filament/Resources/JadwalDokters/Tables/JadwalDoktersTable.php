@@ -20,7 +20,7 @@ class JadwalDoktersTable
     {
         return $table
             ->columns([
-                TextColumn::make('id')
+                TextColumn::make('id_jadwal')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('id_dokter')
@@ -28,6 +28,7 @@ class JadwalDoktersTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('dokter.user.nama')
+                    ->label('Dokter')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('hari')
