@@ -23,7 +23,7 @@ class DokterForm
                             ->required()
                             ->unique(ignoreRecord: true)
                             ->maxLength(50)
-                            ->helperText('NIM harus unik.'),
+                            ->helperText('SIP harus unik.'),
 
                         Select::make('id_user')
                             ->label('Pengguna')
