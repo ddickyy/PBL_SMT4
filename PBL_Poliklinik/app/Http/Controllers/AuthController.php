@@ -31,7 +31,7 @@ class AuthController extends Controller
 
                 // Dokter
                 case 3:
-                    return redirect()->route('dokter.dashboard');
+                    return redirect()->route('dokter.beranda');
 
                     // Pasien
                 case 4:

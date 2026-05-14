@@ -102,4 +102,19 @@ Route::middleware('auth')->prefix('pasien')->name('pasien.')->group(function () 
     });
 });
 
+Route::middleware('auth')->prefix('dokter')->name('dokter.')->group(function () {
+        Route::get('/beranda', [DokterController::class, 'beranda'])
+            ->name('beranda');
+        Route::get('/pasien', [DokterController::class, 'pasien'])
+            ->name('pasien');
+        Route::get('/pasien/{id}', [DokterController::class, 'detailPasien'])
+            ->name('pasien.detail');
+        Route::get('/riwayat', [DokterController::class, 'riwayat'])
+            ->name('riwayat');
+        Route::get('/profil', [DokterController::class, 'profil'])
+            ->name('profil');
+        Route::get('/profil/edit', [DokterController::class, 'editProfil'])
+            ->name('profil.edit');
+});
+
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

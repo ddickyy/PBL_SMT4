@@ -15,9 +15,13 @@
 
 <body>
 
-    @if(!isset($hideNavbar) || !$hideNavbar)
+    @if(auth()->check())
 
-        @include('partial.navbar')
+        @if(isset($dokterLayout) && $dokterLayout)
+            @include('partial.navbarDokter')
+        @else
+            @include('partial.navbar')
+        @endif
 
     @endif
 

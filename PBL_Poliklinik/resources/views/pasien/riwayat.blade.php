@@ -11,20 +11,6 @@
         'bg'         => asset('images/poliklinik.jpg')
     ])
 @endsection
-```blade id="k5v9ns"
-@extends('layout.app')
-
-@section('title', 'Riwayat Reservasi')
-
-@section('hero')
-@include('partial.hero', [
-    'badge' => 'Layanan Kesehatan',
-    'title' => "Riwayat\nReservasi",
-    'desc' => "Pantau status reservasi aktif Anda dan lihat riwayat kunjungan medis sebelumnya secara mudah.",
-    'buttonText' => null,
-    'bg' => asset('images/poliklinik.jpg')
-])
-@endsection
 
 @section('content')
 
@@ -205,8 +191,6 @@
         </div>
     </div>
 </div>
-
-@section('content')
 
 <style>
     main {
@@ -596,108 +580,5 @@
         }
     }
 </style>
-
-<div class="riwayat-wrap">
-
-    <div class="riwayat-section-block">
-
-        <div class="riwayat-section-header">
-            <h2 class="riwayat-section-title">Reservasi Aktif</h2>
-        </div>
-
-        <div class="aktif-card">
-
-            <div class="aktif-left">
-                <span class="status-badge badge-dikonfirmasi">
-                    <span class="status-badge-dot"></span>
-                    DIKONFIRMASI
-                </span>
-                <h3 class="aktif-layanan">Pemeriksaan Gigi</h3>
-                <p class="aktif-dokter">Dr. Nathanial</p>
-
-                <div class="aktif-info-row">
-                    <div class="aktif-info-item">
-                        <span class="aktif-info-label">Tanggal</span>
-                        <span class="aktif-info-value">23 Mei 2026</span>
-                    </div>
-                    <div class="aktif-info-item">
-                        <span class="aktif-info-label">Waktu</span>
-                        <span class="aktif-info-value">14.00 – 16.00</span>
-                    </div>
-                    <div class="aktif-info-item">
-                        <span class="aktif-info-label">Lokasi</span>
-                        <span class="aktif-info-value">Poliklinik Politeknik Negeri Malang</span>
-                    </div>
-                </div>
-
-                <div class="aktif-btn-row">
-                    <a href="#" class="btn-lihat-detail">
-                        Lihat Detail
-                    </a>
-                    <a href="{{ route('pasien.reservasi') }}" class="btn-ubah-jadwal">
-                        Mengubah Jadwal
-                    </a>
-                </div>
-
-            </div>
-
-            <div class="aktif-right">
-                <div class="antrian-label">NO. ANTRIAN</div>
-                <div class="antrian-num">G-02</div>
-            </div>
-
-        </div>
-    </div>
-
-    <div class="riwayat-section-block">
-
-        <div class="riwayat-section-header">
-            <div class="riwayat-section-meta">
-                <svg class="riwayat-section-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <h2 class="riwayat-section-title">Riwayat Kunjungan</h2>
-            </div>
-        </div>
-
-        <div class="riwayat-grid">
-
-            <div class="riwayat-card">
-                <div class="riwayat-card-top">
-                    <h4 class="riwayat-dokter-nama">Dokter Gigi</h4>
-                    <span class="status-badge badge-selesai">
-                        <span class="status-badge-dot"></span>
-                        SELESAI
-                    </span>
-                </div>
-                <p class="riwayat-desc">
-                    Layanan pembersihan karang gigi rutin dan pemeriksaan kondisi gigi secara menyeluruh.
-                </p>
-                <a href="{{ route('pasien.penilaian.create', 1) }}" class="btn-penilaian">
-                    BERIKAN PENILAIAN
-                </a>
-            </div>
-
-            <div class="riwayat-card">
-                <div class="riwayat-card-top">
-                    <h4 class="riwayat-dokter-nama">Dokter Umum</h4>
-                    <span class="status-badge badge-batal">
-                        <span class="status-badge-dot"></span>
-                        BATAL
-                    </span>
-                </div>
-                <p class="riwayat-desc">
-                    Melakukan pemeriksaan kesehatan rutin dan medical check-up dasar yang dibatalkan.
-                </p>
-                <a href="{{ route('pasien.reservasi') }}" class="btn-reschedule">
-                    RESCHEDULE
-                </a>
-            </div>
-
-        </div>
-    </div>
-
-</div>
 
 @endsection
