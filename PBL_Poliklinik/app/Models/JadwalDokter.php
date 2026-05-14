@@ -22,8 +22,6 @@ class JadwalDokter extends Model
     ];
 
     protected $casts = [
-        'jam_mulai' => 'datetime:H:i:s',
-        'jam_selesai' => 'datetime:H:i:s',
         'aktif' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',

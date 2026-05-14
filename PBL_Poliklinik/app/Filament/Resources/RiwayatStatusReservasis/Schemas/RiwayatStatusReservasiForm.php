@@ -23,7 +23,7 @@ class RiwayatStatusReservasiForm
                     ->description('Masukkan informasi riwayat status reservasi.')
                     ->schema([
                         Select::make('id_reservasi')
-                            ->label('ID Reservasi')
+                            ->label('Reservasi Hari Ini')
                             ->options(
                                 \App\Models\Reservasi::with('user')
                                     ->whereDate('tanggal_reservasi', today())
@@ -61,7 +61,15 @@ class RiwayatStatusReservasiForm
                                 'dibatalkan' => 'Dibatalkan'
                             ])
                             ->required()
-                            ->searchable(),
+                            ->searchable()
+                            ->rule(function (Get $get) {
+                                return function (string $attribute, $value, \Closure $fail) use ($get) {
+
+                                    if ($value === $get('status_lama')) {
+                                        $fail('Status baru tidak boleh sama dengan status lama.');
+                                    }
+                                };
+                            }),
 
                         Textarea::make('keterangan')
                             ->label('Keterangan')

@@ -67,9 +67,9 @@ class RiwayatStatusReservasiResource extends Resource
     {
         return [
             'index' => ListRiwayatStatusReservasis::route('/'),
-            'create' => CreateRiwayatStatusReservasi::route('/create'),
+            // 'create' => CreateRiwayatStatusReservasi::route('/create'),
             'view' => ViewRiwayatStatusReservasi::route('/{record}'),
-            'edit' => EditRiwayatStatusReservasi::route('/{record}/edit'),
+            // 'edit' => EditRiwayatStatusReservasi::route('/{record}/edit'),
         ];
     }
 

@@ -9,6 +9,8 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use App\Models\Dokter;
 use Carbon\Carbon;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Forms\Components\Hidden;
 
 class RekamMedisForm
 {
@@ -24,30 +26,36 @@ class RekamMedisForm
                             ->label('Reservasi')
                             ->options(
                                 \App\Models\Reservasi::with('user')
+                                    ->orderByDesc('tanggal_reservasi')
+                                    ->orderByDesc('nomor_antrian')
                                     ->get()
                                     ->mapWithKeys(fn ($reservasi) => [
                                         $reservasi->id_reservasi =>
                                             'Antrian #' . $reservasi->nomor_antrian .
                                             ' - ' .
-                                            Carbon::parse($reservasi->tanggal_reservasi)->format('d F Y') .
+                                            Carbon::parse($reservasi->tanggal_reservasi)
+                                                ->format('d F Y') .
                                             ' - ' .
                                             $reservasi->user->nama
                                     ])
                             )
                             ->searchable()
                             ->preload()
-                            ->required(),
+                            ->required()
 
-                        Select::make('id_dokter')
-                            ->label('Dokter')
-                            ->options(
-                                Dokter::with('user')
-                                    ->get()
-                                    ->pluck('user.nama', 'id_dokter')
-                            )
-                            ->searchable()
-                            ->preload()
-                            ->required(),
+                            ->afterStateUpdated(function ($state, Set $set) {
+
+                                $reservasi = \App\Models\Reservasi::with(
+                                    'jadwal.dokter'
+                                )->find($state);
+
+                                $set(
+                                    'id_dokter',
+                                    $reservasi?->jadwal?->dokter?->id_dokter
+                                );
+                            }),
+
+                        Hidden::make('id_dokter'),
 
                         Textarea::make('diagnosis')
                             ->label('Diagnosis')

@@ -41,15 +41,15 @@ class RiwayatStatusReservasisTable
                     ->label('Tanggal Periksa')
                     ->date()
                     ->sortable(),
+                TextColumn::make('status_lama')
+                    ->label('Status Lama')
+                    ->sortable(),
                 TextColumn::make('status_baru')
                     ->label('Status Baru')
                     ->sortable(),
                 TextColumn::make('diubah_oleh')
                     ->numeric()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('status_baru')
-                    ->badge()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->dateTime()
@@ -77,7 +77,7 @@ class RiwayatStatusReservasisTable
             ])
             ->recordActions([
                 ViewAction::make(),
-                EditAction::make(),
+                // EditAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

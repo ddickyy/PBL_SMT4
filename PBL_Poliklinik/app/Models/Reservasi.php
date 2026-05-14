@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
+use App\Models\RiwayatStatusReservasi;
 
 class Reservasi extends Model
 {
@@ -64,6 +66,42 @@ class Reservasi extends Model
             )->max('nomor_antrian');
 
             $reservasi->nomor_antrian = ($lastQueue ?? 0) + 1;
+        });
+
+        static::updating(function ($reservasi) {
+
+            if ($reservasi->isDirty('status')) {
+
+                $statusBaru = $reservasi->status;
+
+                if (in_array($statusBaru, ['selesai', 'dibatalkan'])) {
+
+                    $sudahAdaRiwayat = RiwayatStatusReservasi::where(
+                        'id_reservasi',
+                        $reservasi->id_reservasi
+                    )->exists();
+
+                    if (! $sudahAdaRiwayat) {
+
+                        RiwayatStatusReservasi::create([
+
+                            'id_reservasi' => $reservasi->id_reservasi,
+
+                            'status_lama' => $reservasi->getOriginal('status'),
+
+                            'status_baru' => $statusBaru,
+
+                            'keterangan' =>
+                                'Status reservasi berubah dari ' .
+                                $reservasi->getOriginal('status') .
+                                ' menjadi ' .
+                                $statusBaru,
+
+                            'diubah_oleh' => Auth::user()?->id_user,
+                        ]);
+                    }
+                }
+            }
         });
     }
 }

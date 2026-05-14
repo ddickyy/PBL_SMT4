@@ -72,6 +72,49 @@ class RiwayatStatusReservasiInfolist
                             ])
                             ->columnSpan(1),
 
+                        Section::make('Informasi Pasien')
+                            ->icon('heroicon-o-user')
+                            ->compact()
+                            ->schema([
+
+                                TextEntry::make('reservasi.user.nama')
+                                    ->label('Nama Pasien')
+                                    ->badge()
+                                    ->color('primary'),
+
+                                TextEntry::make('reservasi.user.jenis_pasien')
+                                    ->label('Jenis Pasien')
+                                    ->badge()
+                                    ->color('info'),
+
+                                TextEntry::make('reservasi.user.identitas')
+                                    ->label(function ($record) {
+
+                                        if ($record->reservasi->user->mahasiswa) {
+                                            return 'NIM';
+                                        }
+
+                                        if ($record->reservasi->user->dosen) {
+                                            return 'NIDN';
+                                        }
+
+                                        if ($record->reservasi->user->tendik) {
+                                            return 'NIP';
+                                        }
+
+                                        return 'Identitas';
+                                    })
+                                    ->badge()
+                                    ->color('gray'),
+
+                                TextEntry::make('reservasi.user.email')
+                                    ->label('Email')
+                                    ->icon('heroicon-o-envelope'),
+                            ])
+                            ->columns(2)
+                            ->columnSpanFull(),
+
+
                         Section::make('Data Rekam Medis')
                             ->icon('heroicon-o-document-text')
                             ->collapsible()
@@ -120,7 +163,7 @@ class RiwayatStatusReservasiInfolist
                             ->compact()
                             ->schema([
 
-                                TextEntry::make('reservasi.status')
+                                TextEntry::make('status_lama')
                                     ->label('Status Lama')
                                     ->badge(),
 
@@ -139,9 +182,14 @@ class RiwayatStatusReservasiInfolist
                             ->compact()
                             ->schema([
 
-                                TextEntry::make('diubah_oleh')
+                                TextEntry::make('user.nama')
                                     ->label('Diubah Oleh')
                                     ->numeric(),
+
+                                TextEntry::make('keterangan')
+                                    ->label('Keterangan')
+                                    ->markdown()
+                                    ->placeholder('-'),
                             ])
                             ->columnSpan(1),
 

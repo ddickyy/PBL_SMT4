@@ -60,6 +60,10 @@ class JadwalDokterForm
                             ->required()
                             ->minValue(1)
                             ->maxValue(1440),
+
+                        Toggle::make('aktif')
+                            ->label('Aktif')
+                            ->default(true),
                     ])
                     ->columnSpanFull(),
             ]);

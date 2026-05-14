@@ -9,6 +9,9 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Closure;
+use Carbon\Carbon;
+use Filament\Schemas\Components\Utilities\Get;
 
 class ReservasiForm
 {
@@ -21,7 +24,7 @@ class ReservasiForm
                     ->description('Masukkan informasi reservasi.')
                     ->schema([
                         Select::make('id_user')
-                            ->label('Pengguna')
+                            ->label('Pasien')
                             ->relationship('user', 'nama')
                             ->required()
                             ->searchable()
@@ -29,14 +32,65 @@ class ReservasiForm
 
                         Select::make('id_jadwal')
                             ->label('Jadwal Dokter')
-                            ->relationship('jadwal', 'hari')
-                            ->required()
+                            ->options(
+
+                                \App\Models\JadwalDokter::with('dokter.user')
+                                    ->where('aktif', true)
+                                    ->get()
+                                    ->mapWithKeys(function ($jadwal) {
+
+                                        return [
+                                            $jadwal->id_jadwal =>
+
+                                                $jadwal->dokter->user->nama .
+                                                ' - ' .
+                                                $jadwal->hari .
+                                                ' (' .
+                                                $jadwal->jam_mulai .
+                                                ' - ' .
+                                                $jadwal->jam_selesai .
+                                                ')'
+                                        ];
+                                    })
+
+                            )
                             ->searchable()
-                            ->preload(),
+                            ->preload()
+                            ->required(),
 
                         DatePicker::make('tanggal_reservasi')
                             ->label('Tanggal Reservasi')
-                            ->required(),
+                            ->required()
+                            ->rule(function (Get $get) {
+
+                                return function (
+                                    string $attribute,
+                                    $value,
+                                    Closure $fail
+                                ) use ($get) {
+
+                                    $jadwal = \App\Models\JadwalDokter::find(
+                                        $get('id_jadwal')
+                                    );
+
+                                    if (! $jadwal) {
+                                        return;
+                                    }
+
+                                    $hariInput = Carbon::parse($value)
+                                        ->locale('id')
+                                        ->dayName;
+
+                                    $hariInput = ucfirst($hariInput);
+
+                                    if ($hariInput !== $jadwal->hari) {
+
+                                        $fail(
+                                            'Tanggal reservasi harus sesuai dengan hari jadwal dokter.'
+                                        );
+                                    }
+                                };
+                            }),
 
                         Hidden::make('nomor_antrian')
                             ->disabled()
@@ -44,7 +98,36 @@ class ReservasiForm
 
                         TimePicker::make('estimasi_jam')
                             ->label('Estimasi Jam')
-                            ->required(),
+                            ->required()
+                            ->rule(function (Get $get) {
+
+                                return function (
+                                    string $attribute,
+                                    $value,
+                                    Closure $fail
+                                ) use ($get) {
+
+                                    $jadwal = \App\Models\JadwalDokter::find(
+                                        $get('id_jadwal')
+                                    );
+
+                                    if (! $jadwal) {
+                                        return;
+                                    }
+
+                                    $jamInput = Carbon::parse($value)->format('H:i:s');
+
+                                    if (
+                                        $jamInput < $jadwal->jam_mulai ||
+                                        $jamInput > $jadwal->jam_selesai
+                                    ) {
+
+                                        $fail(
+                                            'Jam reservasi harus sesuai jadwal praktik dokter.'
+                                        );
+                                    }
+                                };
+                            }),
 
                         Select::make('status')
                             ->label('Status')

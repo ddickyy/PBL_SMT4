@@ -94,13 +94,13 @@ class RekamMedisTable
                                     $query->whereDate('tanggal_periksa', '<=', $date),
                             );
                     }),
-                    
+
                 TrashedFilter::make(),
             ])
             ->recordActions([
                 ViewAction::make(),
-                EditAction::make(),
-                DeleteAction::make(),
+                // EditAction::make(),
+                // DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
