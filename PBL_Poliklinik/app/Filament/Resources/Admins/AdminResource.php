@@ -17,6 +17,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class AdminResource extends Resource
 {
@@ -26,7 +27,7 @@ class AdminResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'user.nama';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Personalitas';
+    protected static string|\UnitEnum|null $navigationGroup = 'Pengelola';
 
     protected static ?string $navigationLabel = 'Admin';
 
@@ -78,5 +79,15 @@ class AdminResource extends Resource
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);
+    }
+
+    public static function canAccess(): bool
+    {
+        return Auth::check() && Auth::user()->role->nama_role === 'superadmin';
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return static::canAccess();
     }
 }

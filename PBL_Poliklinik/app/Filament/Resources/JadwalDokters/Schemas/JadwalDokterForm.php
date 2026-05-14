@@ -54,11 +54,16 @@ class JadwalDokterForm
                             ->required(),
 
                         TextInput::make('durasi_menit')
-                            ->label('Durasi Menit')
+                            ->label('Durasi per sesi (menit)')
+                            ->placeholder('Masukkan estimasi durasi per sesi (menit)')
                             ->numeric()
                             ->required()
                             ->minValue(1)
                             ->maxValue(1440),
+
+                        Toggle::make('aktif')
+                            ->label('Aktif')
+                            ->default(true),
                     ])
                     ->columnSpanFull(),
             ]);

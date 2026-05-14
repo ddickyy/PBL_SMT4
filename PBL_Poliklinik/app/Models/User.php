@@ -75,4 +75,38 @@ class User extends Authenticatable
     {
         return $this->nama;
     }
+
+    public function getJenisPasienAttribute()
+    {
+        if ($this->mahasiswa) {
+            return 'Mahasiswa';
+        }
+
+        if ($this->dosen) {
+            return 'Dosen';
+        }
+
+        if ($this->tendik) {
+            return 'Tendik';
+        }
+
+        return '-';
+    }
+
+    public function getIdentitasAttribute()
+    {
+        if ($this->mahasiswa) {
+            return $this->mahasiswa->nim;
+        }
+
+        if ($this->dosen) {
+            return $this->dosen->nidn;
+        }
+
+        if ($this->tendik) {
+            return $this->tendik->nip;
+        }
+
+        return '-';
+    }
 }

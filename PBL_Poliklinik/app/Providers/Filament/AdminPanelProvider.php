@@ -29,7 +29,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
 
-            ->brandName('StayAlive')
+            ->brandName('Poliklinik Polinema')
             // ->brandLogo(asset('images/StayAlive.jpg'))
 
             ->colors([

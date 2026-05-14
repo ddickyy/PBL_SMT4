@@ -15,54 +15,104 @@ class RekamMedisInfolist
     {
         return $schema
             ->components([
-
                 Section::make('Informasi Rekam Medis')
                     ->icon('heroicon-o-document-text')
                     ->description('Informasi utama mengenai rekam medis pasien.')
                     ->schema([
 
-                        Group::make([
+                    Group::make([
 
-                            TextEntry::make('reservasi.id_reservasi')
-                                ->label('ID Reservasi')
-                                ->badge()
-                                ->color('primary')
-                                ->placeholder('-'),
+                        Section::make('Informasi Rekam Medis')
+                            ->icon('heroicon-o-document-text')
+                            ->compact()
+                            ->schema([
 
-                            TextEntry::make('dokter.user.nama')
-                                ->label('Dokter Pemeriksa')
-                                ->badge()
-                                ->color('success')
-                                ->placeholder('-'),
+                                TextEntry::make('reservasi.id_reservasi')
+                                    ->label('ID Reservasi')
+                                    ->badge()
+                                    ->color('primary')
+                                    ->placeholder('-'),
 
-                            TextEntry::make('tanggal_periksa')
-                                ->label('Tanggal Periksa')
-                                ->date('d F Y')
-                                ->icon('heroicon-o-calendar-days')
-                                ->placeholder('-'),
+                                TextEntry::make('dokter.user.nama')
+                                    ->label('Dokter')
+                                    ->badge()
+                                    ->color('success')
+                                    ->placeholder('-'),
 
-                            TextEntry::make('diagnosis')
-                                ->label('Diagnosis')
-                                ->markdown()
-                                ->placeholder('Tidak ada diagnosis.')
-                                ->columnSpanFull(),
+                                TextEntry::make('tanggal_periksa')
+                                    ->label('Tanggal Periksa')
+                                    ->date('d F Y')
+                                    ->icon('heroicon-o-calendar-days')
+                                    ->placeholder('-'),
 
-                            TextEntry::make('catatan')
-                                ->label('Catatan')
-                                ->markdown()
-                                ->placeholder('Tidak ada catatan tambahan.')
-                                ->columnSpanFull(),
+                                TextEntry::make('diagnosis')
+                                    ->label('Diagnosis')
+                                    ->markdown()
+                                    ->placeholder('Tidak ada diagnosis.')
+                                    ->columnSpanFull(),
 
-                        ])
-                        ->columnSpan(2),
+                                TextEntry::make('catatan')
+                                    ->label('Catatan')
+                                    ->markdown()
+                                    ->placeholder('Tidak ada catatan tambahan.')
+                                    ->columnSpanFull(),
 
-                        Group::make([
+                            ])
+                            ->columns(2),
 
-                            IconEntry::make('reservasi.status')
-                                ->label('Status Reservasi')
-                                ->boolean()
-                                ->trueIcon('heroicon-o-check-circle')
-                                ->falseIcon('heroicon-o-x-circle'),
+                    ])
+                    ->columnSpan(2),
+
+                    Group::make([
+
+                        Section::make('Informasi Pasien')
+                            ->icon('heroicon-o-user')
+                            ->compact()
+                            ->schema([
+
+                                TextEntry::make('reservasi.user.nama')
+                                    ->label('Nama Pasien')
+                                    ->badge()
+                                    ->color('primary'),
+
+                                TextEntry::make('reservasi.user.jenis_pasien')
+                                    ->label('Jenis Pasien')
+                                    ->badge()
+                                    ->color('info'),
+
+                                TextEntry::make('reservasi.user.identitas')
+                                    ->label(function ($record) {
+
+                                        if ($record->reservasi->user->mahasiswa) {
+                                            return 'NIM';
+                                        }
+
+                                        if ($record->reservasi->user->dosen) {
+                                            return 'NIDN';
+                                        }
+
+                                        if ($record->reservasi->user->tendik) {
+                                            return 'NIP';
+                                        }
+
+                                        return 'Identitas';
+                                    })
+                                    ->badge()
+                                    ->color('gray'),
+
+                                TextEntry::make('reservasi.user.email')
+                                    ->label('Email')
+                                    ->icon('heroicon-o-envelope'),
+                            ])
+                            ->columns(1),
+
+                    ])
+                    ->columnSpan(1),
+
+                    Section::make('Metadata')
+                        ->icon('heroicon-o-information-circle')
+                        ->compact()
+                        ->schema([
 
                             TextEntry::make('created_at')
                                 ->label('Tanggal Dibuat')
@@ -85,11 +135,10 @@ class RekamMedisInfolist
                                 ->visible(fn (RekamMedis $record): bool => $record->trashed()),
 
                         ])
-                        ->columnSpan(1),
+                        ->columnSpanFull(),
 
-                    ])
-                    ->columns(3)
-                    ->columnSpanFull(),
+                ])->columns(3)
+                ->columnSpanFull(),
 
             ]);
     }

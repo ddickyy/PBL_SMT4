@@ -13,6 +13,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Filament\Tables\Filters\SelectFilter;
 
 class JadwalDoktersTable
 {
@@ -20,7 +21,7 @@ class JadwalDoktersTable
     {
         return $table
             ->columns([
-                TextColumn::make('id')
+                TextColumn::make('id_jadwal')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('id_dokter')
@@ -28,6 +29,7 @@ class JadwalDoktersTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('dokter.user.nama')
+                    ->label('Dokter')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('hari')
@@ -40,6 +42,7 @@ class JadwalDoktersTable
                     ->time()
                     ->sortable(),
                 TextColumn::make('durasi_menit')
+                    ->label('Durasi per sesi (menit)')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('created_at')
@@ -56,6 +59,19 @@ class JadwalDoktersTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+                SelectFilter::make('hari')
+                    ->options([
+                        'Senin' => 'Senin',
+                        'Selasa' => 'Selasa',
+                        'Rabu' => 'Rabu',
+                        'Kamis' => 'Kamis',
+                        'Jumat' => 'Jumat',
+                        'Sabtu' => 'Sabtu',
+                        'Minggu' => 'Minggu',
+                    ])
+                    ->label('Hari')
+                    ->searchable(),
+
                 TrashedFilter::make(),
             ])
             ->recordActions([
