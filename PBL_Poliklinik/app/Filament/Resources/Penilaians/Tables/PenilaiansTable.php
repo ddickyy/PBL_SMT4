@@ -19,7 +19,7 @@ class PenilaiansTable
     {
         return $table
             ->columns([
-                TextColumn::make('id')
+                TextColumn::make('id_penilaian')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('id_reservasi')
@@ -27,6 +27,7 @@ class PenilaiansTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('reservasi.user.nama')
+                    ->label('Pasien')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('kritik')
@@ -53,7 +54,7 @@ class PenilaiansTable
             ])
             ->recordActions([
                 ViewAction::make(),
-                EditAction::make(),
+                // EditAction::make(),
                 DeleteAction::make(),
             ])
             ->toolbarActions([

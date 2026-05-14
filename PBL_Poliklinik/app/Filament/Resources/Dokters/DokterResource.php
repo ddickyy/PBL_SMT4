@@ -17,6 +17,8 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
+use App\Filament\Resources\Dokters\RelationManagers\JadwalDokterRelationManager;
 
 class DokterResource extends Resource
 {
@@ -26,7 +28,7 @@ class DokterResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'user.nama';
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Personalitas';
+    protected static string|\UnitEnum|null $navigationGroup = 'Pengelola';
 
     protected static ?string $navigationLabel = 'Dokter';
 
@@ -58,7 +60,7 @@ class DokterResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            JadwalDokterRelationManager::class,
         ];
     }
 
@@ -78,5 +80,24 @@ class DokterResource extends Resource
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);
+    }
+
+    public static function canAccess(): bool
+    {
+        $user = Auth::user();
+
+        if (! $user) {
+            return false;
+        }
+
+        return in_array(
+            $user->role?->nama_role,
+            ['superadmin', 'admin']
+        );
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return static::canAccess();
     }
 }

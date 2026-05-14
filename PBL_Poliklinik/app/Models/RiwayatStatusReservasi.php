@@ -15,6 +15,7 @@ class RiwayatStatusReservasi extends Model
     protected $fillable = [
         'id_reservasi',
         'diubah_oleh',
+        'status_lama',
         'status_baru',
         'keterangan',
     ];
