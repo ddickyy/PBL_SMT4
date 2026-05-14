@@ -12,6 +12,8 @@ use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Filament\Tables\Filters\SelectFilter;
+
 
 class ReservasisTable
 {
@@ -64,6 +66,15 @@ class ReservasisTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+                SelectFilter::make('status')
+                    ->label('Status Reservasi')
+                    ->options([
+                        'pending' => 'Pending',
+                        'dikonfirmasi' => 'Dikonfirmasi',
+                        'selesai' => 'Selesai',
+                        'dibatalkan' => 'Dibatalkan',
+                    ]),
+
                 TrashedFilter::make(),
             ])
             ->recordActions([

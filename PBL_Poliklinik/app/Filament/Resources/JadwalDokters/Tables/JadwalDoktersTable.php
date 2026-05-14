@@ -13,6 +13,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Filament\Tables\Filters\SelectFilter;
 
 class JadwalDoktersTable
 {
@@ -58,6 +59,19 @@ class JadwalDoktersTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+                SelectFilter::make('hari')
+                    ->options([
+                        'Senin' => 'Senin',
+                        'Selasa' => 'Selasa',
+                        'Rabu' => 'Rabu',
+                        'Kamis' => 'Kamis',
+                        'Jumat' => 'Jumat',
+                        'Sabtu' => 'Sabtu',
+                        'Minggu' => 'Minggu',
+                    ])
+                    ->label('Hari')
+                    ->searchable(),
+
                 TrashedFilter::make(),
             ])
             ->recordActions([

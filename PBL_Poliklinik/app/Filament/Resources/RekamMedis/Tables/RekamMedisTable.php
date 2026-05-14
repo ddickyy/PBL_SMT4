@@ -12,6 +12,9 @@ use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Filament\Tables\Filters\Filter;
+use Filament\Forms\Components\DatePicker;
+use Illuminate\Database\Eloquent\Builder;
 
 class RekamMedisTable
 {
@@ -67,6 +70,31 @@ class RekamMedisTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+
+                Filter::make('tanggal_periksa')
+                    ->schema([
+                        DatePicker::make('tanggal_dari')
+                            ->label('Dari Tanggal'),
+
+                        DatePicker::make('tanggal_sampai')
+                            ->label('Sampai Tanggal'),
+
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+
+                        return $query
+                            ->when(
+                                $data['tanggal_dari'],
+                                fn (Builder $query, $date): Builder =>
+                                    $query->whereDate('tanggal_periksa', '>=', $date),
+                            )
+                            ->when(
+                                $data['tanggal_sampai'],
+                                fn (Builder $query, $date): Builder =>
+                                    $query->whereDate('tanggal_periksa', '<=', $date),
+                            );
+                    }),
+                    
                 TrashedFilter::make(),
             ])
             ->recordActions([

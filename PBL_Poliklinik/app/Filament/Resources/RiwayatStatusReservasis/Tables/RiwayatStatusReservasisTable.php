@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\RiwayatStatusReservasis\Tables;
 
+use Dom\Text;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -11,6 +12,8 @@ use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Filters\SelectFilter;
 
 class RiwayatStatusReservasisTable
 {
@@ -38,6 +41,9 @@ class RiwayatStatusReservasisTable
                     ->label('Tanggal Periksa')
                     ->date()
                     ->sortable(),
+                TextColumn::make('status_baru')
+                    ->label('Status Baru')
+                    ->sortable(),
                 TextColumn::make('diubah_oleh')
                     ->numeric()
                     ->sortable()
@@ -59,6 +65,14 @@ class RiwayatStatusReservasisTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+
+                SelectFilter::make('status_baru')
+                    ->label('Status Reservasi')
+                    ->options([
+                        'selesai' => 'Selesai',
+                        'dibatalkan' => 'Dibatalkan',
+                    ]),
+
                 TrashedFilter::make(),
             ])
             ->recordActions([
