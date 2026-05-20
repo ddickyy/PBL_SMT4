@@ -58,16 +58,6 @@ class Reservasi extends Model
 
     protected static function booted()
     {
-        static::creating(function ($reservasi) {
-
-            $lastQueue = self::whereDate(
-                'tanggal_reservasi',
-                $reservasi->tanggal_reservasi
-            )->max('nomor_antrian');
-
-            $reservasi->nomor_antrian = ($lastQueue ?? 0) + 1;
-        });
-
         static::updating(function ($reservasi) {
 
             if ($reservasi->isDirty('status')) {

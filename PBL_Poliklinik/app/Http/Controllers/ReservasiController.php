@@ -142,7 +142,7 @@ class ReservasiController extends Controller
                 'tanggal_reservasi' => $validated['tanggal_reservasi'],
                 'nomor_antrian' => $nomorAntrian,
                 'estimasi_jam' => $estimasiJam->format('H:i:s'),
-                'status' => 'menunggu',
+                'status' => 'pending',
             ]);
 
             // UPDATE KUOTA
@@ -281,4 +281,21 @@ class ReservasiController extends Controller
             ]);
         }
     }
+
+    public function bukti()
+     {
+         $reservasiId = session('reservasi_id');
+    
+         if (!$reservasiId) {
+             return redirect()->route('pasien.reservasi');
+         }
+    
+         $reservasi = Reservasi::with([
+            'jadwal.dokter.user',
+            'jadwal.dokter.spesialisasi'
+        ])->find($reservasiId);
+   
+        return view('pasien.buktiReservasi', compact('reservasi'));
+    }
+    
 }
