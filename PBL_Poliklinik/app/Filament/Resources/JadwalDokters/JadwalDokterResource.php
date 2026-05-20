@@ -18,6 +18,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
+use App\Filament\Resources\JadwalDokters\RelationManagers\KuotaHarianRelationManager;
 
 class JadwalDokterResource extends Resource
 {
@@ -59,7 +60,7 @@ class JadwalDokterResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            KuotaHarianRelationManager::class,
         ];
     }
 

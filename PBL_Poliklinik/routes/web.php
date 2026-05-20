@@ -75,11 +75,11 @@ Route::middleware('auth')->prefix('pasien')->name('pasien.')->group(function () 
     Route::get('/reservasi', [ReservasiController::class, 'index'])->name('reservasi');
     Route::post('/reservasi', [ReservasiController::class, 'store'])->name('reservasi.store');
 
-    Route::get('/bukti-reservasi', function () {
-        return view('pasien.buktiReservasi');
-    })->name('bukti');
+    Route::get('/bukti-reservasi', [ReservasiController::class, 'bukti'])->name('bukti');
 
     Route::get('/riwayat', [ReservasiController::class, 'riwayat'])->name('riwayat');
+
+    Route::put('/reservasi/{id}/cancel',[ReservasiController::class, 'cancel'])->name('reservasi.cancel');
 
     // Jadwal
     Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal');

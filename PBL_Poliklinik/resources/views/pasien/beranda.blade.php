@@ -118,9 +118,13 @@
 
                     <h3>{{ $namaSpesialisasi }}</h3>
                     <p>
-                        Layanan kesehatan profesional dengan tenaga medis
-                        berpengalaman untuk mendukung kesehatan mahasiswa,
-                        dosen, dan tendik.
+                        {{
+                            optional(
+                                $group->first()?->spesialisasi
+                            )->deskripsi
+                            ??
+                            'Deskripsi layanan belum tersedia.'
+                        }}
                     </p>
 
                     <div class="doctor-count">

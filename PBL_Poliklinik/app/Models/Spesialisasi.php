@@ -14,6 +14,7 @@ class Spesialisasi extends Model
 
     protected $fillable = [
         'nama_spesialisasi',
+        'deskripsi',
     ];
 
     protected $casts = [

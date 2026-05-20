@@ -24,6 +24,9 @@ class SpesialisasisTable
                 TextColumn::make('nama_spesialisasi')
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('deskripsi')
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
