@@ -9,7 +9,7 @@
     'title' => 'Solusi Kesehatan Terpadu di Kampus Anda',
     'desc' => 'Kami menyediakan layanan kesehatan yang profesional dan terintegrasi di lingkungan kampus untuk mendukung kebutuhan kesehatan Anda.',
     'buttonText' => 'Buat Reservasi',
-    'buttonLink' => route('pasien.reservasi'),
+    'buttonLink' => route('pasien.reservasi.index'),
     'bg' => asset('images/poliklinik.jpg')
 ])
 
@@ -146,79 +146,106 @@
         </div>
 
         {{-- DAFTAR DOKTER --}}
-        <div class="doctor-section">
-            <div class="doctor-left">
-                <h2>Daftar Dokter</h2>
+<div class="doctor-section">
+    <div class="doctor-left">
+        <h2>Daftar Dokter Hari ini</h2>
+        <p>
+            Lihat daftar dokter yang tersedia di poliklinik
+            untuk memudahkan kunjungan Anda.
+        </p>
+    </div>
+
+    <div class="doctor-right">
+        @forelse($dokters->take(3) as $dokter)
+            @php
+                $jadwalAktif = $dokter->jadwalDokter->firstWhere('aktif', true);
+                $fotoDokter = optional($dokter->user)->foto;
+                $namaDokter = optional($dokter->user)->nama ?? 'Dokter';
+
+                $inisial = collect(explode(' ', $namaDokter))
+                    ->filter()
+                    ->map(fn ($kata) => strtoupper(substr($kata, 0, 1)))
+                    ->take(2)
+                    ->implode('');
+            @endphp
+
+            <div class="doctor-item">
+                <div class="doctor-profile">
+                    @if($fotoDokter)
+                        <img
+                            src="{{ asset('storage/' . $fotoDokter) }}"
+                            alt="Foto Dokter">
+                    @else
+                        <div class="doctor-avatar">
+                            {{ $inisial }}
+                        </div>
+                    @endif
+
+                    <div>
+                        <h4>{{ $namaDokter }}</h4>
+                        <p>{{ optional($dokter->spesialisasi)->nama_spesialisasi ?? '-' }}</p>
+                    </div>
+                </div>
+
+                <div class="doctor-time">
+    <span class="doctor-day">
+        {{ $dokter->jadwalDokter->pluck('hari')->implode(', ') }}
+    </span>
+
+    <strong>
+        {{ $jadwalAktif?->jam_mulai ? \Carbon\Carbon::parse($jadwalAktif->jam_mulai)->format('H:i') : '--:--' }}
+        -
+        {{ $jadwalAktif?->jam_selesai ? \Carbon\Carbon::parse($jadwalAktif->jam_selesai)->format('H:i') : '--:--' }}
+    </strong>
+</div>
+
+                @php
+                $hariSekarang = \Carbon\Carbon::now()->locale('id')->translatedFormat('l');
+                $jamSekarang = \Carbon\Carbon::now()->format('H:i:s');
+
+                $sedangPraktik = false;
+
+                if ($jadwalAktif && $jadwalAktif->aktif) {
+                    $sedangPraktik =
+                    strtolower($jadwalAktif->hari) == strtolower($hariSekarang) &&
+                    $jamSekarang >= $jadwalAktif->jam_mulai &&
+                    $jamSekarang <= $jadwalAktif->jam_selesai;
+                }
+                @endphp
+
+            <div>
+                 @if($sedangPraktik)
+                    <span class="badge available">
+                        Tersedia
+                    </span>
+                @else
+                    <span class="badge full">
+                        Tidak Tersedia
+                    </span>
+                @endif
+</div>
+            </div>
+        @empty
+            <div class="empty-doctor-home">
+                <div class="empty-doctor-home-icon">
+                    <i class="fa-solid fa-user-doctor"></i>
+                </div>
+                <h3>Belum Ada Dokter Tersedia</h3>
                 <p>
-                    Lihat daftar dokter yang tersedia di poliklinik
-                    untuk memudahkan kunjungan Anda.
+                    Saat ini belum ada jadwal dokter yang tersedia.
                 </p>
             </div>
+        @endforelse
 
-            <div class="doctor-right">
-                @forelse($dokters->take(3) as $dokter)
-
-                    @php
-                        $jadwalAktif = $dokter->jadwalDokter->firstWhere('aktif', true);
-                        $fotoDokter = optional($dokter->user)->foto;
-                    @endphp
-
-                    <div class="doctor-item">
-                        <div class="doctor-profile">
-                            <img
-                                src="{{ $fotoDokter ? asset('storage/' . $fotoDokter) : asset('images/default-doctor.jpg') }}"
-                                alt="Foto Dokter">
-                            <div>
-                                <h4>
-                                    {{ optional($dokter->user)->nama ?? 'Dokter' }}
-                                </h4>
-                                <p>
-                                    {{ optional($dokter->spesialisasi)->nama_spesialisasi ?? '-' }}
-                                </p>
-                            </div>
-                        </div>
-                        <div class="doctor-time">
-                            <small>WAKTU</small>
-                            <strong>
-                                {{ $jadwalAktif->jam_mulai ?? '--:--' }}
-                                -
-                                {{ $jadwalAktif->jam_selesai ?? '--:--' }}
-                            </strong>
-                        </div>
-                        <div>
-                            @if($jadwalAktif && $jadwalAktif->aktif)
-                                <span class="badge available">
-                                    Tersedia
-                                </span>
-                            @else
-                                <span class="badge full">
-                                    Tidak Tersedia
-                                </span>
-                            @endif
-                        </div>
-                    </div>
-
-                    @empty
-                    <div class="empty-doctor-home">
-                        <div class="empty-doctor-home-icon">
-                            <i class="fa-solid fa-user-doctor"></i>
-                        </div>
-                        <h3>Belum Ada Dokter Tersedia</h3>
-                        <p>
-                            Saat ini belum ada jadwal dokter yang tersedia.
-                        </p>
-                    </div>
-                @endforelse
-
-                @if($dokters->count() > 0)
-                    <div class="doctor-more">
-                        <a href="{{ route('pasien.jadwal') }}">
-                            Lihat lebih lengkap
-                        </a>
-                    </div>
-                @endif
+        @if($dokters->count() > 0)
+            <div class="doctor-more">
+                <a href="{{ route('pasien.dokter.index') }}">
+                    Lihat lebih lengkap
+                </a>
             </div>
-        </div>
+        @endif
+    </div>
+</div>
     </div>
 </section>
 
@@ -262,6 +289,32 @@
         font-weight: 800;
         color: #102b57;
     }
+
+    .doctor-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: #e5e7eb;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 18px;
+    text-transform: uppercase;
+}
+.doctor-day {
+    display: block;
+    font-size: 15px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 2px;
+}
+
+.doctor-time strong {
+    display: block;
+    font-size: 15px;
+}
 
     .icon-box {
         width: 48px;
@@ -317,7 +370,14 @@
         gap: 10px;
         font-size: 14px;
         font-weight: 600;
-        color: #0f766e;
+    }
+
+    .status-operational.is-open { 
+        color: #0f766e; 
+    } 
+    
+    .status-operational.is-close { 
+        color: #dc2626; 
     }
 
     .status-dot {

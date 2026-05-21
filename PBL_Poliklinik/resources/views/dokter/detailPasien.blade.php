@@ -31,7 +31,7 @@
 
         $fotoUrl = $pasien['foto']
             ? asset('storage/' . $pasien['foto'])
-            : 'https://ui-avatars.com/api/?name=' . urlencode($pasien['nama']) . '&background=102b57&color=fff&size=120';
+            : 'https://ui-avatars.com/api/?name=' . urlencode($pasien->user->nama) . '&background=102b57&color=fff&size=120';
 
     @endphp
 
@@ -65,9 +65,9 @@
 
                         <div class="det-profile">
 
-                            <img src="{{ $fotoUrl }}" alt="{{ $pasien['nama'] }}">
+                            <img src="{{ $fotoUrl }}" alt="{{ $pasien->user->nama }}">
 
-                            <h2>{{ $pasien['nama'] }}</h2>
+                            <h2>{{ $pasien->user->nama }}</h2>
 
                             <p>{{ $pasien['nim'] }}</p>
 
@@ -94,7 +94,7 @@
 
                             <div class="det-info-item">
                                 <small>Email</small>
-                                <strong>{{ $pasien['email'] }}</strong>
+                                <strong>$pasien->user->email</strong>
                             </div>
 
                             <div class="det-info-item">
@@ -109,17 +109,17 @@
 
                             <div class="det-info-item">
                                 <small>No Antrean</small>
-                                <strong>#{{ $pasien['no_antrean'] }}</strong>
+                                <strong>#{{ $pasien->nomor_antrian }}</strong>
                             </div>
 
                             <div class="det-info-item">
                                 <small>Jadwal Reservasi</small>
-                                <strong>{{ $pasien['tanggal_reservasi'] }}</strong>
+                                <strong>{{ \Carbon\Carbon::parse($pasien->tanggal_reservasi)->translatedFormat('d F Y') }}</strong>
                             </div>
 
                             <div class="det-info-item">
                                 <small>Jam Reservasi</small>
-                                <strong>{{ $pasien['jam_reservasi'] }} WIB</strong>
+                                <strong>{{ \Carbon\Carbon::parse($pasien->estimasi_jam)->format('H:i') }} WIB</strong>
                             </div>
 
                         </div>

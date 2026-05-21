@@ -15,39 +15,56 @@
 @section('content')
 <section class="doctor-page">
     <div class="doctor-container">
+
         <div class="section-heading">
             <h2>Tenaga Medis Berpengalaman</h2>
         </div>
 
         <div class="doctor-grid">
+
             @forelse($dokters as $item)
+
                 @php
                     $spesialisasi = strtolower(
                         optional($item->spesialisasi)->nama_spesialisasi ?? ''
                     );
 
                     $foto = optional($item->user)->foto;
+
+                    $namaDokter = optional($item->user)->nama ?? 'Dokter';
+
+                    $inisial = collect(explode(' ', $namaDokter))
+                        ->filter()
+                        ->map(fn ($kata) => strtoupper(substr($kata, 0, 1)))
+                        ->take(2)
+                        ->implode('');
                 @endphp
 
                 <div class="doctor-card">
-                    <div class="doctor-image">
-                        @if($foto)
 
-                            <img src="{{ asset('storage/' . $foto) }}"
-                                 alt="Doctor">
+                    {{-- FOTO DOKTER --}}
+                    <div class="doctor-image">
+
+                        @if($foto)
+                            <img
+                                src="{{ asset('storage/' . $foto) }}"
+                                alt="Doctor">
                         @else
-                            <img src="{{ asset('images/default-doctor.png') }}"
-                                 alt="Doctor">
+                            <div class="doctor-avatar-large">
+                                {{ $inisial }}
+                            </div>
                         @endif
                     </div>
 
+                    {{-- CONTENT --}}
                     <div class="doctor-content">
                         <span class="doctor-badge">
                             {{ optional($item->spesialisasi)->nama_spesialisasi ?? 'POLI UMUM' }}
                         </span>
                         <h3>
-                            {{ optional($item->user)->nama ?? 'Dokter' }}
+                            {{ $namaDokter }}
                         </h3>
+                        {{-- SPESIALISASI --}}
                         <div class="doctor-specialist">
                             @if(str_contains($spesialisasi, 'gigi'))
                                 <i class="fa-solid fa-tooth"></i>
@@ -66,7 +83,9 @@
                             </span>
                         </div>
 
+                        {{-- JADWAL --}}
                         <div class="doctor-schedule-list">
+
                             @forelse($item->jadwalDokter as $jadwal)
                                 <div class="doctor-schedule">
                                     <div class="schedule-icon">
@@ -74,36 +93,37 @@
                                     </div>
 
                                     <div>
-                                        <small>JADWAL PRAKTIK</small>
-                                        <strong>
+                                        <small>
+                                            JADWAL PRAKTIK
+                                        </small>
+                                        <strong class="schedule-day">
                                             {{ $jadwal->hari }}
                                         </strong>
 
-                                        <span>
-                                            {{ $jadwal->jam_mulai }}
+                                        <span class="schedule-time">
+                                            {{ \Carbon\Carbon::parse($jadwal->jam_mulai)->format('H:i') }}
                                             -
-                                            {{ $jadwal->jam_selesai }}
+                                            {{ \Carbon\Carbon::parse($jadwal->jam_selesai)->format('H:i') }}
                                             WIB
                                         </span>
                                     </div>
                                 </div>
 
-                            @empty
-
+                                @empty
                                 <div class="empty-schedule">
                                     Jadwal belum tersedia.
                                 </div>
-
                             @endforelse
-
                         </div>
 
-                        <p class="doctor-description">
-                            Dokter profesional dengan pengalaman di layanan kesehatan
-                            untuk membantu menjaga kesehatan pasien secara menyeluruh.
+                        {{-- DESKRIPSI --}}
+                       <p class="doctor-description">
+                            {{ optional($item->spesialisasi)->deskripsi 
+                            ?? 'Layanan kesehatan profesional untuk membantu menjaga kesehatan pasien.' }}
                         </p>
 
-                        <a href="{{ route('pasien.reservasi') }}"
+                        {{-- BUTTON --}}
+                        <a href="{{ route('pasien.reservasi.index') }}"
                            class="btn-book">
                             Buat Reservasi
                             <i class="fa-solid fa-arrow-right"></i>
@@ -125,7 +145,6 @@
                     </p>
                 </div>
             @endforelse
-
         </div>
     </div>
 </section>
@@ -185,6 +204,20 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
+    }
+
+    .doctor-avatar-large {
+        width: 100%;
+        height: 100%;
+        min-height: 320px;
+        background: linear-gradient(135deg, #102b57, #1d4ed8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 64px;
+        font-weight: 800;
+        letter-spacing: 2px;
     }
 
     .doctor-content {
@@ -257,16 +290,19 @@
         margin-bottom: 4px;
     }
 
-    .doctor-schedule strong {
+    .schedule-day {
         display: block;
         color: #102b57;
         font-size: 16px;
+        font-weight: 700;
         margin-bottom: 4px;
     }
 
-    .doctor-schedule span {
-        color: #64748b;
-        font-size: 14px;
+    .schedule-time {
+        display: block;
+        color: #475569;
+        font-size: 15px;
+        font-weight: 600;
     }
 
     .empty-schedule {
@@ -370,6 +406,11 @@
 
         .doctor-content {
             padding: 22px;
+        }
+
+        .doctor-avatar-large {
+            min-height: 280px;
+            font-size: 52px;
         }
 
     }

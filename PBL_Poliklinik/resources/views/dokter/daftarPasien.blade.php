@@ -18,21 +18,6 @@
 
 @section('content')
 
-@php
-$pasienList = [
-    ['no' => 1, 'nama' => 'Daniel Caesar', 'nim' => '12310100', 'keluhan' => 'Demam dan sakit kepala', 'waktu' => '16 Mei 2026', 'status' => 'selesai'],
-    ['no' => 2, 'nama' => 'Bruno Mars', 'nim' => '12310101', 'keluhan' => 'Pemeriksaan kesehatan rutin', 'waktu' => '16 Mei 2026', 'status' => 'selesai'],
-    ['no' => 3, 'nama' => 'Ariana Grande', 'nim' => '12310102', 'keluhan' => 'Batuk pilek dan flu', 'waktu' => '16 Mei 2026', 'status' => 'proses'],
-    ['no' => 4, 'nama' => 'Taylor Swift', 'nim' => '12310103', 'keluhan' => 'Nyeri lambung', 'waktu' => '16 Mei 2026', 'status' => 'tunggu'],
-    ['no' => 5, 'nama' => 'Ed Sheeran', 'nim' => '12310104', 'keluhan' => 'Sesak napas ringan', 'waktu' => '16 Mei 2026', 'status' => 'tunggu'],
-    ['no' => 6, 'nama' => 'Adam', 'nim' => '2141720011', 'keluhan' => 'Migrain berkepanjangan dan mual', 'waktu' => '23 Mei 2026', 'status' => 'batal'],
-    ['no' => 7, 'nama' => 'Telemachus', 'nim' => '2141720012', 'keluhan' => 'Pemeriksaan kesehatan rutin', 'waktu' => '23 Mei 2026', 'status' => 'tunggu'],
-    ['no' => 8, 'nama' => 'Hades', 'nim' => '2141720013', 'keluhan' => 'Diare lebih dari 5 kali disertai badan lemas', 'waktu' => '23 Mei 2026', 'status' => 'tunggu'],
-    ['no' => 9, 'nama' => 'Poseidon', 'nim' => '2141720014', 'keluhan' => 'Sesak napas ringan setelah aktivitas fisik', 'waktu' => '30 Mei 2026', 'status' => 'tunggu'],
-    ['no' => 10, 'nama' => 'Aphrodite', 'nim' => '2141720015', 'keluhan' => 'Batuk kering dan nyeri tenggorokan', 'waktu' => '30 Mei 2026', 'status' => 'batal'],
-];
-@endphp
-
 <section class="dp-section">
 <div class="dp-container">
 
@@ -67,81 +52,59 @@ $pasienList = [
             </thead>
             <tbody id="dpTableBody">
                 @foreach($pasienList as $p)
-                <tr class="dp-tr" data-nama="{{ strtolower($p['nama']) }}">
-                    <td>
-                        <div class="dp-pasien">
-                            <img src="https://ui-avatars.com/api/?name={{ urlencode($p['nama']) }}&background=102b57&color=fff&size=44" alt="{{ $p['nama'] }}">
-                            <div>
-                                <h4>{{ $p['nama'] }}</h4>
-                                <p>{{ $p['nim'] }}</p>
-                            </div>
-                        </div>
-                    </td>
-                    {{-- <td class="dp-keluhan">{{ $p['keluhan'] }}</td>
-                    <td class="dp-waktu">{{ $p['waktu'] }}</td>
-                    <td><span class="dp-badge dp-badge--{{ $p['status'] }}">{{ $statusLabel[$p['status']] }}</span></td> --}}
-                    <td class="dp-keluhan">{{ $p['keluhan'] ?? '-' }}</td>
-                    <td class="dp-waktu">{{ $p['waktu'] ?? '-' }}</td>
-                    <td><span class="dp-badge dp-badge--{{ $p['status'] }}">{{ strtoupper($p['status']) }}</span></td>
-                    <td>
-                        <div class="dp-dropdown">
 
-                            <button class="dp-action dp-dropdown-btn">
-                                <i class="fa-solid fa-ellipsis-vertical"></i>
-                            </button>
+<tr class="dp-tr">
 
-                            <div class="dp-dropdown-menu">
+    <td>
+        <div class="dp-pasien">
 
-                                <a href="{{ route('dokter.pasien.detail', $p['no']) }}" class="dp-dropdown-item">
-                                    <i class="fa-solid fa-user"></i>
-                                    <span>Lihat Detail</span>
-                                </a>
+            <img
+                src="https://ui-avatars.com/api/?name={{ urlencode($p->user->nama) }}&background=102b57&color=fff&size=44"
+            >
 
-                                <div class="dp-submenu">
+            <div>
+                <h4>{{ $p->user->nama }}</h4>
 
-                                    <button type="button" class="dp-dropdown-item dp-submenu-btn">
+                <p>
+                    {{ $p->user->email }}
+                </p>
+            </div>
 
-                                        <div class="dp-submenu-left">
-                                            <i class="fa-solid fa-pen"></i>
-                                            <span>Ubah Status</span>
-                                        </div>
+        </div>
+    </td>
 
-                                        <i class="fa-solid fa-chevron-right dp-submenu-arrow"></i>
+    <td class="dp-keluhan">
+        {{ $p->keluhan ?? '-' }}
+    </td>
 
-                                    </button>
+    <td class="dp-waktu">
+        {{ \Carbon\Carbon::parse($p->tanggal_reservasi)->format('d M Y') }}
+    </td>
 
-                                    <div class="dp-submenu-menu">
+    <td>
 
-                                        <button class="dp-status-option"
-                                                onclick="ubahStatus(this, 'tunggu')">
-                                            Tunggu
-                                        </button>
+        <span class="dp-badge dp-badge--{{ $p->status }}">
 
-                                        <button class="dp-status-option"
-                                                onclick="ubahStatus(this, 'proses')">
-                                            Proses
-                                        </button>
+            {{ strtoupper($p->status) }}
 
-                                        <button class="dp-status-option"
-                                                onclick="ubahStatus(this, 'selesai')">
-                                            Selesai
-                                        </button>
+        </span>
 
-                                        <button class="dp-status-option"
-                                                onclick="ubahStatus(this, 'batal')">
-                                            Batal
-                                        </button>
+    </td>
 
-                                    </div>
+    <td>
 
-                                </div>
+        <a
+            href="{{ route('dokter.pasien.detail', $p->id_reservasi) }}"
+            class="dp-action"
+        >
+            <i class="fa-solid fa-chevron-right"></i>
+        </a>
 
-                            </div>
+    </td>
 
-                        </div>
-                    </td>
-                </tr>
-                @endforeach
+</tr>
+
+@endforeach
             </tbody>
         </table>
     </div>
@@ -287,7 +250,7 @@ function ubahStatus(el, statusBaru) {
 
 .dp-badge--selesai { background:#dcfce7; color:#15803d; }
 .dp-badge--proses { background:#fef3c7; color:#b45309; }
-.dp-badge--tunggu { background:#e2e8f0; color:#64748b; }
+.dp-badge--menunggu { background:#e2e8f0; color:#64748b; }
 .dp-badge--batal { background:#fee2e2; color:#dc2626; }
 
 .dp-action {
@@ -473,7 +436,7 @@ function ubahStatus(el, statusBaru) {
     color: #b45309;
 }
 
-.dp-badge--tunggu {
+.dp-badge--menunggu {
     background: #e2e8f0;
     color: #64748b;
 }
