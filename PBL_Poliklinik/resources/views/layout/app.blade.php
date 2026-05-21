@@ -12,15 +12,18 @@
 
 </head>
 
-
 <body>
 
-    @if(auth()->check())
+    @if(auth()->check() && (!isset($hideNavbar) || !$hideNavbar))
 
         @if(isset($dokterLayout) && $dokterLayout)
+
             @include('partial.navbarDokter')
+
         @else
+
             @include('partial.navbar')
+
         @endif
 
     @endif

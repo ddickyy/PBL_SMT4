@@ -18,122 +18,6 @@
 
 @section('content')
 
-@php
-$riwayatList = [
-
-    [
-        'waktu'     => '13:00',
-        'tgl_full'  => '10 Mei 2026',
-        'nama'      => 'Doja Kim',
-        'nim'       => 'NIM: 2141720098 • Mahasiswa',
-        'diagnosa'  => 'Gejala flu musiman dengan demam ringan',
-        'rating'    => 5,
-        'saran'     => 'Dokter sangat ramah dan penjelasannya jelas.',
-        'status'    => 'selesai',
-    ],
-
-    [
-        'waktu'     => '14:00',
-        'tgl_full'  => '10 Mei 2026',
-        'nama'      => 'Park Hyungseok',
-        'nim'       => 'NIDN: 0021057501 • Dosen',
-        'diagnosa'  => 'Kontrol rutin hipertensi grade 1',
-        'rating'    => 4,
-        'saran'     => 'Pelayanan cepat dan ruang tunggu nyaman.',
-        'status'    => 'selesai',
-    ],
-
-    [
-        'waktu'     => '15:00',
-        'tgl_full'  => '9 Mei 2026',
-        'nama'      => 'Isagi Yoichi',
-        'nim'       => 'NIM: 2141720102 • Mahasiswa',
-        'diagnosa'  => 'Cedera ligamen lutut saat latihan futsal',
-        'rating'    => 2,
-        'saran'     => 'Reservasi dibatalkan mendadak.',
-        'status'    => 'batal',
-    ],
-
-    [
-        'waktu'     => '13:15',
-        'tgl_full'  => '9 Mei 2026',
-        'nama'      => 'Tori',
-        'nim'       => 'NIP: 35071234567 • Staff',
-        'diagnosa'  => 'Pemeriksaan kesehatan mata, iritasi ringan',
-        'rating'    => 5,
-        'saran'     => 'Pelayanan sangat profesional.',
-        'status'    => 'selesai',
-    ],
-
-    [
-        'waktu'     => '09:30',
-        'tgl_full'  => '8 Mei 2026',
-        'nama'      => 'Hades',
-        'nim'       => 'NIM: 2141720110 • Mahasiswa',
-        'diagnosa'  => 'Diare dan dehidrasi ringan',
-        'rating'    => 4,
-        'saran'     => 'Dokter responsif dan cepat menangani pasien.',
-        'status'    => 'selesai',
-    ],
-
-    [
-        'waktu'     => '10:45',
-        'tgl_full'  => '8 Mei 2026',
-        'nama'      => 'Aphrodite',
-        'nim'       => 'NIM: 2141720111 • Mahasiswa',
-        'diagnosa'  => 'Batuk kering dan radang tenggorokan',
-        'rating'    => 3,
-        'saran'     => 'Pelayanan cukup baik namun antrean lama.',
-        'status'    => 'selesai',
-    ],
-
-    [
-        'waktu'     => '11:20',
-        'tgl_full'  => '7 Mei 2026',
-        'nama'      => 'Poseidon',
-        'nim'       => 'NIP: 1987654321 • Staff',
-        'diagnosa'  => 'Sesak napas ringan setelah olahraga',
-        'rating'    => 5,
-        'saran'     => 'Penanganan sangat memuaskan.',
-        'status'    => 'selesai',
-    ],
-
-    [
-        'waktu'     => '12:10',
-        'tgl_full'  => '7 Mei 2026',
-        'nama'      => 'Telemachus',
-        'nim'       => 'NIM: 2141720112 • Mahasiswa',
-        'diagnosa'  => 'Pemeriksaan kesehatan rutin',
-        'rating'    => 4,
-        'saran'     => 'Dokter informatif dan detail.',
-        'status'    => 'selesai',
-    ],
-
-    [
-        'waktu'     => '08:40',
-        'tgl_full'  => '6 Mei 2026',
-        'nama'      => 'Bruno Mars',
-        'nim'       => 'NIM: 2141720113 • Mahasiswa',
-        'diagnosa'  => 'Migrain dan mual berlebih',
-        'rating'    => 1,
-        'saran'     => 'Jadwal konsultasi sempat tertunda.',
-        'status'    => 'batal',
-    ],
-
-    [
-        'waktu'     => '14:50',
-        'tgl_full'  => '6 Mei 2026',
-        'nama'      => 'Taylor Swift',
-        'nim'       => 'NIM: 2141720114 • Mahasiswa',
-        'diagnosa'  => 'Nyeri lambung akibat pola makan tidak teratur',
-        'rating'    => 5,
-        'saran'     => 'Pelayanan terbaik sejauh ini.',
-        'status'    => 'selesai',
-    ],
-
-];
-@endphp
-
 <section class="rp-section">
 <div class="rp-container">
 
@@ -161,39 +45,61 @@ $riwayatList = [
     {{-- RIWAYAT LIST --}}
     <div class="rp-list" id="rpList">
         @foreach($riwayatList as $r)
-        <div class="rp-item" data-status="{{ $r['status'] }}">
-            <div class="rp-item__time">
-                <strong>{{ $r['tgl_full'] }}</strong>
-            </div>
 
-            <div class="rp-item__pasien">
-                <img src="https://ui-avatars.com/api/?name={{ urlencode($r['nama']) }}&background=102b57&color=fff&size=44">
-                <div>
-                    <h4>{{ $r['nama'] }}</h4>
-                    <p>{{ $r['nim'] }}</p>
-                </div>
-            </div>
+<div
+    class="rp-item"
+    data-status="{{ $r->status }}"
+>
 
-            <p class="rp-item__diagnosa">
-                {{ $r['diagnosa'] }}
-            </p>
+    <div class="rp-item__time">
 
-            <div class="rp-rating">
-                @for($i = 1; $i <= 5; $i++)
-                    <i class="fa-solid fa-star {{ $i <= $r['rating'] ? 'active' : '' }}"></i>
-                @endfor
-            </div>
+        <strong>
 
-            <p class="rp-item__saran">
-                {{ $r['saran'] }}
-            </p>
+            {{ \Carbon\Carbon::parse($r->tanggal_reservasi)->translatedFormat('d F Y') }}
 
-            <span class="rp-badge rp-badge--{{ $r['status'] }}">
-                {{ strtoupper($r['status']) }}
-            </span>
+        </strong>
+
+    </div>
+
+    <div class="rp-item__pasien">
+
+        <img
+            src="https://ui-avatars.com/api/?name={{ urlencode($r->user->nama) }}&background=102b57&color=fff&size=44"
+        >
+
+        <div>
+
+            <h4>{{ $r->user->nama }}</h4>
+
+            <p>{{ $r->user->email }}</p>
 
         </div>
-        @endforeach
+
+    </div>
+
+    <p class="rp-item__diagnosa">
+        {{ $r->diagnosa ?? '-' }}
+    </p>
+
+    <div class="rp-rating">
+
+        ⭐
+
+    </div>
+
+    <p class="rp-item__saran">
+        {{ $r->catatan_dokter ?? '-' }}
+    </p>
+
+    <span class="rp-badge rp-badge--{{ $r->status }}">
+
+        {{ strtoupper($r->status) }}
+
+    </span>
+
+</div>
+
+@endforeach
     </div>
 
     {{-- LOAD MORE --}}
@@ -387,7 +293,7 @@ function rpFilter(el, status) {
     color: #d97706;
 }
 
-.rp-badge--tunggu {
+.rp-badge--menunggu {
     background: #f1f5f9;
     color: #64748b;
 }

@@ -7,67 +7,112 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    // Tampilkan halaman login
+    // PAGE LOGIN
     public function showLoginForm()
     {
         return view('auth.login');
     }
 
-    // Proses login
+    // PROSES LOGIN
     public function login(Request $request)
     {
+        // VALIDASI
         $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
+            'email' => [
+                'required',
+                'email'
+            ],
+
+            'password' => [
+                'required'
+            ],
+
         ]);
+        // REMEMBER ME
+        $remember =
+            $request->has('remember');
 
-        if (Auth::attempt($credentials, $request->remember)) {
-
+        // LOGIN
+        if (
+            Auth::attempt(
+                $credentials,
+                $remember
+            )
+        ) {
+            // REGENERATE SESSION
             $request->session()->regenerate();
-
+            // USER LOGIN
             $user = Auth::user();
-
             switch ($user->id_role) {
-
-                // Dokter
-                case 3:
-                    return redirect()->route('dokter.beranda');
-
-                    // Pasien
-                case 4:
-                    return redirect()->route('pasien.beranda');
-
-                    // Admin & Superadmin tidak boleh login di sini
                 case 1:
-                case 2:
-
                     Auth::logout();
 
-                    return redirect()->route('login')
+                    return redirect()
+                        ->route('login')
                         ->withErrors([
-                            'email' => 'Silakan login melalui panel admin.'
-                        ]);
 
+                            'email' =>
+                            'Silakan login melalui panel admin.'
+
+                        ]);
+                case 2:
+                    Auth::logout();
+
+                    return redirect()
+                        ->route('login')
+                        ->withErrors([
+
+                            'email' =>
+                            'Silakan login melalui panel admin.'
+
+                        ]);
+                case 3:
+                    return redirect()
+                        ->route('dokter.beranda');
+
+                case 4:
+
+                    return redirect()
+                        ->route('pasien.beranda');
+
+                    // Role tidak dikenali
                 default:
 
                     Auth::logout();
 
-                    return back()->withErrors([
-                        'email' => 'Role tidak dikenali.'
-                    ]);
+                    return redirect()
+                        ->route('login')
+                        ->withErrors([
+
+                            'email' =>
+                            'Role user tidak dikenali.'
+
+                        ]);
             }
         }
 
-        return back()->withErrors([
-            'email' => 'Email atau password salah.'
-        ]);
+        // LOGIN GAGAL
+        return back()
+            ->withInput(
+                $request->only('email')
+            )
+            ->withErrors([
+
+                'email' =>
+                'Email atau password salah.'
+
+            ]);
     }
-    // Logout
+
     public function logout(Request $request)
     {
         Auth::logout();
+
         $request->session()->invalidate();
+
         $request->session()->regenerateToken();
-        return redirect()->route('login');
+
+        return redirect()
+            ->route('login');
     }
 }

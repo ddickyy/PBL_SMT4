@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('diubah_oleh')->nullable()->constrained('users', 'id_user')->nullOnDelete();
 
             $table->enum('status_baru', [
-                'pending',
+                'menunggu',
                 'dikonfirmasi',
                 'selesai',
                 'dibatalkan'

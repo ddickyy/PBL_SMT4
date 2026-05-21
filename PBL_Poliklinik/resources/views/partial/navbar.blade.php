@@ -18,8 +18,8 @@
         </li>
 
         <li>
-            <a href="{{ route('pasien.reservasi') }}"
-                class="{{ request()->routeIs('pasien.reservasi') ? 'active' : '' }}">
+            <a href="{{ route('pasien.reservasi.index') }}"
+                class="{{ request()->routeIs('pasien.reservasi.index') ? 'active' : '' }}">
                 Reservasi
             </a>
         </li>
@@ -46,7 +46,7 @@
 
             <div class="profile-circle">
 
-                @if(auth()->user()->foto)
+                @if(auth()->check() && auth()->user()->foto)
 
                     <img src="{{ asset('storage/' . auth()->user()->foto) }}"
                          alt="Foto Profil"
@@ -54,7 +54,7 @@
 
                 @else
 
-                    {{ strtoupper(substr(auth()->user()->nama, 0, 1)) }}
+                    {{ strtoupper(substr(auth()->user()->nama ?? 'D', 0, 1)) }}
 
                 @endif
 

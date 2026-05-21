@@ -21,7 +21,7 @@
             <h4>Navigasi</h4>
             <ul>
                 <li><a href="{{ route('pasien.beranda') }}">Beranda</a></li>
-                <li><a href="{{ route('pasien.reservasi') }}">Reservasi</a></li>
+                <li><a href="{{ route('pasien.reservasi.index') }}">Reservasi</a></li>
                 <li><a href="{{ route('pasien.riwayat') }}">Riwayat</a></li>
                 <li><a href="{{ route('pasien.profil.show') }}">Profil</a></li>
             </ul>
@@ -48,7 +48,7 @@
 
 <style>
     .footer {
-        background: #f5f7fa;
+        background: #e5e7eb;
         padding: 60px 40px 20px;
         color: #1e293b;
     }
@@ -83,7 +83,7 @@
     .social-icons a {
         width: 45px;
         height: 45px;
-        background: #e2e8f0;
+        background: #cbd5e1;
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -114,7 +114,7 @@
 
     .footer-links ul li a {
         text-decoration: none;
-        color: #64748b;
+        color: #475569;
         transition: 0.3s;
     }
 
@@ -126,8 +126,8 @@
         text-align: center;
         margin-top: 40px;
         padding-top: 20px;
-        border-top: 1px solid #e2e8f0;
+        border-top: 1px solid #cbd5e1;
         font-size: 14px;
-        color: #64748b;
+        color: #475569;
     }
 </style>

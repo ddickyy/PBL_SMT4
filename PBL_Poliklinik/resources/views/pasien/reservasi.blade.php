@@ -4,9 +4,9 @@
 
 @section('hero')
 @include('partial.hero', [
-    'badge' => 'Layanan Kesehatan',
-    'title' => "Atur Waktu\nPemeriksaan Anda",
-    'desc' => "Pilih layanan spesialis yang Anda butuhkan.\nKami memastikan setiap kunjungan terasa personal, tenang, dan profesional.",
+    'badge' => 'LAYANAN KESEHATAN',
+    'title' => "Atur Waktu\n<span style='color:#facc15;'>Pemulihan Anda</span>",
+    'desc' => "Pilih dokter dan tentukan jadwal kunjungan Anda dengan mudah dan nyaman.",
     'buttonText' => null,
     'bg' => asset('images/poliklinik.jpg')
 ])
@@ -14,496 +14,860 @@
 
 @section('content')
 
-@php use Carbon\Carbon; @endphp
+@php
 
-<div class="reservasi-wrap">
+    use Carbon\Carbon;
+    use Carbon\CarbonPeriod;
 
-    <div class="section-header">
-        <h2 class="section-title">Reservasi Layanan</h2>
-        <p class="section-sub">Pilih dokter, jadwal, dan tanggal kunjungan Anda.</p>
+    $today =
+        Carbon::today()->startOfDay();
+
+    $rangeEnd =
+        Carbon::today()->addDays(13)->endOfDay();
+
+    $hariMap = [
+        1 => 'senin',
+        2 => 'selasa',
+        3 => 'rabu',
+        4 => 'kamis',
+        5 => 'jumat',
+        6 => 'sabtu',
+        7 => 'minggu',
+    ];
+
+@endphp
+
+<div class="reservasi-page">
+
+    {{-- HEADER --}}
+    <div class="reservasi-header">
+
+        <h2>Reservasi Layanan</h2>
+
+        <p>
+            Pilih dokter dan jadwal pemeriksaan Anda.
+        </p>
+
     </div>
 
-    @if(session('success'))
-        <div class="alert-success">{{ session('success') }}</div>
-    @endif
-
     @if($errors->any())
-        <div class="alert-error">
-            <ul>
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
 
-    <form action="{{ route('pasien.reservasi.store') }}" method="POST" id="reservasiForm">
+    <div style="
+        background:#fee2e2;
+        color:#991b1b;
+        padding:14px 18px;
+        border-radius:12px;
+        margin-bottom:20px;
+        font-weight:600;
+    ">
+
+        <ul style="margin:0;padding-left:18px;">
+
+            @foreach($errors->all() as $error)
+
+                <li>{{ $error }}</li>
+
+            @endforeach
+
+        </ul>
+
+    </div>
+
+@endif
+    <form action="{{ route('pasien.reservasi.store') }}"
+          method="POST"
+          id="reservasiForm">
+
         @csrf
-        <input type="hidden" name="id_jadwal" id="id_jadwal">
-        <input type="hidden" name="tanggal_reservasi" id="tanggal_reservasi">
 
-        <div class="step-block">
+        <input type="hidden"
+               name="id_jadwal"
+               id="id_jadwal">
 
-            <div class="step-label">
-                <span class="step-num">1</span>
-                <span class="step-text">Pilih Dokter & Jadwal</span>
-            </div>
+        <input type="hidden"
+               name="tanggal_reservasi"
+               id="tanggal_reservasi">
 
-            @if($dokterGroups->isEmpty())
+        {{-- STEP 1 --}}
+        <div class="step-title">
 
-                <div class="empty-box">
-                    <i class="fa-solid fa-user-doctor"></i>
-                    <h3>Belum Ada Jadwal Aktif</h3>
-                    <p>Saat ini belum ada jadwal dokter yang tersedia.</p>
-                </div>
+            <span>1</span>
 
-            @else
+            Pilih Dokter
 
-                <div class="dokter-grid">
-                    @foreach($dokterGroups as $idDokter => $group)
-                        @php
-                            $dokter = $group->first()->dokter;
-                            $foto = optional($dokter->user)->foto;
-                        @endphp
-                        <div class="dokter-card">
-                            <div class="dokter-top">
-                                <div class="dokter-profile">
-                                    <div class="dokter-avatar">
-                                        @if($foto)
-                                            <img src="{{ asset('storage/' . $foto) }}" alt="Foto Dokter">
-                                        @else
-                                            {{ strtoupper(substr(optional($dokter->user)->nama ?? 'D', 0, 1)) }}
-                                        @endif
-                                    </div>
-                                    <div>
-                                        <h3 class="dokter-nama">{{ optional($dokter->user)->nama ?? 'Dokter' }}</h3>
-                                        <p class="dokter-desc">{{ optional($dokter->spesialisasi)->nama_spesialisasi ?? '-' }}</p>
-                                    </div>
-                                </div>
-                            </div>
+        </div>
 
-                            <div class="jadwal-list">
+        <div class="dokter-layout">
 
-                                @foreach($group as $jadwal)
+            @forelse($dokterGroups as $idDokter => $group)
 
-                                    @php
-                                        $kuotas = $jadwal->kuotaHarian;
-                                    @endphp
+                @php
 
-                                    <div class="jadwal-item">
-                                        <div class="jadwal-head">
-                                            <strong>{{ $jadwal->hari }}</strong>
-                                            <span>{{ $jadwal->jam_mulai }} - {{ $jadwal->jam_selesai }}</span>
-                                        </div>
+                    $dokter =
+                        $group->first()->dokter;
 
-                                        @if($kuotas->isEmpty())
-                                            <div class="empty-inline">
-                                                Kuota harian belum tersedia.
-                                            </div>
-                                        @else
+                    $namaDokter =
+                        optional($dokter->user)->nama
+                        ?? 'Dokter';
 
-                                            <div class="tanggal-grid">
-                                                @foreach($kuotas as $kuota)
+                    $spesialisasi =
+                        optional($dokter->spesialisasi)
+                            ->nama_spesialisasi
+                        ?? '-';
 
-                                                    @php
-                                                        $isFull = $kuota->kuota_terisi >= $kuota->kuota_maksimal;
-                                                    @endphp
+                    $deskripsi =
+                        optional($dokter->spesialisasi)
+                            ->deskripsi
+                        ?? '-';
 
-                                                    <button type="button"
-                                                        class="tanggal-chip {{ $isFull ? 'disabled-chip' : '' }}"
-                                                        {{ $isFull ? 'disabled' : '' }}
-                                                        data-id-jadwal="{{ $jadwal->id_jadwal }}"
-                                                        data-tanggal="{{ $kuota->tanggal }}"
-                                                        data-dokter="{{ optional($dokter->user)->nama }}"
-                                                        data-spesialisasi="{{ optional($dokter->spesialisasi)->nama_spesialisasi }}"
-                                                        data-jam="{{ $jadwal->jam_mulai }} - {{ $jadwal->jam_selesai }}"
-                                                        onclick="pilihKuota(this)">
+                    $foto =
+                        optional($dokter->user)->foto;
 
-                                                        <span class="tgl-hari">{{ Carbon::parse($kuota->tanggal)->translatedFormat('D') }}</span>
-                                                        <span class="tgl-num">{{ Carbon::parse($kuota->tanggal)->translatedFormat('d') }}</span>
-                                                        <small>{{ Carbon::parse($kuota->tanggal)->translatedFormat('d M') }}</small>
-                                                        <b>{{ $kuota->kuota_terisi }}/{{ $kuota->kuota_maksimal }}</b>
+                    $inisial =
+                        collect(explode(' ', $namaDokter))
+                            ->filter()
+                            ->map(fn ($kata) =>
+                                strtoupper(substr($kata, 0, 1))
+                            )
+                            ->take(2)
+                            ->implode('');
 
-                                                        @if($isFull)
-                                                            <span class="full-text">Penuh</span>
-                                                        @endif
-                                                    </button>
-                                                @endforeach
-                                            </div>
-                                        @endif
-                                    </div>
-                                @endforeach
-                            </div>
+                    $availability = collect();
+
+                    foreach ($group as $jadwal)
+                    {
+                        $jadwalHari =
+                            strtolower(trim($jadwal->hari));
+
+                        $jamMulai =
+                            Carbon::parse(
+                                $jadwal->jam_mulai
+                            )->format('H:i');
+
+                        $jamSelesai =
+                            Carbon::parse(
+                                $jadwal->jam_selesai
+                            )->format('H:i');
+
+                        foreach (
+                            CarbonPeriod::create(
+                                $today,
+                                '1 day',
+                                $rangeEnd
+                            ) as $tanggal
+                        )
+                        {
+                            $hariTanggal =
+                                $hariMap[
+                                    $tanggal->dayOfWeekIso
+                                ] ?? '';
+
+                            if (
+                                $hariTanggal !==
+                                $jadwalHari
+                            )
+                            {
+                                continue;
+                            }
+
+                            $kuota =
+                                $jadwal->kuotaHarian
+                                    ->first(function ($item)
+                                        use ($tanggal)
+                                    {
+                                        return Carbon::parse(
+                                            $item->tanggal
+                                        )->toDateString()
+                                        ===
+                                        $tanggal->toDateString();
+                                    });
+
+                            $kuotaTerisi =
+                                $kuota->kuota_terisi ?? 0;
+
+                            $kuotaMaksimal =
+                                $kuota->kuota_maksimal ??
+                                floor(
+
+                                    Carbon::parse(
+                                        $jadwal->jam_mulai
+                                    )->diffInMinutes(
+
+                                        Carbon::parse(
+                                            $jadwal->jam_selesai
+                                        )
+
+                                    )
+
+                                    / $jadwal->durasi_menit
+                                );
+
+                            $availability->push([
+
+                                'id_jadwal' =>
+                                    $jadwal->id_jadwal,
+
+                                'tanggal' =>
+                                    $tanggal->toDateString(),
+
+                                'hari_label' =>
+                                    strtoupper(
+                                        $tanggal
+                                            ->locale('id')
+                                            ->translatedFormat('D')
+                                    ),
+
+                                'tanggal_num' =>
+                                    $tanggal->format('d'),
+
+                                'bulan_label' =>
+                                    strtoupper(
+                                        $tanggal
+                                            ->locale('id')
+                                            ->translatedFormat('M')
+                                    ),
+
+                                'jam' =>
+                                    $jamMulai .
+                                    ' - ' .
+                                    $jamSelesai .
+                                    ' WIB',
+
+                                'kuota_terisi' =>
+                                    (int) $kuotaTerisi,
+
+                                'kuota_maksimal' =>
+                                    (int) $kuotaMaksimal,
+
+                                'is_full' =>
+                                    (int) $kuotaTerisi >=
+                                    (int) $kuotaMaksimal,
+                            ]);
+                        }
+                    }
+
+                    $availability =
+                        $availability
+                            ->sortBy('tanggal')
+                            ->values();
+
+                    $firstAvailability =
+                        $availability->first();
+
+                @endphp
+
+                <div class="doctor-card-modern"
+
+                     onclick="pilihDokter(this)"
+
+                     data-availability='@json($availability)'
+
+                     data-kuota-awal="
+                     {{ (optional($firstAvailability)['kuota_maksimal'] ?? 0)
+                        - (optional($firstAvailability)['kuota_terisi'] ?? 0) }}
+                     /
+                     {{ optional($firstAvailability)['kuota_maksimal'] ?? 0 }}">
+
+                    {{-- TOP --}}
+                    <div class="doctor-top-modern">
+
+                        <div class="doctor-icon">
+
+                            @if($foto)
+
+                                <img src="{{ asset('storage/' . $foto) }}"
+                                     alt="Foto Dokter">
+
+                            @elseif($inisial !== '')
+
+                                <span>{{ $inisial }}</span>
+
+                            @else
+
+                                <i class="fa-solid fa-user-doctor"></i>
+
+                            @endif
+
                         </div>
-                    @endforeach
+
+                        <div class="quota-side">
+
+                            <small>KUOTA TERSEDIA</small>
+
+                            <strong class="quota-display">
+                                -
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                    {{-- CONTENT --}}
+                    <div class="doctor-content-modern">
+
+                        <h3>{{ $namaDokter }}</h3>
+
+                        <div class="doctor-specialist">
+                            {{ $spesialisasi }}
+                        </div>
+
+                        <p>
+                            {{ $deskripsi }}
+                        </p>
+
+                        <div class="doctor-selected">
+                            Pilih Dokter →
+                        </div>
+
+                    </div>
+
                 </div>
-            @endif
+
+            @empty
+
+                <div class="empty-doctor-card">
+
+                    <i class="fa-solid fa-user-doctor"></i>
+
+                    <h3>
+                        Belum Ada Dokter Tersedia
+                    </h3>
+
+                    <p>
+                        Saat ini belum ada dokter tersedia.
+                    </p>
+
+                </div>
+
+            @endforelse
+
         </div>
 
-        <div class="step-block">
-            <div class="step-label">
-                <span class="step-num">2</span>
-                <span class="step-text">Konfirmasi Reservasi</span>
-            </div>
+        {{-- STEP 2 --}}
+        <div class="step-title">
 
-            <div class="confirm-box">
+            <span>2</span>
 
-                <div id="summaryText">
-                    Belum ada jadwal yang dipilih.
+            Pilih Tanggal
+
+        </div>
+
+        <div class="tanggal-wrapper">
+
+            <div class="tanggal-grid-main"
+                 id="tanggalGrid">
+
+                <div class="empty-date">
+                    Pilih dokter terlebih dahulu
                 </div>
 
-                <button type="submit" class="btn-confirm" id="btnConfirm" disabled>
-                    Konfirmasi Reservasi ▶
-                </button>
             </div>
+
         </div>
+
+        {{-- BUTTON --}}
+        <div class="confirm-box">
+
+            <button type="submit"
+                    class="btn-confirm-modern"
+                    id="btnConfirm"
+                    disabled>
+
+                Konfirmasi Reservasi
+
+            </button>
+
+        </div>
+
     </form>
+
 </div>
 
 <script>
-    function pilihKuota(el)
+
+    function pilihDokter(el)
     {
-        document.querySelectorAll('.tanggal-chip')
-            .forEach(c => c.classList.remove('selected'));
+        document.querySelectorAll('.doctor-card-modern')
+            .forEach(card =>
+                card.classList.remove('selected-doctor')
+            );
+
+        el.classList.add('selected-doctor');
+
+        const quotaDisplay =
+            el.querySelector('.quota-display');
+
+        quotaDisplay.innerHTML =
+            el.dataset.kuotaAwal || '-';
+
+        const availability =
+            JSON.parse(el.dataset.availability || '[]');
+
+        const tanggalContainer =
+            document.getElementById('tanggalGrid');
+
+        const availableSchedule =
+            availability
+                .filter(item => !item.is_full)
+                .sort((a, b) =>
+                    new Date(a.tanggal)
+                    - new Date(b.tanggal)
+                );
+
+        document.getElementById('btnConfirm')
+            .disabled = true;
+
+        document.getElementById('id_jadwal')
+            .value = '';
+
+        document.getElementById('tanggal_reservasi')
+            .value = '';
+
+        if (!availableSchedule.length)
+        {
+            tanggalContainer.innerHTML = `
+                <div class="empty-date">
+                    Tidak ada jadwal tersedia
+                    untuk 2 minggu ke depan.
+                </div>
+            `;
+
+            return;
+        }
+
+        tanggalContainer.innerHTML =
+            availableSchedule.map(item => `
+
+                <button
+                    type="button"
+                    class="tanggal-item"
+
+                    data-id-jadwal="${item.id_jadwal}"
+
+                    data-tanggal="${item.tanggal}"
+
+                    data-kuota="${
+                        item.kuota_maksimal
+                        - item.kuota_terisi
+                    }/${item.kuota_maksimal}"
+
+                    onclick="pilihTanggal(event, this)">
+
+                    <span class="tgl-hari">
+                        ${item.hari_label}
+                    </span>
+
+                    <span class="tgl-num">
+                        ${item.tanggal_num}
+                    </span>
+
+                    <small>
+                        ${item.bulan_label}
+                    </small>
+
+                </button>
+
+            `).join('');
+    }
+
+    function pilihTanggal(event, el)
+    {
+        event.stopPropagation();
+
+        document.querySelectorAll('.tanggal-item')
+            .forEach(item =>
+                item.classList.remove('selected')
+            );
 
         el.classList.add('selected');
 
-        document.getElementById('id_jadwal').value = el.dataset.idJadwal;
-        document.getElementById('tanggal_reservasi').value = el.dataset.tanggal;
+        document.getElementById('id_jadwal')
+            .value = el.dataset.idJadwal;
 
-        document.getElementById('summaryText').innerHTML = `
-            <strong>${el.dataset.dokter}</strong><br>
-            ${el.dataset.spesialisasi}<br>
-            ${el.dataset.jam}<br>
-            Tanggal: <strong>${el.dataset.tanggal}</strong>
-        `;
+        document.getElementById('tanggal_reservasi')
+            .value = el.dataset.tanggal;
 
-        document.getElementById('btnConfirm').disabled = false;
+        const dokterCard =
+            document.querySelector('.selected-doctor');
+
+        if (dokterCard)
+        {
+            const quotaDisplay =
+                dokterCard.querySelector('.quota-display');
+
+            quotaDisplay.innerHTML =
+                el.dataset.kuota;
+        }
+
+        document.getElementById('btnConfirm')
+            .disabled = false;
     }
+
 </script>
 
 <style>
 
-    main {
-        background: #f7f7f8;
-        padding: 40px 0 80px;
-        font-family: 'Inter', system-ui, sans-serif;
-    }
-
-    .reservasi-wrap {
+    .reservasi-page {
         max-width: 1200px;
         margin: 0 auto;
-        padding: 0 32px;
+        padding: 40px 24px 90px;
     }
 
-    .section-header {
-        margin-bottom: 28px;
+    .reservasi-header {
+        margin-bottom: 34px;
     }
 
-    .section-title {
-        font-size: 2rem;
-        font-weight: 800;
+    .reservasi-header h2 {
+        font-size: 42px;
+        font-weight: 900;
         color: #102b57;
-        margin: 0 0 6px;
+        margin-bottom: 10px;
+        line-height: 1.1;
     }
 
-    .section-sub {
-        color: #6f7380;
-        margin: 0;
+    .reservasi-header p {
+        font-size: 16px;
+        color: #64748b;
     }
 
-    .alert-success {
-        background: #dcfce7;
-        color: #166534;
-        padding: 14px 18px;
-        border-radius: 14px;
-        margin-bottom: 18px;
-        font-size: 14px;
-        font-weight: 600;
-    }
-
-    .alert-error {
-        background: #fee2e2;
-        color: #991b1b;
-        padding: 14px 18px;
-        border-radius: 14px;
-        margin-bottom: 18px;
-        font-size: 14px;
-    }
-
-    .alert-error ul {
-        margin: 0;
-        padding-left: 18px;
-    }
-
-    .step-block {
-        background: #ffffff;
-        border-radius: 20px;
-        padding: 28px 32px;
+    .step-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
         margin-bottom: 20px;
-        box-shadow: 0 8px 32px rgba(16,43,87,.06);
+        font-size: 24px;
+        font-weight: 800;
+        color: #102b57;
     }
 
-    .step-label {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        margin-bottom: 24px;
-    }
-
-    .step-num {
-        width: 32px;
-        height: 32px;
+    .step-title span {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
         background: #102b57;
         color: white;
-        border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 14px;
         font-weight: 800;
-    }
-
-    .step-text {
-        font-size: 1.1rem;
-        font-weight: 700;
-        color: #102b57;
-    }
-
-    .dokter-grid {
-        display: grid;
-        gap: 18px;
-    }
-
-    .dokter-card {
-        border: 2px solid #e8eaef;
-        border-radius: 18px;
-        padding: 22px;
-        background: #fafafa;
-    }
-
-    .dokter-top {
-        margin-bottom: 18px;
-    }
-
-    .dokter-profile {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-    }
-
-    .dokter-avatar {
-        width: 58px;
-        height: 58px;
-        border-radius: 16px;
-        background: #102b57;
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 800;
-        overflow: hidden;
         flex-shrink: 0;
     }
 
-    .dokter-avatar img {
+    .dokter-layout {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 22px;
+        margin-bottom: 34px;
+    }
+
+    .doctor-card-modern {
+        position: relative;
+        background: white;
+        border-radius: 24px;
+        padding: 26px;
+        border: 2px solid #edf0f5;
+        cursor: pointer;
+        transition: all .25s ease;
+        overflow: hidden;
+    }
+
+    .doctor-card-modern:hover {
+        transform: translateY(-4px);
+        border-color: #dbe4ff;
+        box-shadow: 0 14px 34px rgba(15, 23, 42, .08);
+    }
+
+    .selected-doctor {
+        border-color: #facc15;
+        background: linear-gradient(
+            to bottom,
+            #ffffff,
+            #fffdf3
+        );
+        box-shadow: 0 14px 34px rgba(250, 204, 21, .18);
+    }
+
+    .doctor-top-modern {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 22px;
+    }
+
+    .doctor-icon {
+        width: 64px;
+        height: 64px;
+        border-radius: 18px;
+        background: linear-gradient(
+            135deg,
+            #eef2ff,
+            #dbeafe
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        flex-shrink: 0;
+        color: #102b57;
+        font-weight: 900;
+        font-size: 22px;
+    }
+
+    .doctor-icon img {
         width: 100%;
         height: 100%;
         object-fit: cover;
     }
 
-    .dokter-nama {
-        margin: 0 0 4px;
-        color: #102b57;
-        font-size: 1.1rem;
-        font-weight: 800;
+    .quota-side {
+        text-align: right;
     }
 
-    .dokter-desc {
-        margin: 0;
-        color: #64748b;
-        font-size: .92rem;
+    .quota-side small {
+        display: block;
+        font-size: 11px;
+        font-weight: 700;
+        color: #94a3b8;
+        margin-bottom: 6px;
+        letter-spacing: .4px;
     }
 
-    .jadwal-list {
-        display: grid;
-        gap: 16px;
-    }
-
-    .jadwal-item {
-        background: white;
-        border-radius: 16px;
-        border: 1px solid #e8eaef;
-        padding: 18px;
-    }
-
-    .jadwal-head {
-        display: flex;
-        justify-content: space-between;
+    .quota-display {
+        display: inline-flex;
         align-items: center;
-        margin-bottom: 14px;
-        gap: 12px;
+        justify-content: center;
+        min-width: 74px;
+        height: 42px;
+        padding: 0 14px;
+        border-radius: 14px;
+        background: #102b57;
+        color: white;
+        font-size: 20px;
+        font-weight: 900;
+        box-shadow: 0 8px 18px rgba(16, 43, 87, .18);
     }
 
-    .jadwal-head strong {
+    .doctor-content-modern h3 {
+        margin: 0 0 10px;
+        font-size: 25px;
+        font-weight: 900;
         color: #102b57;
+        line-height: 1.2;
     }
 
-    .jadwal-head span {
+    .doctor-specialist {
+        display: inline-flex;
+        align-items: center;
+        padding: 7px 14px;
+        border-radius: 999px;
+        background: #eef2ff;
+        color: #1e40af;
+        font-size: 12px;
+        font-weight: 800;
+        margin-bottom: 16px;
+    }
+
+    .doctor-content-modern p {
         color: #64748b;
+        line-height: 1.7;
+        margin-bottom: 20px;
         font-size: 14px;
     }
 
-    .tanggal-grid {
+    .doctor-selected {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        font-weight: 800;
+        color: #8b6a00;
+    }
+
+    .tanggal-wrapper {
+        background: white;
+        border-radius: 24px;
+        padding: 26px;
+        margin-bottom: 28px;
+        border: 1px solid #edf0f5;
+    }
+
+    .tanggal-grid-main {
         display: flex;
         flex-wrap: wrap;
-        gap: 10px;
+        gap: 14px;
     }
 
-    .tanggal-chip {
-        border: 2px solid #e8eaef;
-        background: #fafafa;
-        border-radius: 14px;
-        padding: 12px;
+    .tanggal-item {
+        width: 92px;
+        min-height: 122px;
+        border-radius: 20px;
+        border: 2px solid #edf0f5;
+        background: #ffffff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
         cursor: pointer;
-        min-width: 100px;
-        text-align: center;
-        transition: .2s ease;
+        transition: all .2s ease;
+        position: relative;
     }
 
-    .tanggal-chip:hover {
-        border-color: #102b57;
-        transform: translateY(-2px);
+    .tanggal-item:hover {
+        transform: translateY(-3px);
+        border-color: #c7d2fe;
+        box-shadow: 0 10px 20px rgba(15, 23, 42, .06);
     }
 
-    .tanggal-chip.selected {
-        border-color: #f6c40b;
-        background: #fffef5;
-        box-shadow: 0 8px 28px rgba(246,196,11,.18);
-    }
+    .tanggal-item.selected {
+        background: linear-gradient(
+            to bottom,
+            #fffef2,
+            #fff8db
+        );
 
-    .disabled-chip {
-        opacity: .55;
-        cursor: not-allowed;
+        border-color: #facc15;
+
+        box-shadow: 0 10px 24px rgba(250, 204, 21, .22);
     }
 
     .tgl-hari {
-        display: block;
         font-size: 11px;
         font-weight: 800;
         color: #94a3b8;
+        margin-bottom: 6px;
+        letter-spacing: .5px;
     }
 
     .tgl-num {
-        display: block;
-        font-size: 24px;
+        font-size: 36px;
         font-weight: 900;
         color: #102b57;
+        line-height: 1;
     }
 
-    .tanggal-chip small {
-        display: block;
-        margin-top: 4px;
-        color: #64748b;
-    }
-
-    .tanggal-chip b {
-        display: block;
-        margin-top: 6px;
-        color: #102b57;
-        font-size: 12px;
-    }
-
-    .full-text {
-        display: block;
-        margin-top: 6px;
-        color: #dc2626;
+    .tanggal-item small {
+        margin-top: 7px;
         font-size: 11px;
         font-weight: 700;
-    }
-
-    .empty-inline,
-    .empty-box {
-        background: #f8fafc;
-        border: 1px dashed #dbe2ea;
-        border-radius: 16px;
-        padding: 18px;
-        text-align: center;
         color: #64748b;
     }
 
-    .empty-box {
-        padding: 40px 20px;
-    }
-
-    .empty-box i {
-        display: block;
-        font-size: 34px;
+    .tanggal-item b {
+        margin-top: 10px;
+        font-size: 13px;
+        font-weight: 800;
         color: #102b57;
-        margin-bottom: 10px;
+        background: #f8fafc;
+        padding: 4px 10px;
+        border-radius: 999px;
     }
 
     .confirm-box {
-        display: grid;
-        gap: 16px;
+        margin-top: 10px;
     }
 
-    #summaryText {
-        background: #f8fafc;
-        border: 1px solid #e8eaef;
-        border-radius: 16px;
-        padding: 16px;
-        color: #102b57;
-        line-height: 1.7;
-    }
-
-    .btn-confirm {
+    .btn-confirm-modern {
         width: 100%;
-        padding: 18px;
-        background: #102b57;
-        color: white;
+        height: 66px;
         border: none;
-        border-radius: 16px;
-        font-size: 1rem;
+        border-radius: 20px;
+        background: linear-gradient(
+            135deg,
+            #102b57,
+            #163d78
+        );
+        color: white;
+        font-size: 18px;
         font-weight: 800;
         cursor: pointer;
-        transition: .2s ease;
+        transition: all .25s ease;
+        box-shadow: 0 12px 28px rgba(16, 43, 87, .18);
     }
 
-    .btn-confirm:hover:not(:disabled) {
-        background: #0d2247;
+    .btn-confirm-modern:hover:not(:disabled) {
         transform: translateY(-2px);
+        box-shadow: 0 18px 34px rgba(16, 43, 87, .22);
     }
 
-    .btn-confirm:disabled {
-        opacity: .55;
+    .btn-confirm-modern:disabled {
+        opacity: .5;
         cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
     }
 
-    @media (max-width: 768px) {
-        .reservasi-wrap {
-            padding: 0 16px;
+    .empty-date {
+        width: 100%;
+        padding: 24px;
+        border-radius: 18px;
+        background: #f8fafc;
+        color: #64748b;
+        text-align: center;
+        font-weight: 600;
+    }
+
+    .empty-doctor-card {
+        grid-column: 1 / -1;
+        background: white;
+        border-radius: 24px;
+        padding: 46px 24px;
+        text-align: center;
+        border: 2px dashed #dbe4ee;
+    }
+
+    .empty-doctor-card i {
+        font-size: 40px;
+        color: #102b57;
+        margin-bottom: 14px;
+    }
+
+    .empty-doctor-card h3 {
+        font-size: 22px;
+        color: #102b57;
+        margin-bottom: 8px;
+    }
+
+    .empty-doctor-card p {
+        color: #64748b;
+    }
+
+    @media (max-width: 768px)
+    {
+        .reservasi-page {
+            padding: 28px 16px 80px;
         }
 
-        .step-block {
-            padding: 22px 18px;
+        .dokter-layout {
+            grid-template-columns: 1fr;
         }
 
-        .jadwal-head {
-            flex-direction: column;
-            align-items: flex-start;
+        .reservasi-header h2 {
+            font-size: 34px;
         }
 
-        .tanggal-grid {
-            width: 100%;
+        .doctor-content-modern h3 {
+            font-size: 22px;
         }
 
-        .tanggal-chip {
-            flex: 1;
-            min-width: 90px;
+        .tanggal-grid-main {
+            justify-content: center;
+        }
+
+        .tanggal-item {
+            width: 82px;
+            min-height: 108px;
+        }
+
+        .tgl-num {
+            font-size: 30px;
+        }
+
+        .btn-confirm-modern {
+            height: 60px;
+            font-size: 16px;
         }
     }
 
 </style>
-
 @endsection
