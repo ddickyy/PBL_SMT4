@@ -75,8 +75,17 @@ class SpesialisasiResource extends Resource
 
     public static function canAccess(): bool
     {
-        return Auth::check() && Auth::user()->role->nama_role === 'superadmin';
-    }
+        $user = Auth::user();
+
+        if (! $user) {
+            return false;
+        }
+
+        return in_array(
+            $user->role?->nama_role,
+            ['superadmin', 'admin']
+        );
+    }   
 
     public static function shouldRegisterNavigation(): bool
     {

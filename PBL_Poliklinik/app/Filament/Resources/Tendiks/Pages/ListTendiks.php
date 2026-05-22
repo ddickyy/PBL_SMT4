@@ -10,10 +10,12 @@ class ListTendiks extends ListRecords
 {
     protected static string $resource = TendikResource::class;
 
+
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
+            CreateAction::make()
+                ->visible(fn () => TendikResource::canCreate()),        
         ];
     }
 }

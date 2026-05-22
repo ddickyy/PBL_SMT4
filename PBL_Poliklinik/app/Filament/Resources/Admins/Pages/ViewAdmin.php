@@ -17,7 +17,8 @@ class ViewAdmin extends ViewRecord
             Action::make('Kembali')
                 ->url(AdminResource::getUrl('index'))
                 ->color('success'),
-            EditAction::make(),
+            EditAction::make()
+                ->visible(fn () => AdminResource::canEdit($this->record)),
         ];
     }
 }
