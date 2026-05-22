@@ -45,6 +45,19 @@ class JadwalDoktersTable
                     ->label('Durasi per sesi (menit)')
                     ->numeric()
                     ->sortable(),
+                TextColumn::make('kuotaHarian.kuota_maksimal')
+                    ->label('Kuota Harian')
+                    ->numeric()
+                    ->state(function ($record) {
+                        return $record->kuotaHarian
+                            ->first()?->kuota_maksimal ?? '-';
+                    })
+                    ->sortable(),
+                IconColumn::make('aktif')
+                    ->label('Aktif')
+                    ->boolean()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

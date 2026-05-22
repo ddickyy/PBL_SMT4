@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::table('riwayat_status_reservasi', function (Blueprint $table) {
 
             $table->enum('status_lama', [
-                'pending',
+                'menunggu',
                 'dikonfirmasi',
                 'selesai',
                 'dibatalkan'

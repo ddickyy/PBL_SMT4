@@ -41,6 +41,7 @@ class ReservasisTable
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('tanggal_reservasi')
+                    ->label('Tanggal Pemeriksaan')
                     ->date()
                     ->sortable(),
                 TextColumn::make('nomor_antrian')
@@ -53,6 +54,7 @@ class ReservasisTable
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('created_at')
+                    ->label('Dibuat Pada')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
