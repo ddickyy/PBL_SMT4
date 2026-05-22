@@ -132,7 +132,7 @@ class ReservasiForm
                         Select::make('status')
                             ->label('Status')
                             ->options([
-                                'pending' => 'Pending',
+                                'menunggu' => 'Menunggu',
                                 'dikonfirmasi' => 'Dikonfirmasi',
                                 'selesai' => 'Selesai',
                                 'dibatalkan' => 'Dibatalkan'

@@ -38,7 +38,7 @@ class ReservasiInfolist
                                         ->color('warning'),
 
                                     TextEntry::make('tanggal_reservasi')
-                                        ->label('Tanggal Reservasi')
+                                        ->label('Tanggal Pemeriksaan')
                                         ->date('d F Y')
                                         ->icon('heroicon-o-calendar-days'),
 
@@ -61,6 +61,11 @@ class ReservasiInfolist
                                             'primary' => 'selesai',
                                             'danger' => 'dibatalkan',
                                         ]),
+
+                                    TextEntry::make('created_at')
+                                        ->label('Tanggal Reservasi Dibuat')
+                                        ->date('d F Y')
+                                        ->icon('heroicon-o-calendar-days'),
 
                                 ])
                                 ->columns(2),

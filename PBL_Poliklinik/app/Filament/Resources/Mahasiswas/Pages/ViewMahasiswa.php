@@ -17,7 +17,8 @@ class ViewMahasiswa extends ViewRecord
             Action::make('Kembali')
                 ->url(MahasiswaResource::getUrl('index'))
                 ->color('success'),
-            EditAction::make(),
+            EditAction::make()
+                ->visible(fn () => MahasiswaResource::canEdit($this->record)),
         ];
     }
 }

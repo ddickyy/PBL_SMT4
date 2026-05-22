@@ -12,6 +12,7 @@ use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class DoktersTable
 {
@@ -55,9 +56,20 @@ class DoktersTable
                 TrashedFilter::make(),
             ])
             ->recordActions([
+
                 ViewAction::make(),
-                EditAction::make(),
-                DeleteAction::make(),
+
+                EditAction::make()
+                    ->visible(fn () =>
+                        Auth::user()?->role?->nama_role
+                        === 'superadmin'
+                    ),
+
+                DeleteAction::make()
+                    ->visible(fn () =>
+                        Auth::user()?->role?->nama_role
+                        === 'superadmin'
+                    ),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

@@ -19,6 +19,7 @@ class JadwalDokter extends Model
         'jam_selesai',
         'durasi_menit',
         'aktif',
+        'kuota_maksimal',
     ];
 
     protected $casts = [

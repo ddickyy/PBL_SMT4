@@ -17,7 +17,8 @@ class ViewDosen extends ViewRecord
             Action::make('Kembali')
                 ->url(DosenResource::getUrl('index'))
                 ->color('success'),
-            EditAction::make(),
+            EditAction::make()
+                ->visible(fn () => DosenResource::canEdit($this->record)),
         ];
     }
 }

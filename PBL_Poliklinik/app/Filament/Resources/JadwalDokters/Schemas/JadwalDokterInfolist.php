@@ -50,6 +50,14 @@ class JadwalDokterInfolist
 
                         Group::make([
 
+                            TextEntry::make('kuota_maksimal')
+                                ->label('Kuota Maksimal')
+                                ->state(function ($record) {
+
+                                    return $record->kuotaHarian
+                                        ->first()?->kuota_maksimal ?? '-';
+                                }),
+
                             IconEntry::make('aktif')
                                 ->label('Status')
                                 ->boolean()

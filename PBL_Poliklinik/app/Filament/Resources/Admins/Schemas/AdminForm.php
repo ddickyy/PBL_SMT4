@@ -25,10 +25,13 @@ class AdminForm
                             ->searchable()
                             ->preload(),
 
-                        TextInput::make('tipe_admin')
+                        Select::make('tipe_admin')
                             ->label('Tipe Admin')
-                            ->required()
-                            ->maxLength(50),
+                            ->options([
+                                'Super Admin' => 'Super Admin',
+                                'Admin' => 'Admin',
+                            ])
+                            ->required(),
 
                     ])
                     ->columnSpanFull(),
