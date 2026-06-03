@@ -44,7 +44,7 @@
             <thead>
                 <tr>
                     <th>INFORMASI PASIEN</th>
-                    <th>KELUHAN</th>
+                    <th>Nomor Antrian</th>
                     <th>WAKTU</th>
                     <th>STATUS</th>
                     <th></th>
@@ -73,8 +73,8 @@
         </div>
     </td>
 
-    <td class="dp-keluhan">
-        {{ $p->keluhan ?? '-' }}
+    <td class="dp-NomorAntrian">
+        {{ $p->nomor_antrian ?? '-' }}
     </td>
 
     <td class="dp-waktu">
@@ -90,16 +90,51 @@
         </span>
 
     </td>
-
     <td>
+        <div class="dp-dropdown">
 
-        <a
-            href="{{ route('dokter.pasien.detail', $p->id_reservasi) }}"
-            class="dp-action"
-        >
-            <i class="fa-solid fa-chevron-right"></i>
-        </a>
+            <button type="button" class="dp-action dp-dropdown-btn">
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+            </button>
 
+            <div class="dp-dropdown-menu">
+
+                <a
+                    href="{{ route('dokter.pasien.detail', $p->id_reservasi) }}"
+                    class="dp-dropdown-item"
+                >
+                    <i class="fa-solid fa-user"></i>
+                    Detail Pasien
+                </a>
+
+                <form
+                    method="POST"
+                    action="{{ route('dokter.pasien.updateStatus', $p->id_reservasi) }}"
+                >
+                    @csrf
+                    @method('PUT')
+
+                    <button type="submit" name="status" value="menunggu" class="dp-status-option">
+                        Menunggu
+                    </button>
+
+                    <button type="submit" name="status" value="dikonfirmasi" class="dp-status-option">
+                        Dikonfirmasi
+                    </button>
+
+                    <button type="submit" name="status" value="selesai" class="dp-status-option">
+                        Selesai
+                    </button>
+
+                    <button type="submit" name="status" value="dibatalkan" class="dp-status-option">
+                        Dibatalkan
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
     </td>
 
 </tr>
@@ -155,20 +190,6 @@ document.addEventListener('click', function() {
     });
 });
 
-function ubahStatus(el, statusBaru) {
-
-    const row = el.closest('.dp-tr');
-
-    const badge = row.querySelector('.dp-badge');
-
-    badge.className = 'dp-badge';
-
-    badge.classList.add(`dp-badge--${statusBaru}`);
-
-    badge.innerText = statusBaru.toUpperCase();
-
-    row.querySelector('.dp-dropdown').classList.remove('active');
-}
 </script>
 
 <style>
@@ -176,7 +197,6 @@ function ubahStatus(el, statusBaru) {
 .dp-section   { padding: 30px 24px 60px; background: #f5f7fb; }
 .dp-container { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
 
-/* FILTER BAR */
 .dp-filterbar {
     display: flex;
     justify-content: space-between;
@@ -210,48 +230,54 @@ function ubahStatus(el, statusBaru) {
 .dp-tab.active { background: #102b57; color: #fff; }
 .dp-tab:hover:not(.active) { background: #e2e8f0; }
 
-/* TABLE */
 .dp-table-wrap {
     background: #fff;
     border-radius: 22px;
     box-shadow: 0 10px 30px rgba(16,43,87,.07);
-    overflow: hidden;
-    overflow-x: auto;
+    overflow: visible;
 }
-.dp-table {
-    width: 100%;
-    border-collapse: collapse;
+
+.dp-table{
+    width:100%;
+    table-layout:auto;
 }
+
 .dp-table thead tr {
     background: #f8fafc;
     border-bottom: 1px solid #e2e8f0;
 }
+
 .dp-table th {
-    padding: 14px 20px;
+    padding: 12px 20px;
     font-size: 11px; font-weight: 800;
     color: #94a3b8;
     text-transform: uppercase; letter-spacing: .5px;
     text-align: left; white-space: nowrap;
 }
+
+.dp-table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.dp-table td,
+.dp-table th{
+    border:none;
+}
+
 .dp-tr { border-bottom: 1px solid #f1f5f9; transition: background .15s; }
 .dp-tr:hover { background: #f8fafc; }
 .dp-tr:last-child { border-bottom: none; }
-.dp-table td { padding: 16px 20px; vertical-align: middle; }
+.dp-table td { padding: 14px 20px; vertical-align: middle; }
 
 .dp-pasien { display: flex; align-items: center; gap: 12px; }
 .dp-pasien img { width: 44px; height: 44px; border-radius: 12px; object-fit: cover; flex-shrink: 0; }
 .dp-pasien h4 { margin: 0 0 3px; font-size: 15px; font-weight: 700; color: #102b57; }
 .dp-pasien p  { margin: 0; font-size: 12px; color: #94a3b8; }
-
-.dp-keluhan { font-size: 13px; color: #64748b; max-width: 280px; }
+.dp-NomorAntrian{ font-size:18px; font-weight:700; color:#102b57; white-space:nowrap;}
 .dp-waktu { width:150px; min-width:150px; font-size:14px; font-weight:700; color:#102b57; white-space:nowrap; }
 
 .dp-badge { width:95px; min-width:95px; display:inline-flex; align-items:center; justify-content:center; padding:6px 14px; border-radius:999px; font-size:11px; font-weight:800; letter-spacing:.4px; white-space:nowrap; }
-
-.dp-badge--selesai { background:#dcfce7; color:#15803d; }
-.dp-badge--proses { background:#fef3c7; color:#b45309; }
-.dp-badge--menunggu { background:#e2e8f0; color:#64748b; }
-.dp-badge--batal, .dp-badge--dibatalkan { background:#fee2e2; color:#dc2626; }
 
 .dp-action {
     width: 34px; height: 34px;
@@ -264,7 +290,6 @@ function ubahStatus(el, statusBaru) {
 }
 .dp-action:hover { background: #102b57; color: #fff; }
 
-/* PAGINATION */
 .dp-pagination {
     display: flex; justify-content: space-between; align-items: center;
     padding: 20px 4px 0;
@@ -294,26 +319,26 @@ function ubahStatus(el, statusBaru) {
     .dp-table td:nth-child(3) { display: none; }
 }
 
-.dp-dropdown {
-    position: relative;
+.dp-dropdown{
+    position:relative;
 }
 
-.dp-dropdown-menu {
-    position: absolute;
-    top: 45px;
-    right: 0;
-    width: 190px;
-    background: #fff;
-    border-radius: 14px;
-    box-shadow: 0 10px 30px rgba(15, 23, 42, .12);
-    border: 1px solid #e2e8f0;
-    padding: 8px;
-    display: none;
-    z-index: 100;
+.dp-dropdown-menu{
+    position:absolute;
+    top:calc(100% + 8px);
+    right:0;
+    width:180px;
+    background:#fff;
+    border:1px solid #e2e8f0;
+    border-radius:14px;
+    box-shadow:0 12px 30px rgba(15,23,42,.12);
+    padding:8px;
+    display:none;
+    z-index:9999;
 }
 
-.dp-dropdown.active .dp-dropdown-menu {
-    display: block;
+.dp-dropdown.active .dp-dropdown-menu{
+    display:block;
 }
 
 .dp-dropdown-item {
@@ -338,102 +363,33 @@ function ubahStatus(el, statusBaru) {
     width: 16px;
 }
 
-/* SUBMENU */
-
-.dp-submenu {
-    position: relative;
+.dp-status-option{
+    width:100%;
+    border:none;
+    background:transparent;
+    padding:12px 14px;
+    border-radius:10px;
+    text-align:left;
+    cursor:pointer;
+    font-size:14px;
+    font-weight:600;
+    color:#334155;
+    transition:.2s;
 }
 
-.dp-submenu-btn {
-    width: 100%;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    justify-content: space-between;
+.dp-status-option:hover{
+    background:#f8fafc;
+    color:#102b57;
 }
-
-.dp-submenu-left {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.dp-submenu-arrow {
-    font-size: 12px;
-    color: #94a3b8;
-}
-
-
-.dp-submenu-menu {
-    position: absolute;
-    top: 0;
-    right: calc(100% + 8px);
-
-    width: 160px;
-
-    background: #fff;
-    border: 1px solid #e2e8f0;
-    border-radius: 14px;
-    box-shadow: 0 10px 30px rgba(15, 23, 42, .12);
-
-    padding: 8px;
-
-    opacity: 0;
-    visibility: hidden;
-    transform: translateX(10px);
-
-    transition: .2s ease;
-
-    z-index: 200;
-}
-
-.dp-submenu:hover .dp-submenu-menu,
-.dp-submenu-menu:hover {
-    opacity: 1;
-    visibility: visible;
-    transform: translateX(0);
-}
-
-/* STATUS OPTION */
-
-.dp-status-option {
-    width: 100%;
-
-    border: none;
-
-    background: transparent;
-
-    padding: 11px 14px;
-
-    border-radius: 10px;
-
-    text-align: left;
-
-    cursor: pointer;
-
-    font-size: 14px;
-
-    font-weight: 600;
-
-    color: #334155;
-
-    transition: .2s;
-}
-
-.dp-status-option:hover {
-    background: #f8fafc;
-}
-
-/* BADGE */
 
 .dp-badge--selesai {
     background: #dcfce7;
     color: #15803d;
 }
 
-.dp-badge--proses {
-    background: #fef3c7;
-    color: #b45309;
+.dp-badge--dikonfirmasi {
+    background:#fef3c7;
+    color:#b45309;
 }
 
 .dp-badge--menunggu {

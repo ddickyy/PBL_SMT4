@@ -696,63 +696,153 @@
             color: #94a3b8;
         }
 
-        /* RESPONSIVE */
-        @media (max-width: 1100px) {
-            .pf-hero-card {
-                grid-template-columns: 180px 1fr;
-            }
+    @media (max-width: 1024px){
 
-            .pf-status-mini {
-                grid-column: 1 / -1;
-                flex-direction: row;
-                gap: 20px;
-                align-items: center;
-            }
-
-            .pf-sm-divider {
-                width: 1px;
-                height: 40px;
-                margin: 0;
-            }
-
-            .pf-body {
-                grid-template-columns: 1fr;
-            }
+        .pf-hero-card{
+            flex-wrap:wrap;
+            gap:24px;
+            padding:28px;
         }
 
-        @media (max-width: 768px) {
-            .pf-hero-card {
-                grid-template-columns: 1fr;
-            }
-
-            .pf-hero-img img {
-                max-width: 160px;
-            }
-
-            .pf-meta-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .pf-edu-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .pf-kontak {
-                flex-direction: column;
-                gap: 14px;
-            }
-
-            .pf-kontak-divider {
-                width: 100%;
-                height: 1px;
-                margin: 0;
-            }
-
-            .pf-status-mini {
-                flex-direction: column;
-                align-items: flex-start;
-            }
+        .pf-hero-img img{
+            width:180px;
+            height:220px;
         }
+
+        .pf-status-mini{
+            width:100%;
+            flex-direction:row;
+            justify-content:space-between;
+            align-items:center;
+        }
+
+        .pf-sm-divider{
+            width:1px;
+            height:50px;
+            margin:0 16px;
+        }
+
+        .pf-body{
+            grid-template-columns:1fr;
+        }
+    }
+
+    @media (max-width: 768px){
+
+        .pf-section{
+            padding:90px 12px 40px;
+        }
+
+        .pf-container{
+            padding:0;
+        }
+
+        .pf-hero-card{
+            flex-direction:column;
+            text-align:center;
+            padding:22px;
+            border-radius:24px;
+        }
+
+        .pf-hero-img{
+            width:100%;
+            display:flex;
+            justify-content:center;
+        }
+
+        .pf-hero-img img{
+            width:150px;
+            height:180px;
+        }
+
+        .pf-hero-info{
+            align-items:center;
+        }
+
+        .pf-hero-info h1{
+            font-size:38px;
+        }
+
+        .pf-spesialis{
+            font-size:18px;
+            margin-bottom:18px;
+        }
+
+        .pf-role-badge{
+            margin:0 0 20px;
+        }
+
+        .pf-meta-grid{
+            grid-template-columns:1fr;
+            text-align:center;
+            width:100%;
+        }
+
+        .pf-hero-actions{
+            justify-content:center;
+            width:100%;
+        }
+
+        .pf-btn{
+            width:100%;
+            justify-content:center;
+        }
+
+        .pf-status-mini{
+            width:100%;
+            flex-direction:column;
+            align-items:center;
+            text-align:center;
+        }
+
+        .pf-sm-divider{
+            width:100%;
+            height:1px;
+            margin:10px 0;
+        }
+
+        .pf-jadwal-head{
+            flex-direction:column;
+            align-items:flex-start;
+            gap:8px;
+        }
+
+        .pf-kontak{
+            flex-direction:column;
+            align-items:flex-start;
+        }
+
+        .pf-kontak-divider{
+            width:100%;
+            height:1px;
+            margin:0;
+        }
+    }
+
+    @media (max-width: 375px){
+
+        .pf-hero-info h1{
+            font-size:30px;
+        }
+
+        .pf-spesialis{
+            font-size:16px;
+        }
+
+        .pf-hero-img img{
+            width:120px;
+            height:150px;
+        }
+
+        .pf-card,
+        .pf-stats-card{
+            padding:18px;
+        }
+
+        .pf-sm-num{
+            font-size:42px;
+        }
+    }
     </style>
 
 @endsection
