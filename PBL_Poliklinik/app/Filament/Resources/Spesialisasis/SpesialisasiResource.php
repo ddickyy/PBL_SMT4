@@ -27,17 +27,19 @@ class SpesialisasiResource extends Resource
 
     protected static string|\UnitEnum|null $navigationGroup = 'Status';
 
-    protected static ?string $navigationLabel = 'Spesialisasi';
+    protected static ?string $navigationLabel = 'Keahlian';
 
-    protected static ?string $slug = 'spesialisasi';
+    protected static ?string $slug = 'keahlian';
 
-    protected static ?string $pluralLabel = 'Spesialisasi';
+    protected static ?string $pluralLabel = 'Keahlian';
 
-    protected static ?string $pluralSlug = 'spesialisasi';
+    protected static ?string $pluralSlug = 'keahlian';
 
-    protected static ?string $label = 'Spesialisasi';
+    protected static ?string $label = 'Keahlian';
 
     protected static ?int $navigationSort = 4;
+
+    protected static string $permission = 'spesialisasi';
 
     public static function form(Schema $schema): Schema
     {
@@ -75,20 +77,66 @@ class SpesialisasiResource extends Resource
 
     public static function canAccess(): bool
     {
+        /** @var \App\Models\User|null $user */
         $user = Auth::user();
 
         if (! $user) {
             return false;
         }
 
-        return in_array(
-            $user->role?->nama_role,
-            ['superadmin', 'admin']
+        if (
+            $user->role?->nama_role === 'superadmin'
+        ) {
+            return true;
+        }
+
+        return $user->hasPermission(
+            static::$permission
         );
-    }   
+    }
 
     public static function shouldRegisterNavigation(): bool
     {
         return static::canAccess();
+    }
+
+    public static function canViewAny(): bool
+    {
+        return static::canAccess();
+    }
+
+    public static function canView($record): bool
+    {
+        return static::canAccess();
+    }
+
+    public static function canCreate(): bool
+    {
+        return Auth::user()?->role?->nama_role
+            === 'superadmin';
+    }
+
+    public static function canEdit($record): bool
+    {
+        return Auth::user()?->role?->nama_role
+            === 'superadmin';
+    }
+
+    public static function canDelete($record): bool
+    {
+        return Auth::user()?->role?->nama_role
+            === 'superadmin';
+    }
+
+    public static function canForceDelete($record): bool
+    {
+        return Auth::user()?->role?->nama_role
+            === 'superadmin';
+    }
+
+    public static function canRestore($record): bool
+    {
+        return Auth::user()?->role?->nama_role
+            === 'superadmin';
     }
 }

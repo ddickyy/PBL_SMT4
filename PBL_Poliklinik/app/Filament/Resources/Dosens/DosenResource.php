@@ -41,6 +41,8 @@ class DosenResource extends Resource
 
     protected static ?int $navigationSort = 7;
 
+    protected static string $permission = 'dosen';
+
     public static function form(Schema $schema): Schema
     {
         return DosenForm::configure($schema);
@@ -83,15 +85,21 @@ class DosenResource extends Resource
 
     public static function canAccess(): bool
     {
+        /** @var \App\Models\User|null $user */
         $user = Auth::user();
 
         if (! $user) {
             return false;
         }
 
-        return in_array(
-            $user->role?->nama_role,
-            ['superadmin', 'admin']
+        if (
+            $user->role?->nama_role === 'superadmin'
+        ) {
+            return true;
+        }
+
+        return $user->hasPermission(
+            static::$permission
         );
     }
 
@@ -103,19 +111,13 @@ class DosenResource extends Resource
     // Bisa melihat daftar data
     public static function canViewAny(): bool
     {
-        return in_array(
-            Auth::user()?->role?->nama_role,
-            ['superadmin', 'admin']
-        );
+        return static::canAccess();
     }
 
     // Bisa melihat detail data
     public static function canView($record): bool
     {
-        return in_array(
-            Auth::user()?->role?->nama_role,
-            ['superadmin', 'admin']
-        );
+        return static::canAccess();
     }
 
     // Hanya superadmin bisa create

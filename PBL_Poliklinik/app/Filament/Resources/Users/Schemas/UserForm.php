@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Schema;
@@ -50,10 +51,19 @@ class UserForm
                             ->searchable()
                             ->preload(),
 
+                        CheckboxList::make('permissions')
+                            ->relationship(
+                                'permissions',
+                                'nama_permission'
+                            )
+                            ->columns(2)
+                            ->searchable()
+                            ->columnSpanFull(),
+
                         FileUpload::make('foto')
                             ->label('Foto Pengguna')
                             ->image()
-                            ->columnSpanFull()
+                            ->columnSpanFull(),
                     ])
                     ->columns(2)
                     ->columnSpanFull()

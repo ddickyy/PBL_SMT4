@@ -24,6 +24,13 @@ class DosenForm
                             ->unique(ignoreRecord: true)
                             ->maxLength(50)
                             ->helperText('NIP harus unik.'),
+
+                        Select::make('id_jurusan')
+                            ->label('Jurusan')
+                            ->relationship('jurusan', 'nama_jurusan')
+                            ->required()
+                            ->searchable()
+                            ->preload(),
                             
                         Select::make('id_user')
                             ->label('Pengguna')
