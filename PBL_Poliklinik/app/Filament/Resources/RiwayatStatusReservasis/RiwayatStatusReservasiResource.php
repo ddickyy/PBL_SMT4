@@ -92,12 +92,6 @@ class RiwayatStatusReservasiResource extends Resource
             return false;
         }
 
-        if (
-            $user->role?->nama_role === 'superadmin' || $user->role?->nama_role === 'admin'
-        ) {
-            return true;
-        }
-
         return $user->hasPermission(
             static::$permission
         );

@@ -76,12 +76,6 @@ class UserResource extends Resource
             return false;
         }
 
-        if (
-            $user->role?->nama_role === 'superadmin'
-        ) {
-            return true;
-        }
-
         return $user->hasPermission(
             static::$permission
         );

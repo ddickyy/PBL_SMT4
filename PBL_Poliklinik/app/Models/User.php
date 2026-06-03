@@ -110,23 +110,17 @@ class User extends Authenticatable
         return '-';
     }
 
-    public function permissions()
+    public function hasPermission(
+        string $permission
+    ): bool
     {
-        return $this->belongsToMany(
-            Permission::class,
-            'user_permissions',
-            'id_user',
-            'id_permission'
-        );
-    }
-
-    public function hasPermission(string $permission): bool
-    {
-        return $this->permissions()
+        return $this->role
+            ?->permissions()
             ->where(
                 'nama_permission',
                 $permission
             )
-            ->exists();
+            ->exists()
+            ?? false;
     }
 }

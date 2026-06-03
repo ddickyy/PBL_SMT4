@@ -51,15 +51,6 @@ class UserForm
                             ->searchable()
                             ->preload(),
 
-                        CheckboxList::make('permissions')
-                            ->relationship(
-                                'permissions',
-                                'nama_permission'
-                            )
-                            ->columns(2)
-                            ->searchable()
-                            ->columnSpanFull(),
-
                         FileUpload::make('foto')
                             ->label('Foto Pengguna')
                             ->image()
