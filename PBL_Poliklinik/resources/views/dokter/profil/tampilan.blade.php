@@ -7,15 +7,7 @@
 @section('content')
 
     @php
-        $jadwalList = [
-            ['tanggal' => '2 Mei 2026', 'hari' => 'Jum', 'jam' => '12:15 - 14:00', 'today' => false, 'upcoming' => false],
-            ['tanggal' => '9 Mei 2026', 'hari' => 'Jum', 'jam' => '12:15 - 14:00', 'today' => false, 'upcoming' => false],
-            ['tanggal' => '16 Mei 2026', 'hari' => 'Jum', 'jam' => '12:15 - 14:00', 'today' => true, 'upcoming' => false],
-            ['tanggal' => '23 Mei 2026', 'hari' => 'Jum', 'jam' => '12:15 - 14:00', 'today' => false, 'upcoming' => false],
-            ['tanggal' => '30 Mei 2026', 'hari' => 'Jum', 'jam' => '12:15 - 14:00', 'today' => false, 'upcoming' => false],
-            ['tanggal' => '6 Jun 2026', 'hari' => 'Jum', 'jam' => '12:15 - 14:00', 'today' => false, 'upcoming' => true],
-            ['tanggal' => '13 Jun 2026', 'hari' => 'Jum', 'jam' => '12:15 - 14:00', 'today' => false, 'upcoming' => true],
-        ];
+        // No hardcoded schedules here, we will read from database.
     @endphp
 
     <section class="pf-section">
@@ -26,26 +18,30 @@
 
                 {{-- LEFT: FOTO --}}
                 <div class="pf-hero-img">
-                    <img src="https://ui-avatars.com/api/?name=Satra+Wiyanto&background=102b57&color=fff&size=200"
-                        alt="dr. Satra Wiyanto">
+                    @php
+                        $fotoUrl = $dokter->user->foto
+                            ? asset('storage/' . $dokter->user->foto)
+                            : 'https://ui-avatars.com/api/?name=' . urlencode($dokter->user->nama) . '&background=102b57&color=fff&size=200';
+                    @endphp
+                    <img src="{{ $fotoUrl }}" alt="{{ $dokter->user->nama }}">
                 </div>
 
                 {{-- CENTER: INFO --}}
                 <div class="pf-hero-info">
-                    <h1>dr. dr. Satra Wiyanto, MARS</h1>
-                    <p class="pf-spesialis">Spesialis Kedokteran Umum</p>
+                    <h1>{{ $dokter->user->nama }}</h1>
+                    <p class="pf-spesialis">Spesialis {{ $dokter->spesialisasi->nama_spesialisasi ?? '-' }}</p>
                     <div class="pf-role-badge">
-                        Dokter Umum
+                        Dokter {{ $dokter->spesialisasi->nama_spesialisasi ?? 'Umum' }}
                     </div>
 
                     <div class="pf-meta-grid">
                         <div class="pf-meta-item">
-                            <small>NOMOR INDUK PEGAWAI</small>
-                            <strong>052057527572</strong>
+                            <small>SIP DOKTER</small>
+                            <strong>{{ $dokter->sip_dokter }}</strong>
                         </div>
                         <div class="pf-meta-item">
                             <small>Pasien Ditangani</small>
-                            <strong>256</strong>
+                            <strong>{{ $totalPasien }}</strong>
                         </div>
                     </div>
 
@@ -53,20 +49,30 @@
                         <a href="{{ route('dokter.profil.edit') }}" class="pf-btn pf-btn--yellow">
                             <i class="fa-solid fa-pen"></i> Edit Profil
                         </a>
-                        <a href="{{ route('dokter.beranda') }}" class="pf-btn pf-btn--outline">
-                            <i class="fa-solid fa-share-nodes"></i> Bagikan Jadwal
-                        </a>
                     </div>
                 </div>
 
                 {{-- RIGHT: STATUS --}}
                 <div class="pf-status-mini">
                     <span class="pf-sm-label">STATUS KEGIATAN</span>
-                    <h3>Sedang Praktik</h3>
-                    <p>Gedung Teknik, Politeknik Negeri Malang</p>
+                    @php
+                        $todaySchedule = $dokter->jadwalDokter->first(function($j) {
+                            return strtolower($j->hari) === strtolower(now()->translatedFormat('l'));
+                        });
+                    @endphp
+                    @if($todaySchedule)
+                        <h3>Sedang Praktik</h3>
+                        <p>Poliklinik Politeknik Negeri Malang</p>
+                        <p style="font-size: 11px; margin-top: 4px; color: rgba(255, 255, 255, 0.75);">
+                            Jam: {{ substr($todaySchedule->jam_mulai, 0, 5) }} - {{ substr($todaySchedule->jam_selesai, 0, 5) }} WIB
+                        </p>
+                    @else
+                        <h3>Tidak Praktik Hari Ini</h3>
+                        <p>Poliklinik Politeknik Negeri Malang</p>
+                    @endif
                     <div class="pf-sm-divider"></div>
                     <small>Pasien Hari Ini</small>
-                    <span class="pf-sm-num">05</span>
+                    <span class="pf-sm-num">{{ sprintf('%02d', $pasienHariIni) }}</span>
                     <span class="pf-sm-unit">Pasien</span>
                 </div>
 
@@ -86,21 +92,26 @@
                             </span>
                         </div>
                         <div class="pf-jadwal-days">
-                            @foreach($jadwalList as $j)
-                                <div class="pf-day
-                                                                        @if($j['today']) pf-day--today @endif
-                                                                        @if($j['upcoming']) pf-day--upcoming @endif">
+                            @forelse($dokter->jadwalDokter as $j)
+                                @php
+                                    $isToday = strtolower($j->hari) === strtolower(now()->translatedFormat('l'));
+                                @endphp
+                                <div class="pf-day @if($isToday) pf-day--today @endif">
                                     <span class="pf-day__tgl">
-                                        {{ $j['tanggal'] }}
+                                        {{ strtoupper($j->hari) }}
                                     </span>
                                     <span class="pf-day__hari">
-                                        {{ $j['hari'] }}
+                                        {{ substr($j->hari, 0, 3) }}
                                     </span>
                                     <span class="pf-day__jam">
-                                        {{ $j['jam'] }}
+                                        {{ substr($j->jam_mulai, 0, 5) }} - {{ substr($j->jam_selesai, 0, 5) }}
                                     </span>
                                 </div>
-                            @endforeach
+                            @empty
+                                <div style="color: #94a3b8; font-size: 14px; padding: 10px;">
+                                    Belum ada jadwal praktik.
+                                </div>
+                            @endforelse
                         </div>
                     </div>
 
@@ -111,7 +122,7 @@
                             </div>
                             <div>
                                 <small>Alamat Email</small>
-                                <span>satra.gmail.com</span>
+                                <span>{{ $dokter->user->email }}</span>
                             </div>
                         </div>
                         <div class="pf-kontak-divider"></div>
@@ -121,7 +132,7 @@
                             </div>
                             <div>
                                 <small>No. Kontak</small>
-                                <span>+62 8xxxxx</span>
+                                <span>{{ $dokter->no_hp ?? '-' }}</span>
                             </div>
                         </div>
                     </div>
@@ -139,7 +150,7 @@
                                 </div>
                                 <div class="pf-stat-row__body">
                                     <span>Total Pasien</span>
-                                    <strong>256</strong>
+                                    <strong>{{ $totalPasien }}</strong>
                                 </div>
                             </div>
                             <div class="pf-stat-row">
@@ -148,7 +159,7 @@
                                 </div>
                                 <div class="pf-stat-row__body">
                                     <span>Jadwal Aktif</span>
-                                    <strong>1 / Minggu</strong>
+                                    <strong>{{ $dokter->jadwalDokter->count() }} Hari / Minggu</strong>
                                 </div>
                             </div>
 
@@ -159,7 +170,7 @@
 
                                 <div class="pf-stat-row__body">
                                     <span>Rata-rata Konsultasi</span>
-                                    <strong>26 Menit</strong>
+                                    <strong>15 - 20 Menit</strong>
                                 </div>
                             </div>
                         </div>

@@ -45,7 +45,9 @@
                             <img src="{{ asset('storage/' . $reservasi->jadwal->dokter->user->foto) }}"
                                  alt="Foto Dokter">
                         @else
-                            {{ strtoupper(substr(optional(optional($reservasi->jadwal)->dokter->user)->nama ?? 'D', 0, 1)) }}
+                            <div class="profile-initials">
+                                {{ strtoupper(substr(optional(optional($reservasi->jadwal)->dokter->user)->nama ?? 'D', 0, 1)) }}
+                            </div>
                         @endif
                     </div>
 
@@ -190,12 +192,27 @@
         font-size: 24px;
         overflow: hidden;
         flex-shrink: 0;
+        box-shadow: 0 6px 16px rgba(16, 43, 87, 0.12);
     }
 
     .doctor-avatar img {
         width: 100%;
         height: 100%;
         object-fit: cover;
+    }
+
+    .profile-initials {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #102b57;
+        color: white;
+        font-weight: 800;
+        text-transform: uppercase;
+        width: 100%;
+        height: 100%;
+        font-size: 24px;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
     }
 
     .reservation-header h3 {

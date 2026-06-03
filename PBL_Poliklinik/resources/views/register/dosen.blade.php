@@ -106,6 +106,24 @@
                     </div>
                 </div>
 
+                {{-- JURUSAN --}}
+                <div class="form-group">
+                    <label>JURUSAN</label>
+                    <div class="input-wrapper">
+                        <select name="id_jurusan" id="id_jurusan" placeholder="Cari jurusan..." required>
+                            <option value="">
+                                --- Pilih jurusan Anda ---
+                            </option>
+
+                            @foreach ($jurusan as $item)
+                                <option value="{{ $item->id_jurusan }}" {{ old('id_jurusan') == $item->id_jurusan ? 'selected' : '' }}>
+                                    {{ $item->nama_jurusan }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
                 {{-- NOMOR HP --}}
                 <div class="form-group">
                     <label>NOMOR TELEPON</label>
@@ -114,6 +132,7 @@
                             required>
                     </div>
                 </div>
+
 
                 <button type="submit" class="btn-primary">
                     DAFTAR
@@ -246,7 +265,8 @@
             align-items: center;
         }
 
-        .input-wrapper input {
+        .input-wrapper input,
+        .input-wrapper select {
             width: 100%;
             padding: 14px 16px;
             border: none;
@@ -260,12 +280,15 @@
                 box-shadow 0.2s,
                 border 0.2s;
             box-sizing: border-box;
+            appearance: none;
         }
 
-        .input-wrapper input:focus {
+        .input-wrapper input:focus,
+        .input-wrapper select:focus {
             background: #e8edf5;
             box-shadow: 0 0 0 3px rgba(16, 43, 87, 0.1);
         }
+
 
         .input-wrapper input::placeholder {
             color: #b0bcc8;

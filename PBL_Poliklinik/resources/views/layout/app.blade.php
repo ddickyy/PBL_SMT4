@@ -86,4 +86,29 @@
         height: 0;
         display: none;
     }
+
+    /* Consistent Hover and Transition Effects across all pages */
+    .card, .service-card, .profile-card, .ep-card {
+        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease !important;
+    }
+    .card:hover, .service-card:hover, .profile-card:hover, .ep-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 25px 50px rgba(16, 43, 87, 0.08) !important;
+    }
+
+    .doctor-item, .riwayat-card, .activity-card, .medical-item {
+        transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease, background-color 0.25s ease !important;
+    }
+    .doctor-item:hover, .riwayat-card:hover, .activity-card:hover, .medical-item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 30px rgba(16, 43, 87, 0.06) !important;
+    }
+
+    .btn-save, .ep-btn--save, .btn-emergency, .btn-primary-bukti, .btn-submit-bukti, .btn-confirm-modern, .btn-more-dokter-left, .ep-btn-upload, .ep-btn--cancel, .btn-crop-apply, .btn-crop-cancel, .btn-more-dokter-left, .ep-btn-back {
+        transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, background-color 0.2s ease, opacity 0.2s ease !important;
+    }
+    .btn-save:hover, .ep-btn--save:hover, .btn-emergency:hover, .btn-primary-bukti:hover, .btn-submit-bukti:hover, .btn-confirm-modern:hover, .ep-btn-upload:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(16, 43, 87, 0.15) !important;
+    }
 </style>

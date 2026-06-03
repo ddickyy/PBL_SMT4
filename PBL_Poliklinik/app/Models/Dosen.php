@@ -14,9 +14,15 @@ class Dosen extends Model
 
     protected $fillable = [
         'id_user',
+        'id_jurusan',
         'nidn',
         'no_hp',
     ];
+
+    public function jurusan()
+    {
+        return $this->belongsTo(Jurusan::class, 'id_jurusan');
+    }
 
     protected $casts = [
         'created_at' => 'datetime',
