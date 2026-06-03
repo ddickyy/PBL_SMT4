@@ -130,6 +130,16 @@
         }
     });
 
+    // DYNAMIC NAVBAR SCROLL EFFECT
+    window.addEventListener('scroll', function() {
+        const navbar = document.querySelector('.navbar');
+        if (window.scrollY > 20) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+
 </script>
 
 <style>
@@ -147,6 +157,20 @@
         right: 0;
         z-index: 1000;
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .navbar.scrolled {
+        top: 15px;
+        left: 4%;
+        right: 4%;
+        border-radius: 999px;
+        padding: 10px 24px;
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(16px);
+        box-shadow: 0 15px 35px rgba(16, 43, 87, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        border-bottom: none;
     }
 
     .logo {
@@ -398,6 +422,12 @@
             flex-wrap: wrap;
             gap: 14px;
         }
+        
+        .navbar.scrolled {
+            left: 2%;
+            right: 2%;
+            border-radius: 20px;
+        }
 
         .menu {
             order: 3;
@@ -411,6 +441,12 @@
 
         .navbar {
             padding: 12px 16px;
+        }
+
+        .navbar.scrolled {
+            top: 10px;
+            left: 10px;
+            right: 10px;
         }
 
         .logo a {
