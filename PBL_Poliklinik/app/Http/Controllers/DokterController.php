@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Dokter;
 use App\Models\Reservasi;
+use App\Models\RekamMedis;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -161,14 +162,20 @@ class DokterController extends Controller
             )
             ->whereIn('status', [
                 'menunggu',
-                'proses'
+                'dikonfirmasi'
             ])
             ->orderBy('tanggal_reservasi')
             ->orderBy('estimasi_jam')
             ->get();
 
-        $menunggu = $reservasiHariIni
+        $startOfWeek = Carbon::now()->startOfWeek()->toDateString();
+        $endOfWeek = Carbon::now()->endOfWeek()->toDateString();
+
+        $menunggu = Reservasi::whereHas('jadwal', function ($query) use ($dokter) {
+            $query->where('id_dokter', $dokter->id_dokter);
+        })
             ->where('status', 'menunggu')
+            ->whereBetween('tanggal_reservasi', [$startOfWeek, $endOfWeek])
             ->count();
 
         $selesai = Reservasi::whereHas(
@@ -240,8 +247,12 @@ class DokterController extends Controller
         $dokterLayout = true;
 
         $pasien = Reservasi::with([
-            'user',
-            'jadwal.dokter.spesialisasi'
+            'user.mahasiswa',
+            'user.dosen',
+            'user.tendik',
+            'jadwal.dokter.spesialisasi',
+            'rekamMedis',
+            'penilaian'
         ])
             ->findOrFail($id);
 
@@ -265,7 +276,9 @@ class DokterController extends Controller
 
         $riwayatList = Reservasi::with([
             'user',
-            'jadwal'
+            'jadwal',
+            'rekamMedis',
+            'penilaian'
         ])
             ->whereHas('jadwal', function ($query) use ($dokter) {
 
@@ -290,18 +303,81 @@ class DokterController extends Controller
         );
     }
 
-    public function index() {
-        $dokters = Dokter::with([
+    public function updateStatus(Request $request, $id)
+    {
+        $pasien = Reservasi::findOrFail($id);
+
+        $validated = $request->validate([
+            'status' => 'required|in:menunggu,dikonfirmasi,selesai,dibatalkan',
+        ]);
+
+        $pasien->update([
+            'status' => $validated['status']
+        ]);
+
+        return back()->with('success', 'Status reservasi berhasil diperbarui.');
+    }
+
+    public function updateOrCreateRekamMedis(Request $request, $id)
+    {
+        $pasien = Reservasi::findOrFail($id);
+
+        $dokter = Dokter::where('id_user', Auth::user()->id_user)->firstOrFail();
+
+        $validated = $request->validate([
+            'diagnosis' => 'required|string',
+            'catatan' => 'nullable|string',
+        ]);
+
+        $pasien->rekamMedis()->updateOrCreate(
+            ['id_reservasi' => $pasien->id_reservasi],
+            [
+                'id_dokter' => $dokter->id_dokter,
+                'diagnosis' => $validated['diagnosis'],
+                'catatan' => $validated['catatan'],
+                'tanggal_periksa' => now(),
+            ]
+        );
+
+        // Update status reservasi menjadi selesai
+        $pasien->update([
+            'status' => 'selesai'
+        ]);
+
+        return back()->with('success', 'Rekam medis berhasil diperbarui.');
+    }
+
+    public function index(Request $request) {
+        $search = $request->query('search');
+        $spesialisasi = $request->query('spesialisasi');
+
+        $query = Dokter::with([
             'user',
             'spesialisasi',
             'jadwalDokter'
-        ])
-        ->get();
+        ]);
+
+        if ($search) {
+            $query->whereHas('user', function($q) use ($search) {
+                $q->where('nama', 'like', "%{$search}%");
+            });
+        }
+
+        if ($spesialisasi) {
+            $query->where('id_spesialisasi', $spesialisasi);
+        }
+
+        $dokters = $query->paginate(4)->withQueryString();
+
+        $spesialisasis = \App\Models\Spesialisasi::all();
 
         return view(
             'pasien.dokter',
             compact(
-                'dokters'
+                'dokters',
+                'spesialisasis',
+                'search',
+                'spesialisasi'
             )
         );
     }

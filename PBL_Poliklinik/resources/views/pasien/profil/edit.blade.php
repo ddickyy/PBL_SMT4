@@ -4,6 +4,10 @@
 
 @section('content')
 
+<!-- Cropper.js CSS and JS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+
 @php
     $user = auth()->user();
 @endphp
@@ -85,13 +89,22 @@
 
                                     @else
 
+                                        <div id="initialsPreview" class="profile-initials">
+                                            {{ strtoupper(substr($user->nama, 0, 1)) }}
+                                        </div>
                                         <img
                                             id="previewFoto"
-                                            src="https://ui-avatars.com/api/?name={{ urlencode($user->nama) }}&background=102b57&color=fff&size=200"
-                                            alt="Avatar"
+                                            src=""
+                                            alt="Foto Profil"
+                                            style="display: none;"
                                         >
 
                                     @endif
+
+                                    {{-- 4x4 Guide Overlay --}}
+                                    <div class="crop-guide-4x4">
+                                        <span class="guide-label">4x4</span>
+                                    </div>
 
                                 </div>
 
@@ -448,26 +461,171 @@
 
     </div>
 
+    <!-- Crop Photo Modal -->
+    <div id="cropModal" class="crop-modal" style="display: none;">
+        <div class="crop-modal-content">
+            <div class="crop-modal-header">
+                <h3>Sesuaikan Foto Profil</h3>
+                <p>Geser dan perbesar foto agar pas di dalam bingkai 4x4 (kotak).</p>
+            </div>
+            <div class="crop-modal-body">
+                <div class="cropper-wrapper">
+                    <img id="imageToCrop" src="" alt="Image to crop">
+                </div>
+            </div>
+            <div class="crop-modal-controls">
+                <button type="button" class="btn-crop-control" id="btnZoomIn" title="Perbesar">
+                    <i class="fa-solid fa-magnifying-glass-plus"></i>
+                </button>
+                <button type="button" class="btn-crop-control" id="btnZoomOut" title="Perkecil">
+                    <i class="fa-solid fa-magnifying-glass-minus"></i>
+                </button>
+                <button type="button" class="btn-crop-control" id="btnRotateLeft" title="Putar Kiri">
+                    <i class="fa-solid fa-rotate-left"></i>
+                </button>
+                <button type="button" class="btn-crop-control" id="btnRotateRight" title="Putar Kanan">
+                    <i class="fa-solid fa-rotate-right"></i>
+                </button>
+            </div>
+            <div class="crop-modal-footer">
+                <button type="button" class="btn-crop-cancel" id="btnCancelCrop">Batal</button>
+                <button type="button" class="btn-crop-apply" id="btnApplyCrop">Potong & Terapkan</button>
+            </div>
+        </div>
+    </div>
+
 </section>
 
 <script>
+let cropper = null;
+let selectedFile = null;
 
 function previewImage(event)
 {
-    const reader = new FileReader();
-
-    reader.onload = function()
-    {
-        document
-            .getElementById('previewFoto')
-            .src = reader.result;
-    };
-
-    reader.readAsDataURL(
-        event.target.files[0]
-    );
+    const files = event.target.files;
+    if (files && files.length > 0) {
+        selectedFile = files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const cropModal = document.getElementById('cropModal');
+            const imageToCrop = document.getElementById('imageToCrop');
+            
+            imageToCrop.src = e.target.result;
+            cropModal.style.display = 'flex';
+            // Force reflow for transitions
+            cropModal.offsetHeight;
+            cropModal.classList.add('show');
+            
+            if (cropper) {
+                cropper.destroy();
+            }
+            
+            cropper = new Cropper(imageToCrop, {
+                aspectRatio: 1,
+                viewMode: 1,
+                dragMode: 'move',
+                autoCropArea: 1,
+                background: false,
+                responsive: true,
+                checkOrientation: false
+            });
+        };
+        reader.readAsDataURL(selectedFile);
+    }
 }
 
+document.addEventListener('DOMContentLoaded', function() {
+    const btnCancelCrop = document.getElementById('btnCancelCrop');
+    const btnApplyCrop = document.getElementById('btnApplyCrop');
+    const btnZoomIn = document.getElementById('btnZoomIn');
+    const btnZoomOut = document.getElementById('btnZoomOut');
+    const btnRotateLeft = document.getElementById('btnRotateLeft');
+    const btnRotateRight = document.getElementById('btnRotateRight');
+    const cropModal = document.getElementById('cropModal');
+    const fotoInput = document.getElementById('fotoInput');
+    
+    function closeCropModal() {
+        cropModal.classList.remove('show');
+        setTimeout(() => {
+            cropModal.style.display = 'none';
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
+        }, 300);
+    }
+    
+    if (btnCancelCrop) {
+        btnCancelCrop.addEventListener('click', function() {
+            fotoInput.value = ''; // Reset input
+            closeCropModal();
+        });
+    }
+    
+    if (btnZoomIn) {
+        btnZoomIn.addEventListener('click', function() {
+            if (cropper) cropper.zoom(0.1);
+        });
+    }
+    
+    if (btnZoomOut) {
+        btnZoomOut.addEventListener('click', function() {
+            if (cropper) cropper.zoom(-0.1);
+        });
+    }
+    
+    if (btnRotateLeft) {
+        btnRotateLeft.addEventListener('click', function() {
+            if (cropper) cropper.rotate(-90);
+        });
+    }
+    
+    if (btnRotateRight) {
+        btnRotateRight.addEventListener('click', function() {
+            if (cropper) cropper.rotate(90);
+        });
+    }
+    
+    if (btnApplyCrop) {
+        btnApplyCrop.addEventListener('click', function() {
+            if (!cropper) return;
+            
+            const canvas = cropper.getCroppedCanvas({
+                width: 400,
+                height: 400,
+                imageSmoothingEnabled: true,
+                imageSmoothingQuality: 'high'
+            });
+            
+            canvas.toBlob(function(blob) {
+                if (!blob) return;
+                
+                // Create a new File from the blob
+                const croppedFile = new File([blob], selectedFile.name, {
+                    type: selectedFile.type || 'image/jpeg',
+                    lastModified: Date.now()
+                });
+                
+                // Update file input files list using DataTransfer
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(croppedFile);
+                fotoInput.files = dataTransfer.files;
+                
+                // Update preview image
+                const previewImg = document.getElementById('previewFoto');
+                const initialsDiv = document.getElementById('initialsPreview');
+                
+                previewImg.src = canvas.toDataURL(selectedFile.type || 'image/jpeg');
+                previewImg.style.display = 'block';
+                if (initialsDiv) {
+                    initialsDiv.style.display = 'none';
+                }
+                
+                closeCropModal();
+            }, selectedFile.type || 'image/jpeg', 0.9);
+        });
+    }
+});
 </script>
 
 <style>
@@ -613,21 +771,63 @@ function previewImage(event)
 }
 
 .photo-preview{
-    width:100px;
-    height:100px;
-    border-radius:50%;
-    overflow:hidden;
-    flex-shrink:0;
-    background:#102b57;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    width: 120px;
+    height: 120px;
+    border-radius: 16px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: #102b57;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 15px rgba(16, 43, 87, 0.12);
+    position: relative;
+    border: 2px solid #eef2f6;
+}
+
+.crop-guide-4x4 {
+    position: absolute;
+    inset: 0;
+    border: 2px dashed rgba(255, 255, 255, 0.4);
+    margin: 8px;
+    border-radius: 10px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    pointer-events: none;
+    box-sizing: border-box;
+}
+
+.guide-label {
+    font-size: 9px;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.85);
+    background: rgba(16, 43, 87, 0.65);
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
 }
 
 .photo-preview img{
     width:100%;
     height:100%;
     object-fit:cover;
+}
+
+.profile-initials {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #102b57;
+    color: white;
+    font-weight: 800;
+    text-transform: uppercase;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    height: 100%;
+    font-size: 38px;
 }
 
 .photo-actions{
@@ -732,6 +932,157 @@ function previewImage(event)
         align-items:flex-start;
     }
 
+}
+
+/* Crop Modal styling */
+.crop-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(16, 43, 87, 0.45);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    padding: 20px;
+}
+
+.crop-modal.show {
+    opacity: 1;
+}
+
+.crop-modal-content {
+    background: #ffffff;
+    border-radius: 24px;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: 0 25px 50px -12px rgba(16, 43, 87, 0.25);
+    overflow: hidden;
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: flex;
+    flex-direction: column;
+}
+
+.crop-modal.show .crop-modal-content {
+    transform: scale(1);
+}
+
+.crop-modal-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.crop-modal-header h3 {
+    margin: 0 0 6px;
+    font-size: 18px;
+    font-weight: 800;
+    color: #102b57;
+}
+
+.crop-modal-header p {
+    margin: 0;
+    font-size: 13px;
+    color: #64748b;
+    line-height: 1.4;
+}
+
+.crop-modal-body {
+    padding: 24px;
+    background: #f8fafc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cropper-wrapper {
+    width: 100%;
+    max-height: 300px;
+    background: #f1f5f9;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cropper-wrapper img {
+    max-width: 100%;
+    max-height: 300px;
+    display: block;
+}
+
+.crop-modal-controls {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    padding: 12px 24px;
+    background: #f8fafc;
+    border-top: 1px dashed #e2e8f0;
+}
+
+.btn-crop-control {
+    border: 1.5px solid #e2e8f0;
+    background: #ffffff;
+    color: #102b57;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+}
+
+.btn-crop-control:hover {
+    border-color: #102b57;
+    background: #f8fafc;
+}
+
+.crop-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 20px 24px;
+    border-top: 1px solid #f1f5f9;
+    background: #ffffff;
+}
+
+.btn-crop-cancel {
+    border: none;
+    background: #f1f5f9;
+    color: #64748b;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-crop-cancel:hover {
+    background: #e2e8f0;
+}
+
+.btn-crop-apply {
+    border: none;
+    background: #102b57;
+    color: #ffffff;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.btn-crop-apply:hover {
+    background: #1d4ed8;
 }
 
 </style>

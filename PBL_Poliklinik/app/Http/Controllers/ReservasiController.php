@@ -281,8 +281,11 @@ class ReservasiController extends Controller
 
 
     // RIWAYAT
-    public function riwayat()
+    public function riwayat(Request $request)
     {
+        $sort = $request->query('sort', 'latest');
+        $orderBy = $sort === 'oldest' ? 'asc' : 'desc';
+
         $reservasiAktif = Reservasi::with([
 
             'jadwal.dokter.user',
@@ -298,14 +301,18 @@ class ReservasiController extends Controller
                 'selesai',
                 'done'
             ])
-            ->latest('tanggal_reservasi')
+            ->orderBy('tanggal_reservasi', $orderBy)
             ->get();
 
         $riwayatSelesai = Reservasi::with([
 
             'jadwal.dokter.user',
 
-            'jadwal.dokter.spesialisasi'
+            'jadwal.dokter.spesialisasi',
+
+            'penilaian',
+
+            'rekamMedis'
 
         ])
             ->where(
@@ -316,14 +323,16 @@ class ReservasiController extends Controller
                 'selesai',
                 'done'
             ])
-            ->latest('tanggal_reservasi')
-            ->paginate(6);
+            ->orderBy('tanggal_reservasi', $orderBy)
+            ->paginate(6)
+            ->withQueryString();
 
         return view(
             'pasien.riwayat',
             compact(
                 'reservasiAktif',
-                'riwayatSelesai'
+                'riwayatSelesai',
+                'sort'
             )
         );
     }
@@ -332,11 +341,10 @@ class ReservasiController extends Controller
     public function show($id)
     {
         $reservasi = Reservasi::with([
-
             'jadwal.dokter.user',
-
-            'jadwal.dokter.spesialisasi'
-
+            'jadwal.dokter.spesialisasi',
+            'rekamMedis',
+            'penilaian'
         ])
             ->where(
                 'id_user',
@@ -456,11 +464,10 @@ class ReservasiController extends Controller
         }
 
         $reservasi = Reservasi::with([
-
             'jadwal.dokter.user',
-
-            'jadwal.dokter.spesialisasi'
-
+            'jadwal.dokter.spesialisasi',
+            'rekamMedis',
+            'penilaian'
         ])->find($reservasiId);
 
         return view(

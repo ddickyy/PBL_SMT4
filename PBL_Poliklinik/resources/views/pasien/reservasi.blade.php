@@ -5,7 +5,7 @@
 @section('hero')
 @include('partial.hero', [
     'badge' => 'LAYANAN KESEHATAN',
-    'title' => "Atur Waktu\n<span style='color:#facc15;'>Pemulihan Anda</span>",
+    'title' => "Atur Waktu\n<span style='color:#facc15;'>Reservasi Anda</span>",
     'desc' => "Pilih dokter dan tentukan jadwal kunjungan Anda dengan mudah dan nyaman.",
     'buttonText' => null,
     'bg' => asset('images/poliklinik.jpg')
@@ -772,11 +772,7 @@
         height: 66px;
         border: none;
         border-radius: 20px;
-        background: linear-gradient(
-            135deg,
-            #102b57,
-            #163d78
-        );
+        background: #102b57;
         color: white;
         font-size: 18px;
         font-weight: 800;

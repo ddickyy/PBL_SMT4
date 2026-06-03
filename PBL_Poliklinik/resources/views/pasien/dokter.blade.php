@@ -20,6 +20,34 @@
             <h2>Tenaga Medis Berpengalaman</h2>
         </div>
 
+        <!-- Filter Bar -->
+        <div class="doctor-filter-bar">
+            <form action="{{ route('pasien.dokter.index') }}" method="GET" class="doc-search-form">
+                <div class="doc-search-input-wrap">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Cari nama dokter...">
+                </div>
+                
+                <div class="doc-filter-select-wrap">
+                    <i class="fa-solid fa-stethoscope filter-icon"></i>
+                    <select name="spesialisasi" onchange="this.form.submit()">
+                        <option value="">Semua Spesialisasi</option>
+                        @foreach($spesialisasis ?? [] as $sp)
+                            <option value="{{ $sp->id_spesialisasi }}" {{ (int)($spesialisasi ?? 0) === $sp->id_spesialisasi ? 'selected' : '' }}>
+                                {{ $sp->nama_spesialisasi }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                @if($search || $spesialisasi)
+                    <a href="{{ route('pasien.dokter.index') }}" class="btn-reset">
+                        Reset
+                    </a>
+                @endif
+            </form>
+        </div>
+
         <div class="doctor-grid">
 
             @forelse($dokters as $item)
@@ -146,6 +174,13 @@
                 </div>
             @endforelse
         </div>
+
+        @if($dokters->hasPages())
+            <div class="pagination-wrap">
+                {{ $dokters->links() }}
+            </div>
+        @endif
+
     </div>
 </section>
 
@@ -172,6 +207,93 @@
         color: #102b57;
         margin: 0;
         letter-spacing: -0.03em;
+    }
+
+    .doctor-filter-bar {
+        margin-bottom: 30px;
+        background: white;
+        padding: 16px 20px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
+        border: 1.5px solid #edf0f5;
+    }
+
+    .doc-search-form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        align-items: center;
+    }
+
+    .doc-search-input-wrap,
+    .doc-filter-select-wrap {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: #f8fafc;
+        border: 1.5px solid #edf0f5;
+        border-radius: 14px;
+        padding: 10px 14px;
+        flex: 1;
+        min-width: 200px;
+    }
+
+    .doc-search-input-wrap i,
+    .doc-filter-select-wrap i {
+        color: #94a3b8;
+        font-size: 15px;
+    }
+
+    .doc-search-input-wrap input {
+        border: none;
+        outline: none;
+        background: transparent;
+        width: 100%;
+        font-size: 14px;
+        color: #102b57;
+        font-weight: 600;
+    }
+
+    .doc-search-input-wrap input::placeholder {
+        color: #94a3b8;
+    }
+
+    .doc-filter-select-wrap select {
+        border: none;
+        outline: none;
+        background: transparent;
+        width: 100%;
+        font-size: 14px;
+        color: #102b57;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .btn-reset {
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 700;
+        color: #dc2626;
+        padding: 10px 18px;
+        border-radius: 14px;
+        background: #fee2e2;
+        transition: .2s ease;
+    }
+
+    .btn-reset:hover {
+        background: #fecaca;
+        transform: translateY(-1px);
+    }
+
+    .pagination-wrap {
+        margin-top: 36px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .pagination-wrap svg {
+        width: 18px;
+        height: 18px;
     }
 
     .doctor-grid {
@@ -210,7 +332,7 @@
         width: 100%;
         height: 100%;
         min-height: 320px;
-        background: linear-gradient(135deg, #102b57, #1d4ed8);
+        background: #102b57;
         display: flex;
         align-items: center;
         justify-content: center;

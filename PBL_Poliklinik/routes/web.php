@@ -173,6 +173,11 @@ Route::middleware('auth')
             [PenilaianController::class, 'store']
         )->name('penilaian.store');
 
+        Route::put(
+            '/penilaian/{id}',
+            [PenilaianController::class, 'update']
+        )->name('penilaian.update');
+
         Route::prefix('profil')
             ->name('profil.')
             ->group(function () {
@@ -213,6 +218,16 @@ Route::middleware('auth')
             '/pasien/{id}',
             [DokterController::class, 'detailPasien']
         )->name('pasien.detail');
+
+        Route::put(
+            '/pasien/{id}/status',
+            [DokterController::class, 'updateStatus']
+        )->name('pasien.updateStatus');
+
+        Route::post(
+            '/pasien/{id}/rekam-medis',
+            [DokterController::class, 'updateOrCreateRekamMedis']
+        )->name('pasien.rekamMedis');
 
         Route::get(
             '/riwayat',

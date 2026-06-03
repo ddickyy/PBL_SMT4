@@ -68,8 +68,14 @@
                 <div class="form-group">
                     <label>JABATAN</label>
                     <div class="input-wrapper">
-                        <input type="text" name="jabatan" value="{{ old('jabatan') }}" placeholder="Contoh: Teknisi"
-                            required>
+                        <select name="jabatan" required>
+                            <option value="" disabled {{ old('jabatan') ? '' : 'selected' }}>Pilih Jabatan</option>
+                            @foreach($jabatans as $j)
+                                <option value="{{ $j->id_jabatan }}" {{ old('jabatan') == $j->id_jabatan ? 'selected' : '' }}>
+                                    {{ $j->nama_jabatan }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
 
@@ -255,7 +261,8 @@
             align-items: center;
         }
 
-        .input-wrapper input {
+        .input-wrapper input,
+        .input-wrapper select {
             width: 100%;
             padding: 14px 16px;
             border: none;
@@ -269,9 +276,11 @@
                 box-shadow 0.2s,
                 border 0.2s;
             box-sizing: border-box;
+            font-family: inherit;
         }
 
-        .input-wrapper input:focus {
+        .input-wrapper input:focus,
+        .input-wrapper select:focus {
             background: #e8edf5;
             box-shadow: 0 0 0 3px rgba(16, 43, 87, 0.1);
         }

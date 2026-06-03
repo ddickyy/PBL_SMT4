@@ -15,7 +15,9 @@
                 @if($user->foto)
                     <img src="{{ asset('storage/' . $user->foto) }}" alt="Foto Profil">
                 @else
-                    {{ strtoupper(substr($user->nama, 0, 1)) }}
+                    <div class="profile-initials">
+                        {{ strtoupper(substr($user->nama, 0, 1)) }}
+                    </div>
                 @endif
             </div>
 
@@ -47,8 +49,8 @@
 
                 @if($user->dosen)
                     <p>
-                        NIDN / NIP:
-                        {{ $user->dosen->nip }}
+NIDN:
+                        {{ $user->dosen->nidn }}
                     </p>
 
                     <p class="highlight">
@@ -185,11 +187,11 @@
                         <div class="info-box">
 
                             <span>
-                                NIDN / NIP
+                                NIDN
                             </span>
 
                             <strong>
-                                {{ $user->dosen->nip }}
+                                {{ $user->dosen->nidn }}
                             </strong>
 
                         </div>
@@ -284,19 +286,40 @@
 
                             <div class="medical-icon">
 
-                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                <i class="fa-solid fa-file-medical"></i>
 
                             </div>
 
-                            <div>
+                            <div style="flex: 1;">
 
-                                <h3>
-                                    {{ $item }}
-                                </h3>
+                                <div class="medical-meta">
+
+                                    <h3>
+                                        {{ $item->diagnosis }}
+                                    </h3>
+
+                                    <span class="medical-date">
+                                        {{ \Carbon\Carbon::parse($item->tanggal_periksa)->translatedFormat('d M Y') }}
+                                    </span>
+
+                                </div>
 
                                 <p>
-                                    Data rekam medis hanya dapat dikelola oleh dokter.
+                                    {{ $item->catatan ?? '-' }}
                                 </p>
+
+                                <div class="medical-doc">
+
+                                    <i class="fa-solid fa-user-md"></i>
+
+                                    <span>
+                                        {{ optional($item->dokter->user)->nama ?? 'Dokter' }}
+                                        @if(optional($item->dokter->spesialisasi)->nama_spesialisasi)
+                                            ({{ optional($item->dokter->spesialisasi)->nama_spesialisasi }})
+                                        @endif
+                                    </span>
+
+                                </div>
 
                             </div>
 
@@ -317,6 +340,12 @@
                     @endforelse
 
                 </div>
+
+                @if($rekamMedis->hasPages())
+                    <div class="pagination-wrap" style="margin-top: 20px;">
+                        {{ $rekamMedis->appends(request()->except('page_rekam'))->links() }}
+                    </div>
+                @endif
 
             </div>
 
@@ -415,15 +444,17 @@
 
                                             </span>
 
-                                            <span class="dot"></span>
+                                            @if($item->estimasi_jam)
+                                                <span class="dot"></span>
 
-                                            <span>
+                                                <span>
 
-                                                {{ \Carbon\Carbon::parse($item->estimasi_jam)
-                                                    ->format('H:i') }}
-                                                WIB
+                                                    {{ \Carbon\Carbon::parse($item->estimasi_jam)
+                                                        ->format('H:i') }}
+                                                    WIB
 
-                                            </span>
+                                                </span>
+                                            @endif
 
                                         </div>
 
@@ -461,7 +492,7 @@
 
                     <div class="pagination-wrap">
 
-                        {{ $aktivitasReservasi->links() }}
+                        {{ $aktivitasReservasi->appends(request()->except('page_aktivitas'))->links() }}
 
                     </div>
 
@@ -533,12 +564,27 @@
     font-weight: 900;
     overflow: hidden;
     flex-shrink: 0;
+    box-shadow: 0 10px 25px rgba(16, 43, 87, 0.15);
 }
 
 .hero-avatar img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+.profile-initials {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #102b57;
+    color: white;
+    font-weight: 900;
+    text-transform: uppercase;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+    width: 100%;
+    height: 100%;
+    font-size: 64px;
 }
 
 .hero-info {
@@ -674,14 +720,43 @@
 }
 
 .medical-icon {
-    color: #f87171;
-    font-size: 18px;
+    color: #facc15;
+    font-size: 20px;
 }
 
 .medical-item h3 {
-    margin: 0 0 6px;
+    margin: 0;
     font-size: 18px;
     font-weight: 800;
+    color: #ffffff;
+}
+
+.medical-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+    gap: 8px;
+}
+
+.medical-date {
+    font-size: 12px;
+    color: rgba(255,255,255,.6);
+    font-weight: 600;
+}
+
+.medical-doc {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #facc15;
+    font-weight: 700;
+    margin-top: 10px;
+}
+
+.medical-doc i {
+    font-size: 13px;
 }
 
 .medical-item p {
