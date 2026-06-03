@@ -15,13 +15,13 @@ class Permission extends Model
         'deskripsi',
     ];
 
-    public function users()
+    public function roles()
     {
         return $this->belongsToMany(
-            User::class,
-            'user_permissions',
+            Role::class,
+            'role_permissions',
             'id_permission',
-            'id_user'
+            'id_role'
         );
     }
 }
