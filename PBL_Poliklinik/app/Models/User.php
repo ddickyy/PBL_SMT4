@@ -109,4 +109,24 @@ class User extends Authenticatable
 
         return '-';
     }
+
+    public function permissions()
+    {
+        return $this->belongsToMany(
+            Permission::class,
+            'user_permissions',
+            'id_user',
+            'id_permission'
+        );
+    }
+
+    public function hasPermission(string $permission): bool
+    {
+        return $this->permissions()
+            ->where(
+                'nama_permission',
+                $permission
+            )
+            ->exists();
+    }
 }

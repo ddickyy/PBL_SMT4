@@ -13,13 +13,13 @@ class SpesialisasiForm
     {
         return $schema
             ->components([
-                Section::make('Informasi Spesialisasi')
+                Section::make('Informasi Keahlian')
                     ->icon('heroicon-o-identification')
                     ->description('Masukkan informasi utama spesialisasi.')
                     ->schema([
                         TextInput::make('nama_spesialisasi')
-                            ->label('Nama Spesialisasi')
-                            ->placeholder('Contoh: Dokter Gigi')
+                            ->label('Nama Keahlian')
+                            ->placeholder('Contoh: Ahli Gigi')
                             ->required()
                             ->maxLength(50),
                         Textarea::make('deskripsi')
