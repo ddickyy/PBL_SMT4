@@ -53,7 +53,7 @@
             <tbody id="dpTableBody">
                 @foreach($pasienList as $p)
 
-<tr class="dp-tr">
+<tr class="dp-tr" data-nama="{{ strtolower($p->user->nama) }}">
 
     <td>
         <div class="dp-pasien">
@@ -251,7 +251,7 @@ function ubahStatus(el, statusBaru) {
 .dp-badge--selesai { background:#dcfce7; color:#15803d; }
 .dp-badge--proses { background:#fef3c7; color:#b45309; }
 .dp-badge--menunggu { background:#e2e8f0; color:#64748b; }
-.dp-badge--batal { background:#fee2e2; color:#dc2626; }
+.dp-badge--batal, .dp-badge--dibatalkan { background:#fee2e2; color:#dc2626; }
 
 .dp-action {
     width: 34px; height: 34px;
@@ -441,7 +441,7 @@ function ubahStatus(el, statusBaru) {
     color: #64748b;
 }
 
-.dp-badge--batal {
+.dp-badge--batal, .dp-badge--dibatalkan {
     background: #fee2e2;
     color: #dc2626;
 }

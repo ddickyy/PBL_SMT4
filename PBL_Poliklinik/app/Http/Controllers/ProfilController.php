@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Reservasi;
+use App\Models\RekamMedis;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 class ProfilController extends Controller
 {
     // SHOW PROFILE
-    public function show()
+    public function show(Request $request)
     {
         $user = User::with([
 
@@ -43,9 +44,20 @@ class ProfilController extends Controller
         ")
         ->latest('tanggal_reservasi')
         ->latest('created_at')
-        ->paginate(4);
+        ->paginate(4, ['*'], 'page_aktivitas')
+        ->withQueryString();
 
-        $rekamMedis = [];
+        $rekamMedis = RekamMedis::with([
+            'dokter.user',
+            'dokter.spesialisasi',
+            'reservasi'
+        ])
+        ->whereHas('reservasi', function ($query) {
+            $query->where('id_user', Auth::id());
+        })
+        ->latest('tanggal_periksa')
+        ->paginate(3, ['*'], 'page_rekam')
+        ->withQueryString();
 
         return view(
             'pasien.profil.show',
@@ -106,7 +118,7 @@ class ProfilController extends Controller
                 'nullable|image|mimes:jpg,jpeg,png|max:2048',
 
             'password' =>
-                'nullable|min:8|confirmed',
+                'nullable|min:5|confirmed',
 
         ]);
 

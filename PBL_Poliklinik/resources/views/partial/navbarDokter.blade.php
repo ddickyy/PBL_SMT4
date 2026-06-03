@@ -22,7 +22,7 @@
 
         <li>
             <a href="{{ route('dokter.pasien') }}"
-               class="{{ request()->routeIs('dokter.pasien') ? 'active' : '' }}">
+               class="{{ request()->routeIs('dokter.pasien*') ? 'active' : '' }}">
 
                 Pasien
 
@@ -50,7 +50,7 @@
                     class="profile-trigger"
                     onclick="toggleProfileDropdown()">
 
-                <div class="profile-circle">
+                <div class="profile-circle {{ request()->routeIs('dokter.profil*') ? 'active' : '' }}">
 
                     @if(auth()->user()->foto)
 

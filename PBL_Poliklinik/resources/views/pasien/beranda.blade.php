@@ -81,9 +81,9 @@
                     Hubungi nomor yang tersedia untuk mendapatkan bantuan segera.
                 </p>
 
-                <a href="tel:085707029645" class="btn-emergency">
-                    <i class="fa-solid fa-phone"></i>
-                    Call Now
+                <a href="https://wa.me/6285707029645" target="_blank" class="btn-emergency">
+                    <i class="fa-brands fa-whatsapp"></i>
+                    Hubungi via WhatsApp
                 </a>
             </div>
         </div>
@@ -100,7 +100,7 @@
                     $spesialisasiLower = strtolower($namaSpesialisasi ?? '');
                 @endphp
                 
-                <div class="service-card">
+                <a href="{{ route('pasien.jadwal') }}" class="service-card" style="text-decoration: none; color: inherit;">
                     <div class="service-top">
                         <div class="service-icon">
                             @if(str_contains($spesialisasiLower, 'gigi'))
@@ -130,7 +130,7 @@
                     <div class="doctor-count">
                         {{ $group->count() }} Dokter Tersedia
                     </div>
-                </div>
+                </a>
             
                 @empty
                 <div class="empty-service">
@@ -149,16 +149,21 @@
 <div class="doctor-section">
     <div class="doctor-left">
         <h2>Daftar Dokter Hari ini</h2>
-        <p>
+        <p style="margin-bottom: 24px;">
             Lihat daftar dokter yang tersedia di poliklinik
             untuk memudahkan kunjungan Anda.
         </p>
+        @if($dokters->count() > 0)
+            <a href="{{ route('pasien.dokter.index') }}" class="btn-more-dokter-left">
+                <span>Lihat Selengkapnya</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        @endif
     </div>
 
     <div class="doctor-right">
-        @forelse($dokters->take(3) as $dokter)
+        @forelse($doktersHariIni as $dokter)
             @php
-                $jadwalAktif = $dokter->jadwalDokter->firstWhere('aktif', true);
                 $fotoDokter = optional($dokter->user)->foto;
                 $namaDokter = optional($dokter->user)->nama ?? 'Dokter';
 
@@ -167,9 +172,21 @@
                     ->map(fn ($kata) => strtoupper(substr($kata, 0, 1)))
                     ->take(2)
                     ->implode('');
+
+                $jamSekarang = \Carbon\Carbon::now()->format('H:i:s');
+
+                // Check if doctor has schedule today
+                $jadwalHariIni = $dokter->jadwalDokter->first(function($j) use ($hariSekarang) {
+                    return strtolower($j->hari) === strtolower($hariSekarang) && $j->aktif;
+                });
+
+                $sedangPraktik = false;
+                if ($jadwalHariIni) {
+                    $sedangPraktik = $jamSekarang >= $jadwalHariIni->jam_mulai && $jamSekarang <= $jadwalHariIni->jam_selesai;
+                }
             @endphp
 
-            <div class="doctor-item">
+            <a href="{{ route('pasien.reservasi.index') }}" class="doctor-item" style="text-decoration: none; color: inherit;">
                 <div class="doctor-profile">
                     @if($fotoDokter)
                         <img
@@ -188,62 +205,50 @@
                 </div>
 
                 <div class="doctor-time">
-    <span class="doctor-day">
-        {{ $dokter->jadwalDokter->pluck('hari')->implode(', ') }}
-    </span>
+                    @if($jadwalHariIni)
+                        <span class="doctor-day" style="color: #102b57; font-weight: 700;">
+                            Hari Ini ({{ $hariSekarang }})
+                        </span>
+                        <strong>
+                            {{ \Carbon\Carbon::parse($jadwalHariIni->jam_mulai)->format('H:i') }}
+                            -
+                            {{ \Carbon\Carbon::parse($jadwalHariIni->jam_selesai)->format('H:i') }} WIB
+                        </strong>
+                    @else
+                        <span class="doctor-day" style="color: #dc2626; font-weight: 700;">
+                            Tidak ada jadwal dokter
+                        </span>
+                        <strong style="color: #94a3b8; font-size: 13px;">
+                            Hari Ini ({{ $hariSekarang }})
+                        </strong>
+                    @endif
+                </div>
 
-    <strong>
-        {{ $jadwalAktif?->jam_mulai ? \Carbon\Carbon::parse($jadwalAktif->jam_mulai)->format('H:i') : '--:--' }}
-        -
-        {{ $jadwalAktif?->jam_selesai ? \Carbon\Carbon::parse($jadwalAktif->jam_selesai)->format('H:i') : '--:--' }}
-    </strong>
-</div>
-
-                @php
-                $hariSekarang = \Carbon\Carbon::now()->locale('id')->translatedFormat('l');
-                $jamSekarang = \Carbon\Carbon::now()->format('H:i:s');
-
-                $sedangPraktik = false;
-
-                if ($jadwalAktif && $jadwalAktif->aktif) {
-                    $sedangPraktik =
-                    strtolower($jadwalAktif->hari) == strtolower($hariSekarang) &&
-                    $jamSekarang >= $jadwalAktif->jam_mulai &&
-                    $jamSekarang <= $jadwalAktif->jam_selesai;
-                }
-                @endphp
-
-            <div>
-                 @if($sedangPraktik)
-                    <span class="badge available">
-                        Tersedia
-                    </span>
-                @else
-                    <span class="badge full">
-                        Tidak Tersedia
-                    </span>
-                @endif
-</div>
-            </div>
+                <div>
+                    @if($sedangPraktik)
+                        <span class="badge available">
+                            Tersedia
+                        </span>
+                    @else
+                        <span class="badge full">
+                            Tidak Tersedia
+                        </span>
+                    @endif
+                </div>
+            </a>
         @empty
             <div class="empty-doctor-home">
                 <div class="empty-doctor-home-icon">
                     <i class="fa-solid fa-user-doctor"></i>
                 </div>
-                <h3>Belum Ada Dokter Tersedia</h3>
+                <h3>Tidak Ada Dokter yang Bertugas</h3>
                 <p>
-                    Saat ini belum ada jadwal dokter yang tersedia.
+                    Tidak ada dokter yang bertugas hari ini ({{ $hariSekarang }}).
                 </p>
             </div>
         @endforelse
 
-        @if($dokters->count() > 0)
-            <div class="doctor-more">
-                <a href="{{ route('pasien.dokter.index') }}">
-                    Lihat lebih lengkap
-                </a>
-            </div>
-        @endif
+
     </div>
 </div>
     </div>
@@ -294,14 +299,15 @@
     width: 64px;
     height: 64px;
     border-radius: 50%;
-    background: #e5e7eb;
-    color: #374151;
+    background: #102b57;
+    color: white;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 700;
     font-size: 18px;
     text-transform: uppercase;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 .doctor-day {
     display: block;
@@ -610,15 +616,28 @@
         color: #dc2626;
     }
 
-    .doctor-more {
-        text-align: right;
-        margin-top: 8px;
+    .btn-more-dokter-left {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px 24px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 14px;
+        color: white;
+        font-weight: 700;
+        font-size: 14px;
+        text-decoration: none;
+        transition: all 0.25s ease;
+        margin-top: 14px;
     }
 
-    .doctor-more a {
+    .btn-more-dokter-left:hover {
+        background: white;
         color: #102b57;
-        text-decoration: none;
-        font-weight: 700;
+        border-color: white;
+        transform: translateY(-2px);
     }
 
     .empty-service,

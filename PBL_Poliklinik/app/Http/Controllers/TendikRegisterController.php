@@ -13,7 +13,8 @@ class TendikRegisterController extends Controller
 {
     public function create()
     {
-        return view('register.tendik');
+        $jabatans = JabatanTendik::orderBy('nama_jabatan')->get();
+        return view('register.tendik', compact('jabatans'));
     }
 
     public function store(Request $request)
@@ -22,20 +23,12 @@ class TendikRegisterController extends Controller
             'nip' => ['required', 'string', 'max:30', 'unique:tendik,nip'],
             'nama' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
-            'jabatan' => ['required', 'string', 'max:255'],
-            'password' => ['required', 'min:8', 'confirmed'],
-            'telepon' => ['required', 'string', 'max:20'],
+            'jabatan' => ['required', 'exists:jabatan_tendik,id_jabatan'],
+            'password' => ['required', 'min:5', 'confirmed'],
+            'no_hp' => ['required', 'string', 'max:20'],
         ]);
 
-        $jabatan = JabatanTendik::where('nama_jabatan', $data['jabatan'])->first();
-
-        if (!$jabatan) {
-            return back()
-                ->withErrors(['jabatan' => 'Jabatan tidak ditemukan.'])
-                ->withInput();
-        }
-
-        DB::transaction(function () use ($data, $jabatan) {
+        DB::transaction(function () use ($data) {
             $user = User::create([
                 'id_role' => 4, // pasien
                 'nama' => $data['nama'],
@@ -46,9 +39,9 @@ class TendikRegisterController extends Controller
 
             Tendik::create([
                 'id_user' => $user->id_user,
-                'id_jabatan' => $jabatan->id_jabatan,
+                'id_jabatan' => $data['jabatan'],
                 'nip' => $data['nip'],
-                'no_hp' => $data['telepon'],
+                'no_hp' => $data['no_hp'],
             ]);
         });
 

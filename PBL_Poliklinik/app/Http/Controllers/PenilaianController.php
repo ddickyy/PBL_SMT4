@@ -93,7 +93,27 @@ class PenilaianController extends Controller
         ]);
 
         return redirect()
-            ->route('pasien.riwayat')
-            ->with('success', 'Terima kasih, penilaian berhasil dikirim.');
+            ->route('pasien.reservasi.show', $reservasi->id_reservasi)
+            ->with('success', 'Terima kasih, ulasan berhasil dikirim.');
+    }
+
+    // UPDATE PENILAIAN
+    public function update(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'kritik' => 'nullable|string|max:1000',
+            'saran' => 'nullable|string|max:1000',
+        ]);
+
+        $penilaian = Penilaian::whereHas('reservasi', function ($q) {
+            $q->where('id_user', Auth::id());
+        })->findOrFail($id);
+
+        $penilaian->update([
+            'kritik' => $validated['kritik'],
+            'saran' => $validated['saran'],
+        ]);
+
+        return back()->with('success', 'Penilaian berhasil diperbarui.');
     }
 }

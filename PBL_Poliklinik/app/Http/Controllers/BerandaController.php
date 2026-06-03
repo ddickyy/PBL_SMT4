@@ -41,11 +41,26 @@ class BerandaController extends Controller
         ->limit(3)
         ->get();
 
+        // Get doctors scheduled for today
+        $hariSekarang = $now->locale('id')->translatedFormat('l');
+        $doktersHariIni = Dokter::with([
+            'user',
+            'spesialisasi',
+            'jadwalDokter'
+        ])
+        ->whereHas('jadwalDokter', function ($query) use ($hariSekarang) {
+            $query->where('hari', $hariSekarang)
+                  ->where('aktif', true);
+        })
+        ->get();
+
         return view('pasien.beranda', compact(
             'dokters',
             'spesialisasiGroups',
             'isOpen',
-            'jadwal'
+            'jadwal',
+            'doktersHariIni',
+            'hariSekarang'
         ));
     }
 }
