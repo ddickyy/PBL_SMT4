@@ -4,14 +4,15 @@ namespace App\Filament\Resources\Reservasis\Schemas;
 
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Closure;
 use Carbon\Carbon;
-use Filament\Forms\Components\Radio;
 use Filament\Schemas\Components\Utilities\Get;
 
 class ReservasiForm
@@ -139,6 +140,10 @@ class ReservasiForm
                                 'dibatalkan' => 'Dibatalkan'
                             ])
                             ->required(),
+
+                        Toggle::make('viewed')
+                            ->label('Telah Dilihat')
+                            ->inline(false),
 
                     ])
                     ->columnSpanFull(),

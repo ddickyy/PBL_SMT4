@@ -16,9 +16,15 @@ class Penilaian extends Model
         'id_reservasi',
         'kritik',
         'saran',
+        'viewed',
+    ];
+
+    protected $attributes = [
+        'viewed' => false,
     ];
 
     protected $casts = [
+        'viewed' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',

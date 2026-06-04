@@ -11,6 +11,16 @@ class ViewReservasi extends ViewRecord
 {
     protected static string $resource = ReservasiResource::class;
 
+    public function mount(int | string $record): void
+    {
+        parent::mount($record);
+
+        if (! $this->record->viewed) {
+            $this->record->viewed = true;
+            $this->record->save();
+        }
+    }
+
     protected function getHeaderActions(): array
     {
         return [

@@ -21,11 +21,17 @@ class Reservasi extends Model
         'nomor_antrian',
         'estimasi_jam',
         'status',
+        'viewed',
+    ];
+
+    protected $attributes = [
+        'viewed' => false,
     ];
 
     protected $casts = [
         'tanggal_reservasi' => 'date',
         'estimasi_jam' => 'datetime:H:i:s',
+        'viewed' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',

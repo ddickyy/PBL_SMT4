@@ -9,10 +9,11 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
-use Filament\Tables\Table;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Table;
 
 
 class ReservasisTable
@@ -53,6 +54,10 @@ class ReservasisTable
                 TextColumn::make('status')
                     ->searchable()
                     ->sortable(),
+                IconColumn::make('viewed')
+                    ->label('Dilihat')
+                    ->boolean()
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->label('Dibuat Pada')
                     ->dateTime()
@@ -71,10 +76,17 @@ class ReservasisTable
                 SelectFilter::make('status')
                     ->label('Status Reservasi')
                     ->options([
-                        'pending' => 'Pending',
+                        'menunggu' => 'Menunggu',
                         'dikonfirmasi' => 'Dikonfirmasi',
                         'selesai' => 'Selesai',
                         'dibatalkan' => 'Dibatalkan',
+                    ]),
+
+                SelectFilter::make('viewed')
+                    ->label('Dilihat')
+                    ->options([
+                        1 => 'Sudah',
+                        0 => 'Belum',
                     ]),
 
                 TrashedFilter::make(),

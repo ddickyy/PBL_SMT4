@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Penilaians\Schemas;
 
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Carbon\Carbon;
@@ -48,6 +49,10 @@ class PenilaianForm
                             ->label('Saran')
                             ->rows(3)
                             ->columnSpanFull(),
+
+                        Toggle::make('viewed')
+                            ->label('Telah Dilihat')
+                            ->inline(false),
 
                     ])
                     ->columnSpanFull(),
