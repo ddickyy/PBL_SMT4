@@ -7,6 +7,9 @@
 @section('content')
 
     <div class="auth-wrapper">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+
         <div class="auth-card">
             <div class="auth-logo">
                 <img src="{{ asset('images/logo.png') }}" alt="Poliklinik Polinema" onerror="this.style.display='none'">
@@ -73,13 +76,13 @@
                         <button type="button" class="toggle-password" onclick="togglePass('password')">
                             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0
-                                      3 3 0 016 0z" />
+                                                                  3 3 0 016 0z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943
-                                      7.523 5 12 5c4.478 0
-                                      8.268 2.943 9.542 7
-                                      -1.274 4.057-5.064 7
-                                      -9.542 7-4.477
-                                      0-8.268-2.943-9.542-7z" />
+                                                                  7.523 5 12 5c4.478 0
+                                                                  8.268 2.943 9.542 7
+                                                                  -1.274 4.057-5.064 7
+                                                                  -9.542 7-4.477
+                                                                  0-8.268-2.943-9.542-7z" />
                             </svg>
                         </button>
                     </div>
@@ -94,13 +97,13 @@
                         <button type="button" class="toggle-password" onclick="togglePass('password_confirmation')">
                             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0
-                                      3 3 0 016 0z" />
+                                                                  3 3 0 016 0z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943
-                                      7.523 5 12 5c4.478 0
-                                      8.268 2.943 9.542 7
-                                      -1.274 4.057-5.064 7
-                                      -9.542 7-4.477
-                                      0-8.268-2.943-9.542-7z" />
+                                                                  7.523 5 12 5c4.478 0
+                                                                  8.268 2.943 9.542 7
+                                                                  -1.274 4.057-5.064 7
+                                                                  -9.542 7-4.477
+                                                                  0-8.268-2.943-9.542-7z" />
                             </svg>
                         </button>
                     </div>
@@ -116,9 +119,7 @@
                             </option>
 
                             @foreach ($jurusan as $item)
-                                <option value="{{ $item->id_jurusan }}" {{ old('id_jurusan') == $item->id_jurusan ? 'selected' : '' }}>
-                                    {{ $item->nama_jurusan }}
-                                </option>
+                                <option value="{{ $item->id_jurusan }}" {{ old('id_jurusan') == $item->id_jurusan ? 'selected' : '' }}>{{ $item->nama_jurusan }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -180,7 +181,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: #eef1f7;
+            background: linear-gradient(135deg, #eef4ff 0%, #f8fbff 50%, #edf2ff 100%);
             position: relative;
             overflow: hidden;
             padding: 40px 16px;
@@ -197,6 +198,25 @@
             box-shadow: 0 20px 60px rgba(16, 43, 87, 0.1);
             position: relative;
             z-index: 1;
+            animation: cardReveal .7s ease;
+            transition: .4s ease;
+        }
+
+        .auth-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 30px 80px rgba(16, 43, 87, .15);
+        }
+
+        @keyframes cardReveal {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .auth-logo {
@@ -333,7 +353,7 @@
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(19, 54, 208, 0.3);
+            box-shadow: 0 10px 20px rgba(19, 54, 208, .4);
         }
 
         .btn-primary:active {
@@ -378,6 +398,42 @@
         .alert-error ul {
             margin: 0;
             padding-left: 18px;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(40px);
+            opacity: .25;
+            animation: floatBlob 8s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        .blob-1 {
+            width: 220px;
+            height: 220px;
+            background: #f6c40b;
+            top: -60px;
+            left: -60px;
+        }
+
+        .blob-2 {
+            width: 260px;
+            height: 260px;
+            background: #8bb7ff;
+            bottom: -80px;
+            right: -80px;
+        }
+
+        @keyframes floatBlob {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
         }
 
         @media (max-width: 560px) {

@@ -4,8 +4,18 @@
 
 @section('title', 'Login')
 
+<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
 @section('content')
     <div class="auth-wrapper">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+
+        <div class="login-illustration">
+            <lottie-player src="{{ asset('animations/doctor.json') }}" background="transparent" speed="1" loop autoplay>
+            </lottie-player>
+        </div>
 
         <div class="auth-card">
 
@@ -25,17 +35,6 @@
                     {{ session('success') }}
                 </div>
             @endif
-
-            {{-- ERROR MESSAGE
-            @if ($errors->any())
-                <div class="alert-error">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif --}}
 
             <form action="{{ route('login.process') }}" method="POST" class="auth-form">
                 @csrf
@@ -123,10 +122,16 @@
         .auth-wrapper {
             min-height: 100vh;
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             align-items: center;
             justify-content: center;
-            background: #eef1f7;
+            gap: 60px;
+            flex-wrap: wrap;
+            background:
+                linear-gradient(135deg,
+                    #eef4ff 0%,
+                    #f8fbff 50%,
+                    #edf2ff 100%);
             position: relative;
             overflow: hidden;
             padding: 40px 16px;
@@ -142,6 +147,29 @@
             box-shadow: 0 20px 60px rgba(16, 43, 87, 0.1);
             position: relative;
             z-index: 1;
+            animation: cardReveal .8s ease;
+            transition: .4s ease;
+        }
+
+        @keyframes cardReveal {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .auth-card:hover {
+
+            transform: translateY(-4px);
+
+            box-shadow:
+                0 30px 80px rgba(16, 43, 87, .15);
+
         }
 
         .auth-logo {
@@ -264,7 +292,10 @@
             font-size: 14px;
             color: #1e293b;
             outline: none;
-            transition: background 0.2s, box-shadow 0.2s, border 0.2s;
+            transition:
+                background .3s,
+                box-shadow .3s,
+                transform .3s;
             box-sizing: border-box;
         }
 
@@ -272,6 +303,14 @@
             background: #e8edf5;
             box-shadow: 0 0 0 3px rgba(16, 43, 87, 0.1);
         }
+
+        /* .input-wrapper input:focus {
+                background: #ffffff;
+                transform: translateY(-2px);
+                box-shadow:
+                    0 0 0 3px rgba(16, 43, 87, .08),
+                    0 10px 25px rgba(16, 43, 87, .08);
+            } */
 
         .input-wrapper input::placeholder {
             color: #b0bcc8;
@@ -356,6 +395,41 @@
             align-items: center;
             text-decoration: none;
             box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: -120%;
+
+            width: 60px;
+            height: 100%;
+
+            background: linear-gradient(90deg,
+                    transparent,
+                    rgba(255, 255, 255, .35),
+                    transparent);
+
+            transform: skewX(-20deg);
+
+            animation: shine 3.5s infinite;
+        }
+
+        @keyframes shine {
+
+            0% {
+                left: -120%;
+            }
+
+            100% {
+                left: 150%;
+            }
+
         }
 
         .btn-primary:hover {
@@ -402,6 +476,87 @@
         .input-error {
             border: 1px solid #ef4444 !important;
             background: #fef2f2 !important;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(40px);
+            opacity: .35;
+            animation: floatBlob 8s ease-in-out infinite;
+        }
+
+        .blob-1 {
+            width: 260px;
+            height: 260px;
+            background: #f6c40b;
+            top: -80px;
+            left: -80px;
+        }
+
+        .blob-2 {
+            width: 320px;
+            height: 320px;
+            background: #8bb7ff;
+            bottom: -120px;
+            right: -100px;
+            animation-delay: 2s;
+        }
+
+        .blob-3 {
+            width: 180px;
+            height: 180px;
+            background: #102b57;
+            top: 30%;
+            right: 10%;
+            opacity: .15;
+            animation-delay: 4s;
+        }
+
+        @keyframes floatBlob {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-30px);
+            }
+        }
+
+        .login-illustration {
+            width: 380px;
+            position: relative;
+            z-index: 2;
+
+            animation: floatDoctor 4s ease-in-out infinite;
+        }
+
+        .login-illustration lottie-player {
+            width: 100%;
+            height: 100%;
+        }
+
+        @keyframes floatDoctor {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-15px);
+            }
+
+        }
+
+        @media(max-width:1050px) {
+
+            .login-illustration {
+                display: none;
+            }
+
         }
 
         @media (max-width: 560px) {

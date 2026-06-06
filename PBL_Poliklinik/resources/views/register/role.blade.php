@@ -14,12 +14,15 @@
 @section('content')
 
     <div class="page-wrap">
-        <header class="topbar">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+        {{-- <header class="topbar">
             <a href="#" class="brand" aria-label="Poliklinik Polinema">
                 <img src="{{ asset('/images/logo.png') }}" alt="Logo" class="logo-img">
                 <span>Poliklinik Polinema</span>
             </a>
-        </header>
+        </header> --}}
 
         <main class="hero-shell">
             <section class="hero-card">
@@ -127,9 +130,15 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg,
+                    #eef4ff 0%,
+                    #f8fbff 50%,
+                    #edf2ff 100%);
         }
 
-        .topbar {
+        /* .topbar {
             height: 92px;
             display: flex;
             align-items: center;
@@ -137,9 +146,11 @@
             background: rgba(255, 255, 255, .72);
             backdrop-filter: saturate(180%) blur(10px);
             box-shadow: 0 1px 0 rgba(16, 43, 87, .03);
-        }
+            position: relative;
+            z-index: 3;
+        } */
 
-        .brand {
+        /* .brand {
             display: flex;
             align-items: center;
             gap: 14px;
@@ -154,7 +165,7 @@
             width: 34px;
             height: 34px;
             flex: none;
-        }
+        } */
 
         .hero-shell {
             flex: 1;
@@ -162,6 +173,8 @@
             align-items: center;
             justify-content: center;
             padding: 28px 30px 58px;
+            position: relative;
+            z-index: 2;
         }
 
         .hero-card {
@@ -172,6 +185,8 @@
             box-shadow: var(--shadow);
             padding: 80px 92px 78px;
             box-sizing: border-box;
+            position: relative;
+            z-index: 2;
         }
 
         .title {
@@ -208,6 +223,34 @@
             align-items: center;
             justify-content: flex-start;
             box-shadow: inset 0 0 0 1px rgba(16, 43, 87, .02);
+            transition: .35s ease;
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        .option-card:hover {
+            transform: translateY(-10px);
+            background: white;
+            box-shadow: 0 25px 50px rgba(16, 43, 87, .12);
+        }
+
+        .option-card:nth-child(1) {
+            animation: cardShow .6s ease forwards;
+        }
+
+        .option-card:nth-child(2) {
+            animation: cardShow .6s .2s ease forwards;
+        }
+
+        .option-card:nth-child(3) {
+            animation: cardShow .6s .4s ease forwards;
+        }
+
+        @keyframes cardShow {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .auth-footer {
@@ -226,6 +269,11 @@
             place-items: center;
             margin-top: 3px;
             flex: none;
+            transition: .35s ease;
+        }
+
+        .option-card:hover .icon-badge {
+            transform: scale(1.1);
         }
 
         .icon-badge svg {
@@ -278,6 +326,40 @@
             transform: translateY(-1px);
             box-shadow: 0 16px 32px rgba(16, 43, 87, .24);
             opacity: .98;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(50px);
+            opacity: .25;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .blob-1 {
+            width: 250px;
+            height: 250px;
+            background: #f6c40b;
+            top: -80px;
+            left: -80px;
+        }
+
+        .blob-2 {
+            width: 300px;
+            height: 300px;
+            background: #8bb7ff;
+            bottom: -100px;
+            right: -100px;
+        }
+
+        .blob-3 {
+            width: 180px;
+            height: 180px;
+            background: #102b57;
+            top: 40%;
+            right: 10%;
+            opacity: .08;
         }
 
         @media (max-width: 1200px) {
