@@ -30,6 +30,10 @@ class DosensTable
                 TextColumn::make('user.nama')
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('id_jurusan')
+                    ->numeric()
+                    ->sortable()
+                    ->toggleable(),
                 TextColumn::make('nidn')
                     ->searchable()
                     ->sortable(),

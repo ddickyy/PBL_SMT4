@@ -26,6 +26,12 @@ class DosenInfolist
                                 ->badge()
                                 ->color('primary')
                                 ->placeholder('-'),
+
+                            TextEntry::make('jurusan.nama_jurusan')
+                                ->label('Jurusan')
+                                ->badge()
+                                ->color('primary')
+                                ->placeholder('-'),
     
                             TextEntry::make('no_hp')
                                 ->label('Nomor Handphone')

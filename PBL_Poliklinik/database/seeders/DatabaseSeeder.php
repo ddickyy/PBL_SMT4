@@ -22,7 +22,9 @@ class DatabaseSeeder extends Seeder
             SpesialisasiSeeder::class,   
             UserSeeder::class,
             AdminSeeder::class,
-            DokterSeeder::class
+            DokterSeeder::class,
+            PermissionSeeder::class,
+            RolePermissionSeeder::class,
         ]);
     }
 }

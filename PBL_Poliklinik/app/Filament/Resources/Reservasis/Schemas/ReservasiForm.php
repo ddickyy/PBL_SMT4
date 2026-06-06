@@ -11,6 +11,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Closure;
 use Carbon\Carbon;
+use Filament\Forms\Components\Radio;
 use Filament\Schemas\Components\Utilities\Get;
 
 class ReservasiForm
@@ -129,7 +130,7 @@ class ReservasiForm
                                 };
                             }),
 
-                        Select::make('status')
+                        Radio::make('status')
                             ->label('Status')
                             ->options([
                                 'menunggu' => 'Menunggu',
@@ -137,8 +138,7 @@ class ReservasiForm
                                 'selesai' => 'Selesai',
                                 'dibatalkan' => 'Dibatalkan'
                             ])
-                            ->required()
-                            ->searchable(),
+                            ->required(),
 
                     ])
                     ->columnSpanFull(),

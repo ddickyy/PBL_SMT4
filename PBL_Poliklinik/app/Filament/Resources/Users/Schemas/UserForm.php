@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Schema;
@@ -53,7 +54,7 @@ class UserForm
                         FileUpload::make('foto')
                             ->label('Foto Pengguna')
                             ->image()
-                            ->columnSpanFull()
+                            ->columnSpanFull(),
                     ])
                     ->columns(2)
                     ->columnSpanFull()

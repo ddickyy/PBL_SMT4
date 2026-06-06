@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Roles\Schemas;
 
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Components\Section;
@@ -29,14 +30,23 @@ class RoleForm
                                     'unique' => 'Nama role sudah digunakan.',
                                 ])->columnSpanFull(),
 
-                            Textarea::make('deskripsi')
+                                
+                                Textarea::make('deskripsi')
                                 ->label('Deskripsi Role')
                                 ->placeholder('Masukkan deskripsi role...')
                                 ->rows(5)
                                 ->maxLength(255)
-                                ->helperText('Deskripsi digunakan untuk menjelaskan fungsi role.')
-                                ->columnSpanFull(),
-
+                                ->helperText('Deskripsi digunakan untuk menjelaskan fungsi role.'),
+                                
+                                CheckboxList::make('permissions')
+                                    ->relationship(
+                                        'permissions',
+                                        'nama_permission'
+                                    )
+                                    ->columns(2)
+                                    ->searchable()
+                                    ->columnSpanFull(),
+                                    
                         ])->columnSpanFull(),
             ]);
     }

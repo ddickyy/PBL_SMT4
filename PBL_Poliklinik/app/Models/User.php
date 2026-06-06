@@ -109,4 +109,18 @@ class User extends Authenticatable
 
         return '-';
     }
+
+    public function hasPermission(
+        string $permission
+    ): bool
+    {
+        return $this->role
+            ?->permissions()
+            ->where(
+                'nama_permission',
+                $permission
+            )
+            ->exists()
+            ?? false;
+    }
 }

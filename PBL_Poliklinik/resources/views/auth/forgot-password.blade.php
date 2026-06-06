@@ -77,7 +77,8 @@
         position: relative;
         overflow: hidden;
         padding: 40px 16px;
-        font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        font-family: 'Poppins', system-ui, -apple-system,
+            BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
 
     .auth-card {

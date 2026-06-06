@@ -23,7 +23,7 @@
     <div class="bukti-wrap">
 
     {{-- HEADER --}}
-    <div class="section-header">
+    <div class="section-header" data-aos="fade-up">
 
         <h2 class="section-title">
             Bukti Reservasi
@@ -49,7 +49,7 @@
 
     @if(isset($reservasi))
 
-        <div class="bukti-card">
+        <div class="bukti-card" data-aos="fade-up">
 
             {{-- DOKTER --}}
             <div class="bukti-row">
@@ -186,7 +186,7 @@
         @if(in_array($reservasi->status, ['selesai', 'done']))
             {{-- HASIL PEMERIKSAAN & CATATAN DOKTER --}}
             @if($reservasi->rekamMedis)
-                <div class="detail-section-card">
+                <div class="detail-section-card" data-aos="fade-up">
                     <div class="detail-section-header">
                         <i class="fa-solid fa-file-medical detail-icon-medical"></i>
                         <h3>Hasil Pemeriksaan & Catatan Dokter</h3>
@@ -216,7 +216,7 @@
             @endif
 
             {{-- PENILAIAN PELAYANAN --}}
-            <div class="detail-section-card" id="penilaian-section">
+            <div class="detail-section-card" id="penilaian-section" data-aos="fade-up">
                 <div class="detail-section-header">
                     <i class="fa-solid fa-star detail-icon-star"></i>
                     <h3>Penilaian Pelayanan</h3>
@@ -296,7 +296,7 @@
     @else
 
         {{-- EMPTY --}}
-        <div class="empty-box">
+        <div class="empty-box" data-aos="fade-up">
 
             <i class="fa-solid fa-file-circle-xmark"></i>
 
@@ -315,7 +315,7 @@
 
 
     {{-- BUTTON --}}
-    <div class="aksi-grid">
+    <div class="aksi-grid" data-aos="fade-up">
         @if(isset($reservasi) && in_array($reservasi->status, ['menunggu', 'dikonfirmasi']))
             <form action="{{ route('pasien.reservasi.cancel', $reservasi->id_reservasi) }}" method="POST" style="width: 100%; display: block;" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan reservasi ini?')">
                 @csrf
@@ -326,12 +326,14 @@
             </form>
         @endif
 
-        <a href="{{ route('pasien.beranda') }}"
-           class="btn-primary-bukti">
+        @if(isset($reservasi) && !in_array($reservasi->status, ['selesai', 'done']))
+            <a href="{{ route('pasien.beranda') }}"
+               class="btn-primary-bukti">
 
-            Kembali ke Beranda
+                Kembali ke Beranda
 
-        </a>
+            </a>
+        @endif
 
     </div>
 
