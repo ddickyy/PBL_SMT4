@@ -6,6 +6,8 @@
 
 @section('content')
     <div class="auth-wrapper">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
         <div class="auth-card">
             <div class="auth-logo">
                 <img src="{{ asset('images/logo.png') }}" alt="Poliklinik Polinema" onerror="this.style.display='none'">
@@ -37,8 +39,12 @@
                 <div class="form-group">
                     <label for="email">ALAMAT EMAIL</label>
                     <div class="input-wrapper">
+                        <svg class="input-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
                         <input type="email" id="email" name="email" value="{{ old('email') }}" placeholder="nama@gmail.com"
-                            required class="@error('email') input-error @enderror">
+                            autocomplete="email" required class="@error('email') input-error @enderror">
                     </div>
 
                     @error('email')
@@ -67,12 +73,11 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        background: #eef1f7;
+        background: linear-gradient(135deg, #eef4ff 0%, #f8fbff 50%, #edf2ff 100%);
         position: relative;
         overflow: hidden;
         padding: 40px 16px;
-        font-family: 'Inter', system-ui, -apple-system,
-            BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
 
     .auth-card {
@@ -84,6 +89,25 @@
         box-shadow: 0 20px 60px rgba(16, 43, 87, 0.1);
         position: relative;
         z-index: 1;
+        animation: cardReveal .7s ease;
+        transition: .4s ease;
+    }
+
+    @keyframes cardReveal {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .auth-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 30px 80px rgba(16, 43, 87, .15);
     }
 
     .auth-logo {
@@ -146,9 +170,18 @@
         align-items: center;
     }
 
+    .input-icon {
+        position: absolute;
+        left: 14px;
+        width: 18px;
+        height: 18px;
+        color: #94a3b8;
+        pointer-events: none;
+    }
+
     .input-wrapper input {
         width: 100%;
-        padding: 14px 16px;
+        padding: 14px 44px;
         border: none;
         border-radius: 12px;
         background: #f1f5f9;
@@ -165,6 +198,14 @@
         background: #e8edf5;
         box-shadow: 0 0 0 3px rgba(16, 43, 87, 0.1);
     }
+
+    /* .input-wrapper input:focus {
+        background: #ffffff;
+        transform: translateY(-2px);
+        box-shadow:
+            0 0 0 3px rgba(16, 43, 87, .08),
+            0 10px 25px rgba(16, 43, 87, .08);
+    } */
 
     .input-wrapper input::placeholder {
         color: #b0bcc8;
@@ -257,6 +298,46 @@
     .input-error {
         border: 1px solid #ef4444 !important;
         background: #fef2f2 !important;
+    }
+
+    .blob {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(40px);
+        opacity: .25;
+        animation: floatBlob 8s ease-in-out infinite;
+    }
+
+    .blob-1 {
+        width: 220px;
+        height: 220px;
+
+        background: #f6c40b;
+
+        top: -60px;
+        left: -60px;
+    }
+
+    .blob-2 {
+        width: 260px;
+        height: 260px;
+
+        background: #8bb7ff;
+
+        bottom: -80px;
+        right: -80px;
+    }
+
+    @keyframes floatBlob {
+
+        0%,
+        100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-20px);
+        }
     }
 
     @media (max-width: 560px) {

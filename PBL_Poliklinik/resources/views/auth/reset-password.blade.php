@@ -5,79 +5,64 @@
 @section('title', 'Reset Sandi')
 
 @section('content')
-<div class="auth-wrapper">
-    <div class="auth-card">
-        <div class="auth-logo">
-            <img src="{{ asset('images/logo.png') }}" alt="Poliklinik Polinema" onerror="this.style.display='none'">
-            <span class="logo-text">Poliklinik Polinema</span>
+    <div class="auth-wrapper">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="auth-card">
+            <div class="auth-logo">
+                <img src="{{ asset('images/logo.png') }}" alt="Poliklinik Polinema" onerror="this.style.display='none'">
+                <span class="logo-text">Poliklinik Polinema</span>
+            </div>
+
+            <div class="auth-header">
+                <h1>Reset Password</h1>
+                <p>Silakan buat password baru untuk akun Anda.</p>
+            </div>
+
+            @if ($errors->any())
+                <div class="alert-error">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <form action="{{ route('password.update') }}" method="POST" class="auth-form">
+                @csrf
+
+                <input type="hidden" name="token" value="{{ $token }}">
+
+                <div class="form-group">
+                    <label for="email">ALAMAT EMAIL</label>
+                    <div class="input-wrapper">
+                        <input type="email" id="email" name="email" value="{{ old('email', $email) }}"
+                            placeholder="nama@gmail.com" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">PASSWORD BARU</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="password" name="password" placeholder="••••••••" required minlength="6">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password_confirmation">KONFIRMASI PASSWORD</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="password_confirmation" name="password_confirmation"
+                            placeholder="••••••••" required minlength="6">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary">SIMPAN PASSWORD BARU</button>
+            </form>
         </div>
-
-        <div class="auth-header">
-            <h1>Reset Password</h1>
-            <p>Silakan buat password baru untuk akun Anda.</p>
-        </div>
-
-        @if ($errors->any())
-            <div class="alert-error">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
-        <form action="{{ route('password.update') }}" method="POST" class="auth-form">
-            @csrf
-
-            <input type="hidden" name="token" value="{{ $token }}">
-
-            <div class="form-group">
-                <label for="email">ALAMAT EMAIL</label>
-                <div class="input-wrapper">
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value="{{ old('email', $email) }}"
-                        placeholder="nama@gmail.com"
-                        required>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="password">PASSWORD BARU</label>
-                <div class="input-wrapper">
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        placeholder="••••••••"
-                        required
-                        minlength="6">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="password_confirmation">KONFIRMASI PASSWORD</label>
-                <div class="input-wrapper">
-                    <input
-                        type="password"
-                        id="password_confirmation"
-                        name="password_confirmation"
-                        placeholder="••••••••"
-                        required
-                        minlength="6">
-                </div>
-            </div>
-
-            <button type="submit" class="btn-primary">SIMPAN PASSWORD BARU</button>
-        </form>
     </div>
-</div>
 @endsection
 <style>
-
     main {
         padding: 0;
         background: transparent;
@@ -89,12 +74,12 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        background: #eef1f7;
+        background: linear-gradient(135deg, #eef4ff 0%, #f8fbff 50%, #edf2ff 100%);
         position: relative;
         overflow: hidden;
         padding: 40px 16px;
         font-family: 'Inter', system-ui, -apple-system,
-                     BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
 
     .auth-card {
@@ -106,6 +91,25 @@
         box-shadow: 0 20px 60px rgba(16, 43, 87, 0.1);
         position: relative;
         z-index: 1;
+        animation: cardReveal .7s ease;
+        transition: .4s ease;
+    }
+
+    @keyframes cardReveal {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .auth-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 30px 80px rgba(16, 43, 87, .15);
     }
 
     .auth-logo {
@@ -178,8 +182,8 @@
         color: #1e293b;
         outline: none;
         transition: background 0.2s,
-                    box-shadow 0.2s,
-                    border 0.2s;
+            box-shadow 0.2s,
+            border 0.2s;
         box-sizing: border-box;
     }
 
@@ -281,6 +285,42 @@
         background: #fef2f2 !important;
     }
 
+    .blob {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(40px);
+        opacity: .25;
+        animation: floatBlob 8s ease-in-out infinite;
+    }
+
+    .blob-1 {
+        width: 220px;
+        height: 220px;
+        background: #f6c40b;
+        top: -60px;
+        left: -60px;
+    }
+
+    .blob-2 {
+        width: 260px;
+        height: 260px;
+        background: #8bb7ff;
+        bottom: -80px;
+        right: -80px;
+    }
+
+    @keyframes floatBlob {
+
+        0%,
+        100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-20px);
+        }
+    }
+
     @media (max-width: 560px) {
 
         .auth-card {
@@ -295,5 +335,4 @@
             font-size: 13px;
         }
     }
-
 </style>
