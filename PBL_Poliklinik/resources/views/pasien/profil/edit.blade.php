@@ -20,123 +20,59 @@
 
  <div class="profile-card" data-aos="fade-up">
 
- <div class="page-header">
+    <div class="page-header">
+        <h1>Edit Profil Anda</h1>
+        <p>Perbarui informasi pribadi Anda untuk kelancaran layanan kesehatan.</p>
+    </div>
 
- <h1>Edit Profil Anda</h1>
+    @if ($errors->any())
+        <div class="alert-error">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
- <p>
- Perbarui informasi pribadi Anda untuk
- kelancaran layanan kesehatan.
- </p>
+    @if(session('success'))
+        <div class="alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
 
- </div>
+    <form action="{{ route('pasien.profil.update') }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        @method('PUT')
 
- @if ($errors->any())
-
- <div class="alert-error">
-
- <ul>
-
- @foreach ($errors->all() as $error)
-
- <li>{{ $error }}</li>
-
- @endforeach
-
- </ul>
-
- </div>
-
- @endif
-
- @if(session('success'))
-
- <div class="alert-success">
-
- {{ session('success') }}
-
- </div>
-
- @endif
-
- <form
- action="{{ route('pasien.profil.update') }}"
- method="POST"
- enctype="multipart/form-data"
->
-
- @csrf
- @method('PUT')
-
- <div class="form-grid">
-
- {{-- FOTO --}}
- <div class="form-group full-width">
-
- <label>FOTO PROFIL</label>
-
- <div class="photo-upload">
-
- <div class="photo-preview">
-
- @if($user->foto)
-
- <img
- id="previewFoto"
- src="{{ asset('storage/' . $user->foto) }}"
- alt="Foto Profil"
->
-
- @else
-
- <div id="initialsPreview" class="profile-initials">
- {{ strtoupper(substr($user->nama, 0, 1)) }}
- </div>
- <img
- id="previewFoto"
- src=""
- alt="Foto Profil"
- style="display: none;"
->
-
- @endif
-
- {{-- 4x4 Guide Overlay --}}
- <div class="crop-guide-4x4">
- <span class="guide-label">4x4</span>
- </div>
-
- </div>
-
- <div class="photo-actions">
-
- <input
- type="file"
- name="foto"
- id="fotoInput"
- accept="image/*"
- onchange="previewImage(event)"
->
-
- <small>
- JPG, PNG, JPEG maksimal 2MB
- </small>
-
- </div>
-
- </div>
-
- @error('foto')
-
- <small class="error-text">
-
- {{ $message }}
-
- </small>
-
- @enderror
-
- </div>
+        <div class="form-grid">
+            {{-- FOTO --}}
+            <div class="form-group full-width">
+                <label>FOTO PROFIL</label>
+                <div class="photo-upload">
+                    <div class="photo-preview">
+                        @if($user->foto)
+                            <img id="previewFoto" src="{{ asset('storage/' . $user->foto) }}" alt="Foto Profil">
+                        @else
+                            <div id="initialsPreview" class="profile-initials">
+                                {{ strtoupper(substr($user->nama, 0, 1)) }}
+                            </div>
+                            <img id="previewFoto" src="" alt="Foto Profil" style="display: none;">
+                        @endif
+                        {{-- 4x4 Guide Overlay --}}
+                        <div class="crop-guide-4x4">
+                            <span class="guide-label">4x4</span>
+                        </div>
+                    </div>
+                    <div class="photo-actions">
+                        <input type="file" name="foto" id="fotoInput" accept="image/*" onchange="previewImage(event)">
+                        <small>JPG, PNG, JPEG maksimal 2MB</small>
+                    </div>
+                </div>
+                @error('foto')
+                    <small class="error-text">{{ $message }}</small>
+                @enderror
+            </div>
 
  {{-- NAMA --}}
  <div class="form-group">

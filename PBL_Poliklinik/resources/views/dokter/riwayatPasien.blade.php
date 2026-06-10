@@ -48,10 +48,7 @@
 <div
  class="rp-item"
  data-status="{{ $r->status }}"
- 
- 
  onclick="window.location='{{ route('dokter.pasien.detail', $r->id_reservasi) }}'"
- style="cursor: pointer;"
 >
 
  <div class="rp-item__time">
@@ -218,8 +215,15 @@ function rpFilter(el, status) {
  padding: 20px 24px;
  border-bottom: 1px solid #f1f5f9;
  transition: background .2s ease;
+ cursor: pointer;
 }
-.rp-item:hover { background: #f8fafc; }
+.rp-item:hover { 
+ background: #f8fafc; 
+ transform: translateY(-2px);
+ box-shadow: 0 10px 30px rgba(16,43,87,.08);
+ z-index: 10;
+ position: relative;
+}
 .rp-item:last-child { border-bottom: none; }
 
 .rp-item__time strong { 

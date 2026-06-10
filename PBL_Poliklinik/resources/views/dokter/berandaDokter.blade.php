@@ -9,7 +9,7 @@ $dokterLayout = true;
 @section('hero')
 @include('partial.hero', [
 'badge' => 'Layanan Kesehatan',
-'title' => 'Selamat Datang,<br><span style="color:#f6c40b">' . $dokter->user->nama . '</span>',
+'title' => 'Selamat Datang,<br><span class="text-[#f6c40b]">' . $dokter->user->nama . '</span>',
 'desc' => 'Kelola jadwal praktik, pantau antrean pasien, dan berikan pelayanan kesehatan terbaik hari ini.',
 'buttonText' => null,
 'bg' => asset('images/poliklinik.jpg'),
@@ -67,7 +67,7 @@ $dokterLayout = true;
  </span>
 
  <strong class="bd-stat__val">
- {{ $reservasiHariIni->count() }}
+ {{ $antreanHariIniCount }}
  </strong>
  </div>
  </div>
@@ -83,24 +83,28 @@ $dokterLayout = true;
  <div class="bd-card bd-queue-card">
 
  <div class="bd-subhead">
- <h2>Antrean Pasien Hari Ini</h2>
+ <h2>Antrean Pasien</h2>
 
- <a
- href="{{ route('dokter.pasien') }}"
- class="bd-link"
->
- Lihat Semua
- </a>
+ <div class="bd-tabs">
+ <a href="?filter=hari_ini" class="bd-tab {{ $filter == 'hari_ini' ? 'bd-tab--active' : '' }}">Hari Ini</a>
+ <a href="?filter=semua" class="bd-tab {{ $filter == 'semua' ? 'bd-tab--active' : '' }}">Seluruh Antrean</a>
+ </div>
  </div>
 
  <div class="bd-antrean">
 
  @forelse($reservasiHariIni as $p)
 
- <div class="bd-row @if($p->status === 'dikonfirmasi') bd-row--active @endif" onclick="window.location='{{ route('dokter.pasien.detail', $p->id_reservasi) }}'" style="cursor: pointer;">
+ <div class="bd-row @if($p->status === 'dikonfirmasi') bd-row--active @endif" onclick="window.location='{{ route('dokter.pasien.detail', $p->id_reservasi) }}'" style="cursor: pointer; animation-delay: {{ $loop->index * 0.15 }}s;">
 
  <div class="bd-row__header">
- <span class="bd-row__no">#{{ $p->nomor_antrian }} - {{ \Carbon\Carbon::parse($p->estimasi_jam)->format('H:i') }} WIB</span>
+ <span class="bd-row__no">
+ #{{ $p->nomor_antrian }} - 
+ @if($filter === 'semua' && $p->tanggal_reservasi != now()->toDateString())
+ <span style="color: #64748b; font-size: 13px;">{{ \Carbon\Carbon::parse($p->tanggal_reservasi)->translatedFormat('d M Y') }}</span>,
+ @endif
+ {{ \Carbon\Carbon::parse($p->estimasi_jam)->format('H:i') }} WIB
+ </span>
  <span class="bd-badge bd-badge--{{ $p->status }}">{{ strtoupper($p->status) }}</span>
  </div>
 
@@ -128,7 +132,7 @@ $dokterLayout = true;
 
  <div class="bd-empty-state">
  <i class="fa-solid fa-calendar-times"></i>
- <p>Tidak ada antrean pasien hari ini.</p>
+ <p>Tidak ada antrean pasien {{ $filter == 'hari_ini' ? 'hari ini' : 'tersedia' }}.</p>
  </div>
 
  @endforelse
@@ -272,26 +276,15 @@ $dokterLayout = true;
 
  <div class="bd-jadwal__days">
 
- @foreach($jadwalList as $j)
-
- <div class="bd-day">
-
- <span class="bd-day__tgl">
- {{ strtoupper($j->hari) }}
- </span>
-
- <span class="bd-day__hari">
- {{ substr($j->hari,0,3) }}
- </span>
-
- <span class="bd-day__jam">
- {{ substr($j->jam_mulai,0,5) }}
- -
- {{ substr($j->jam_selesai,0,5) }}
- </span>
-
+ @foreach($groupedJadwal as $hari => $jadwals)
+ <div class="bd-day {{ $hari === \Carbon\Carbon::now()->translatedFormat('l') ? 'bd-day--today' : 'bd-day--upcoming' }}">
+ <span class="bd-day__hari">{{ substr($hari, 0, 3) }}</span>
+ <div style="display: flex; flex-direction: column; gap: 4px; align-items: center;">
+ @foreach($jadwals as $jadwal)
+ <span class="bd-day__jam">{{ \Carbon\Carbon::parse($jadwal->jam_mulai)->format('H:i') }} - {{ \Carbon\Carbon::parse($jadwal->jam_selesai)->format('H:i') }}</span>
+ @endforeach
  </div>
-
+ </div>
  @endforeach
 
  </div>
@@ -423,31 +416,62 @@ $dokterLayout = true;
 }
 
 /* ── SUBHEAD ── */
-.bd-subhead { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.bd-subhead { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
 .bd-subhead h2 { margin: 0; font-size: 22px; font-weight: 800; color: #102b57; letter-spacing: -0.5px; }
-.bd-link { color: #2d5bff; font-size: 14px; font-weight: 700; text-decoration: none; transition: opacity 0.2s ease; }
-.bd-link:hover { opacity: 0.8; }
+
+.bd-tabs { display: flex; gap: 8px; }
+.bd-tab {
+ padding: 8px 16px; 
+ border-radius: 10px;
+ border: 1px solid #e2e8f0; 
+ font-size: 13px; 
+ font-weight: 600;
+ background: #fff; 
+ color: #64748b;
+ text-decoration: none;
+ transition: all .2s ease;
+ box-shadow: 0 2px 6px rgba(16,43,87,.02);
+}
+.bd-tab:hover:not(.bd-tab--active) { 
+ background: #f1f5f9; 
+ color: #102b57;
+}
+.bd-tab--active { 
+ background: #102b57; 
+ color: #fff; 
+ border-color: #102b57;
+ box-shadow: 0 4px 12px rgba(16, 43, 87, 0.1);
+}
 
 /* ── ANTREAN ── */
 .bd-antrean { display: flex; flex-direction: column; gap: 14px; }
 .bd-row {
- display: grid;
- grid-template-columns: 36px 1fr auto auto auto;
- align-items: center;
- gap: 20px;
+ display: flex;
+ flex-direction: column;
+ gap: 14px;
  background: #fff;
  border-radius: 20px;
  padding: 18px 24px;
  border: 1px solid #e2e8f0;
  box-shadow: 0 4px 20px rgba(16,43,87,.03);
  transition: all 0.3s ease;
+ opacity: 0;
+ transform: translateY(-15px);
+ animation: slideDownRow 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes slideDownRow {
+ to { opacity: 1; transform: translateY(0); }
 }
 .bd-row:hover { 
- box-shadow: 0 10px 30px rgba(16,43,87,.08); 
- transform: translateY(-1px);
+ box-shadow: 0 12px 36px rgba(16,43,87,.12), 0 0 0 1px rgba(246,196,11,.4); 
+ transform: translateY(-3px);
+ z-index: 10;
+ position: relative;
 }
 .bd-row--active { border-left: 4px solid #f6c40b; }
-.bd-row__no { font-size: 16px; font-weight: 800; color: #cbd5e1; }
+.bd-row__header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #e2e8f0; padding-bottom: 10px; }
+.bd-row__body { display: flex; justify-content: space-between; align-items: center; }
+.bd-row__no { font-size: 15px; font-weight: 800; color: #102b57; }
 .bd-row__info { display: flex; align-items: center; gap: 12px; }
 .bd-row__info img { width: 44px; height: 44px; border-radius: 12px; object-fit: cover; box-shadow: 0 2px 6px rgba(16,43,87,.05); }
 .bd-row__info h4 { margin: 0 0 3px; font-size: 15px; font-weight: 700; color: #102b57; }
@@ -581,23 +605,29 @@ $dokterLayout = true;
 .bd-jadwal__head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
 .bd-jadwal__head h3 { margin: 0; font-size: 16px; font-weight: 800; color: #102b57; letter-spacing: -0.3px; }
 .bd-jadwal__zone { font-size: 11px; color: #94a3b8; font-weight: 600; }
-.bd-jadwal__days { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: none; }
-.bd-jadwal__days::-webkit-scrollbar { display: none; }
+.bd-jadwal__days { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 12px; }
+.bd-jadwal__days::-webkit-scrollbar { height: 6px; }
+.bd-jadwal__days::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
+.bd-jadwal__days::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+.bd-jadwal__days::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 .bd-day {
  flex-shrink: 0;
  display: flex; flex-direction: column; align-items: center; gap: 6px;
  background: #f8fafc; border-radius: 14px;
- padding: 14px 12px; min-width: 76px; text-align: center;
+ padding: 14px 16px; min-width: 90px; text-align: center;
  border: 1px solid #f1f5f9;
+ transition: all 0.2s ease;
 }
-.bd-day__tgl { font-size: 10px; color: #94a3b8; font-weight: 700; white-space: nowrap; }
-.bd-day__hari { font-size: 15px; font-weight: 800; color: #102b57; }
-.bd-day__jam { font-size: 10px; font-weight: 700; color: #64748b; white-space: nowrap; }
+.bd-day:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(16,43,87,.05); }
+.bd-day__tgl { font-size: 11px; color: #94a3b8; font-weight: 700; white-space: nowrap; }
+.bd-day__hari { font-size: 16px; font-weight: 800; color: #102b57; }
+.bd-day__jam { font-size: 12px; font-weight: 700; color: #64748b; white-space: nowrap; background: #fff; padding: 4px 8px; border-radius: 6px; box-shadow: 0 2px 4px rgba(16,43,87,.02); border: 1px solid #e2e8f0; }
 .bd-day--today .bd-day__tgl,
 .bd-day--today .bd-day__hari,
 .bd-day--today .bd-day__jam { color: #102b57; }
 .bd-day--today { background: #f6c40b; border-color: #f6c40b; box-shadow: 0 4px 12px rgba(246,196,11,.2); }
-.bd-day--upcoming { opacity: .55; }
+.bd-day--today .bd-day__jam { background: #fff; border: none; }
+.bd-day--upcoming { opacity: .7; }
 
 /* KONTAK */
 .bd-kontak { display: flex; align-items: center; gap: 12px; }
@@ -613,6 +643,12 @@ $dokterLayout = true;
 }
 @media (max-width: 768px) {
  .bd-stats { grid-template-columns: 1fr; gap: 16px; }
+ .bd-wrapper { padding: 20px 14px 100px; }
+ .bd-row { padding: 16px; }
+ .bd-row__info img { width: 36px; height: 36px; }
+ .bd-row__info h4 { font-size: 14px; }
+ .bd-row__no { font-size: 13px; }
+ .bd-badge { padding: 5px 12px; font-size: 10px; min-width: auto; }
 }
 @media (max-width: 480px) {
  .bd-profil { flex-direction: column; text-align: center; }
@@ -622,5 +658,33 @@ $dokterLayout = true;
 }
 
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const statVals = document.querySelectorAll('.bd-stat__val');
+    statVals.forEach(el => {
+        const textVal = el.innerText.trim();
+        const target = parseInt(textVal, 10);
+        
+        // If it's not a number or it's 0, just leave it as is
+        if(isNaN(target) || target === 0) return;
+        
+        let current = 0;
+        const duration = 1500; // 1.5 seconds
+        const stepTime = Math.abs(Math.floor(duration / target));
+        
+        el.innerText = '0';
+        
+        const timer = setInterval(() => {
+            current += 1;
+            el.innerText = current;
+            if(current >= target) {
+                el.innerText = target;
+                clearInterval(timer);
+            }
+        }, stepTime);
+    });
+});
+</script>
 
 @endsection

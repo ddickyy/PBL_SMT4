@@ -133,25 +133,33 @@
 
  @media (max-width: 768px) {
  .hero-section {
- padding: 14px;
+ padding: 0 16px;
+ padding-top: 80px;
  }
 
  .hero {
- min-height: 460px;
- border-radius: 20px;
+ min-height: 420px;
+ border-radius: 24px;
  }
 
  .hero-content {
- padding: 34px 24px;
+ padding: 34px 20px;
  max-width: 100%;
  }
 
  .hero h1 {
- font-size: 2rem;
+ font-size: 1.8rem;
+ margin-bottom: 12px;
  }
 
  .hero p {
- font-size: 0.95rem;
+ font-size: 0.9rem;
+ margin-bottom: 24px;
+ }
+ 
+ .hero-btn {
+ padding: 12px 20px;
+ font-size: 14px;
  }
  }
 </style>

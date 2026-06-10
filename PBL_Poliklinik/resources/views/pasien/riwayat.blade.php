@@ -26,13 +26,13 @@
  <div class="riwayat-wrap">
 
  @if(session('success'))
- <div class="alert-success" style="background: #dcfce7; color: #15803d; padding: 14px 18px; border-radius: 12px; margin-bottom: 20px; font-size: 14px; font-weight: 700;">
+ <div class="rw-alert-success">
  {{ session('success') }}
  </div>
  @endif
 
  @if ($errors->any())
- <div class="alert-error" style="background: #fee2e2; color: #dc2626; padding: 14px 18px; border-radius: 12px; margin-bottom: 20px; font-size: 14px; font-weight: 700;">
+ <div class="rw-alert-error">
  <ul style="margin: 0; padding-left: 18px;">
  @foreach ($errors->all() as $error)
  <li>{{ $error }}</li>
@@ -131,7 +131,7 @@
  {{ Carbon::parse($item->estimasi_jam)->format('H:i') }} WIB
  </span>
  </div>
- <div class="aktif-cta" style="margin-top: 8px;">
+ <div class="aktif-cta">
  Klik untuk melihat bukti reservasi
  </div>
  </div>
@@ -304,13 +304,13 @@
  @endif
 
  @if($item->status === 'selesai' || $item->status === 'done')
- <div class="riwayat-actions" style="margin-top: 4px; width: 100%;">
+ <div class="riwayat-actions">
  @if(!$item->penilaian)
  <div class="btn-penilaian">
  Berikan Penilaian
  </div>
  @else
- <div style="display: flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 18px; border-radius: 12px; background: #f0fdf4; border: 1px solid #bbf7d0; color: #16a34a; font-size: 13px; font-weight: 700; width: 100%; box-sizing: border-box;">
+ <div class="badge-penilaian-done">
  <i class="fa-solid fa-circle-check"></i>
  <span>Sudah Dinilai</span>
  </div>
@@ -503,6 +503,7 @@
  font-size: 12px;
  font-weight: 700;
  color: #b59008;
+ margin-top: 8px;
  }
 
  .activity-right {
@@ -773,6 +774,52 @@
  }
  }
 
-</style>
+  .rw-alert-success {
+  background: #dcfce7;
+  color: #15803d;
+  padding: 14px 18px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  font-weight: 700;
+  }
+
+  .rw-alert-error {
+  background: #fee2e2;
+  color: #dc2626;
+  padding: 14px 18px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  font-weight: 700;
+  }
+
+  .rw-alert-error ul {
+  margin: 0;
+  padding-left: 18px;
+  }
+
+  .riwayat-actions {
+  margin-top: 4px;
+  width: 100%;
+  }
+
+  .badge-penilaian-done {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border-radius: 12px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #16a34a;
+  font-size: 13px;
+  font-weight: 700;
+  width: 100%;
+  box-sizing: border-box;
+  }
+
+ </style>
 
 @endsection

@@ -5,7 +5,7 @@
 @section('hero')
 @include('partial.hero', [
  'badge' => 'LAYANAN KESEHATAN',
- 'title' => "Atur Waktu\n<span style='color:#facc15;'>Reservasi Anda</span>",
+ 'title' => "Atur Waktu\n<span class='text-[#facc15]'>Reservasi Anda</span>",
  'desc' => "Pilih dokter dan tentukan jadwal kunjungan Anda dengan mudah dan nyaman.",
  'buttonText' => null,
  'bg' => asset('images/poliklinik.jpg')
@@ -50,30 +50,15 @@
 
  </div>
 
- @if($errors->any())
-
- <div style="
- background:#fee2e2;
- color:#991b1b;
- padding:14px 18px;
- border-radius:12px;
- margin-bottom:20px;
- font-weight:600;
- ">
-
- <ul style="margin:0;padding-left:18px;">
-
- @foreach($errors->all() as $error)
-
- <li>{{ $error }}</li>
-
- @endforeach
-
- </ul>
-
- </div>
-
-@endif
+  @if($errors->any())
+  <div class="res-alert-error">
+  <ul>
+  @foreach($errors->all() as $error)
+  <li>{{ $error }}</li>
+  @endforeach
+  </ul>
+  </div>
+  @endif
  <form action="{{ route('pasien.reservasi.store') }}"
  method="POST"
  id="reservasiForm">
@@ -820,6 +805,20 @@
  .empty-doctor-card p {
  color: #64748b;
  }
+
+  .res-alert-error {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 14px 18px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  font-weight: 600;
+  }
+
+  .res-alert-error ul {
+  margin: 0;
+  padding-left: 18px;
+  }
 
  @media (max-width: 768px)
  {

@@ -16,27 +16,29 @@
  </div>
  </div>
 
- {{-- NAVIGASI --}}
- <div class="footer-links">
- <h4>Navigasi</h4>
- <ul>
- <li><a href="{{ route('pasien.beranda') }}">Beranda</a></li>
- <li><a href="{{ route('pasien.reservasi.index') }}">Reservasi</a></li>
- <li><a href="{{ route('pasien.riwayat') }}">Riwayat</a></li>
- <li><a href="{{ route('pasien.profil.show') }}">Profil</a></li>
- </ul>
- </div>
-
- {{-- BANTUAN --}}
- <div class="footer-links">
- <h4>Bantuan</h4>
- <ul>
- <li><a href="#">Pusat Bantuan</a></li>
- <li><a href="#">Syarat & Ketentuan</a></li>
- <li><a href="#">Kebijakan Privasi</a></li>
- <li><a href="#">FAQ</a></li>
- </ul>
- </div>
+    <div class="footer-links-wrapper">
+        {{-- NAVIGASI --}}
+        <div class="footer-links">
+            <h4>Navigasi</h4>
+            <ul>
+                <li><a href="{{ route('pasien.beranda') }}">Beranda</a></li>
+                <li><a href="{{ route('pasien.reservasi.index') }}">Reservasi</a></li>
+                <li><a href="{{ route('pasien.riwayat') }}">Riwayat</a></li>
+                <li><a href="{{ route('pasien.profil.show') }}">Profil</a></li>
+            </ul>
+        </div>
+    
+        {{-- BANTUAN --}}
+        <div class="footer-links">
+            <h4>Bantuan</h4>
+            <ul>
+                <li><a href="#">Pusat Bantuan</a></li>
+                <li><a href="#">Syarat & Ketentuan</a></li>
+                <li><a href="#">Kebijakan Privasi</a></li>
+                <li><a href="#">FAQ</a></li>
+            </ul>
+        </div>
+    </div>
 
  </div>
 
@@ -98,6 +100,10 @@
  color: white;
  }
 
+ .footer-links-wrapper {
+ display: contents;
+ }
+
  .footer-links h4 {
  margin-bottom: 15px;
  font-size: 18px;
@@ -129,5 +135,24 @@
  border-top: 1px solid #cbd5e1;
  font-size: 14px;
  color: #475569;
+ }
+
+ @media (max-width: 768px) {
+ .footer {
+ padding: 40px 20px 20px;
+ }
+ .footer-container {
+ flex-direction: column;
+ gap: 30px;
+ }
+ .footer-left {
+ max-width: 100%;
+ }
+ .footer-links-wrapper {
+ display: grid;
+ grid-template-columns: 1fr 1fr;
+ gap: 20px;
+ width: 100%;
+ }
  }
 </style>

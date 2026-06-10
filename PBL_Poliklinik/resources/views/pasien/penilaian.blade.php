@@ -5,7 +5,7 @@
 @section('hero')
 @include('partial.hero', [
     'badge' => 'Layanan Kesehatan Kampus',
-    'title' => 'Penilaian <br><span style="color:#facc15;">Konsultasi Medis</span>',
+    'title' => 'Penilaian <br><span class="text-[#facc15]">Konsultasi Medis</span>',
     'desc' => 'Berikan ulasan objektif mengenai layanan yang Anda terima dari dokter kami. Partisipasi Anda sangat membantu dalam meningkatkan kualitas layanan kesehatan poliklinik.',
     'buttonText' => null,
     'bg' => asset('images/poliklinik.jpg')

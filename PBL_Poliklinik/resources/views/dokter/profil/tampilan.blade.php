@@ -63,7 +63,7 @@
                     @if($todaySchedule)
                         <h3>Sedang Praktik</h3>
                         <p>Poliklinik Politeknik Negeri Malang</p>
-                        <p style="font-size: 11px; margin-top: 4px; color: rgba(255, 255, 255, 0.75);">
+                        <p class="pf-status-time">
                             Jam: {{ substr($todaySchedule->jam_mulai, 0, 5) }} - {{ substr($todaySchedule->jam_selesai, 0, 5) }} WIB
                         </p>
                     @else
@@ -84,7 +84,7 @@
                 <div class="pf-body-left">
                     <div class="pf-card">
                         <div class="pf-jadwal-head">
-                            <h3 class="pf-card__title" style="margin:0">
+                            <h3 class="pf-card__title">
                                 Jadwal Praktik Mingguan
                             </h3>
                             <span class="pf-jadwal-zone">
@@ -354,6 +354,12 @@
             color: rgba(255, 255, 255, .65);
         }
 
+        .pf-status-time {
+            font-size: 11px;
+            margin-top: 4px;
+            color: rgba(255, 255, 255, 0.75);
+        }
+
         .pf-sm-divider {
             border: none;
             border-top: 1px solid rgba(255, 255, 255, .1);
@@ -461,6 +467,10 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 16px;
+        }
+
+        .pf-jadwal-head .pf-card__title {
+            margin: 0;
         }
 
         .pf-jadwal-zone {

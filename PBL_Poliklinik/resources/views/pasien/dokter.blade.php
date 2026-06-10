@@ -5,7 +5,7 @@
 @section('hero')
 @include('partial.hero', [
  'badge' => 'Layanan Kesehatan Kampus',
- 'title' => 'Daftar & Jadwal <br><span style="color:#facc15;">Dokter Poliklinik</span>',
+    'title' => 'Daftar & Jadwal <br><span class="text-[#facc15]">Dokter Poliklinik</span>',
  'desc' => 'Kami menghadirkan tenaga medis profesional terbaik untuk mendukung kesehatan seluruh warga Polinema melalui pelayanan yang hangat dan berstandar tinggi.',
  'buttonText' => null,
  'bg' => asset('images/poliklinik.jpg')
@@ -21,7 +21,7 @@
  </div>
 
  <!-- Filter Bar -->
- <div class="doctor-filter-bar">
+ <div class="doctor-filter-bar" data-aos="fade-up">
  <form action="{{ route('pasien.dokter.index') }}" method="GET" class="doc-search-form">
  <div class="doc-search-input-wrap">
  <i class="fa-solid fa-magnifying-glass search-icon"></i>
@@ -48,7 +48,7 @@
  </form>
  </div>
 
- <div class="doctor-grid">
+ <div class="doctor-grid" data-aos="fade-up">
 
  @forelse($dokters as $item)
 
