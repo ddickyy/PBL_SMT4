@@ -28,14 +28,14 @@
  </div>
 
  @if(session('success'))
- <div style="background: #dcfce7; color: #15803d; padding: 14px 18px; border-radius: 12px; margin-bottom: 20px; font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+ <div class="ep-alert-success">
  <i class="fa-solid fa-circle-check"></i>
  <span>{{ session('success') }}</span>
  </div>
  @endif
 
  @if($errors->any())
- <div style="background: #fee2e2; color: #dc2626; padding: 14px 18px; border-radius: 12px; margin-bottom: 20px; font-size: 14px; font-weight: 700;">
+ <div class="ep-alert-error">
  <ul style="margin: 0; padding-left: 18px;">
  @foreach($errors->all() as $error)
  <li>{{ $error }}</li>
@@ -644,6 +644,32 @@ document.addEventListener('DOMContentLoaded', function() {
 
 .btn-crop-apply:hover {
  background: #1d4ed8;
+}
+
+.ep-alert-success {
+  background: #dcfce7;
+  color: #15803d;
+  padding: 14px 18px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ep-alert-error {
+  background: #fee2e2;
+  color: #dc2626;
+  padding: 14px 18px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  font-weight: 700;
+}
+.ep-alert-error ul {
+  margin: 0;
+  padding-left: 18px;
 }
 
 </style>

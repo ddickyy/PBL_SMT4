@@ -290,7 +290,7 @@ NIDN:
 
  </div>
 
- <div style="flex: 1;">
+ <div class="medical-body">
 
  <div class="medical-meta">
 
@@ -342,7 +342,7 @@ NIDN:
  </div>
 
  @if($rekamMedis->hasPages())
- <div class="pagination-wrap" style="margin-top: 20px;">
+ <div class="pagination-wrap">
  {{ $rekamMedis->appends(request()->except('page_rekam'))->links() }}
  </div>
  @endif
@@ -717,6 +717,10 @@ NIDN:
  border: 1px solid rgba(255,255,255,.08);
  border-radius: 18px;
  padding: 18px;
+}
+
+.medical-body {
+  flex: 1;
 }
 
 .medical-icon {

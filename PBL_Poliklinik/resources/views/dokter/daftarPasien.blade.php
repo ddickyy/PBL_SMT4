@@ -52,7 +52,7 @@
   <tbody id="dpTableBody">
   @foreach($pasienList as $p)
 
- <tr class="dp-tr" data-nama="{{ strtolower($p->user->nama) }}" onclick="window.location='{{ route('dokter.pasien.detail', $p->id_reservasi) }}'" style="cursor: pointer;">
+  <tr class="dp-tr" data-nama="{{ strtolower($p->user->nama) }}" onclick="window.location='{{ route('dokter.pasien.detail', $p->id_reservasi) }}'">
 
   <td>
   <div class="dp-pasien">
@@ -197,8 +197,14 @@ function filterTab(el, type) {
  border:none;
 }
 
-.dp-tr { border-bottom: 1px solid #f1f5f9; transition: background .15s; }
-.dp-tr:hover { background: #f8fafc; }
+.dp-tr { border-bottom: 1px solid #f1f5f9; transition: all .2s; cursor: pointer; }
+.dp-tr:hover { 
+ background: #f8fafc; 
+ transform: translateY(-2px);
+ box-shadow: 0 10px 30px rgba(16,43,87,.08);
+ z-index: 10;
+ position: relative;
+}
 .dp-tr:last-child { border-bottom: none; }
 .dp-table td { padding: 14px 20px; vertical-align: middle; }
 

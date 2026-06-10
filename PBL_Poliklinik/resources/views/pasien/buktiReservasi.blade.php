@@ -32,14 +32,14 @@
     </div>
 
     @if(session('success'))
-        <div class="alert-success" style="background: #dcfce7; color: #15803d; padding: 14px 18px; border-radius: 12px; margin-bottom: 22px; font-size: 14px; font-weight: 700; box-shadow: 0 4px 12px rgba(22, 101, 52, 0.05);">
+        <div class="bk-alert-success">
             {{ session('success') }}
         </div>
     @endif
 
     @if ($errors->any())
-        <div class="alert-error" style="background: #fee2e2; color: #dc2626; padding: 14px 18px; border-radius: 12px; margin-bottom: 22px; font-size: 14px; font-weight: 700; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.05);">
-            <ul style="margin: 0; padding-left: 18px;">
+        <div class="bk-alert-error">
+            <ul>
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
@@ -232,7 +232,7 @@
                                 </div>
                             @endif
                             @if($reservasi->penilaian->saran)
-                                <div class="review-item" style="margin-top: 14px;">
+                                <div class="review-item bk-mt-14">
                                     <span class="review-label">Saran Perbaikan</span>
                                     <p class="review-text">"{{ $reservasi->penilaian->saran }}"</p>
                                 </div>
@@ -241,7 +241,7 @@
                                 <p class="review-empty-text">Ulasan kosong.</p>
                             @endif
                             
-                            <button type="button" onclick="toggleEditFeedback(true)" class="btn-secondary-bukti" style="margin-top: 18px; width: 100%;">
+                            <button type="button" onclick="toggleEditFeedback(true)" class="btn-secondary-bukti bk-btn-full">
                                 <i class="fa-solid fa-edit"></i> Edit Penilaian
                             </button>
                         </div>
@@ -257,12 +257,12 @@
                                     <textarea name="kritik" id="edit_kritik" rows="3" class="form-textarea-bukti" placeholder="Tulis kritik atau masukan Anda di sini...">{{ $reservasi->penilaian->kritik }}</textarea>
                                 </div>
 
-                                <div class="form-group-bukti" style="margin-top: 14px;">
+                                <div class="form-group-bukti bk-mt-14">
                                     <label for="edit_saran" class="form-label-bukti">Saran Untuk Peningkatan Pelayanan</label>
                                     <textarea name="saran" id="edit_saran" rows="3" class="form-textarea-bukti" placeholder="Tulis saran Anda di sini...">{{ $reservasi->penilaian->saran }}</textarea>
                                 </div>
 
-                                <div class="form-actions-bukti" style="margin-top: 18px; display: flex; gap: 10px;">
+                                <div class="form-actions-bukti bk-actions-wrap">
                                     <button type="submit" class="btn-save-bukti">Simpan Perubahan</button>
                                     <button type="button" onclick="toggleEditFeedback(false)" class="btn-cancel-edit-bukti">Batal</button>
                                 </div>
@@ -279,12 +279,12 @@
                                 <textarea name="kritik" id="new_kritik" rows="3" class="form-textarea-bukti" placeholder="Tulis kritik atau masukan Anda di sini..."></textarea>
                             </div>
 
-                            <div class="form-group-bukti" style="margin-top: 14px;">
+                            <div class="form-group-bukti bk-mt-14">
                                 <label for="new_saran" class="form-label-bukti">Saran Untuk Peningkatan Pelayanan</label>
                                 <textarea name="saran" id="new_saran" rows="3" class="form-textarea-bukti" placeholder="Tulis saran Anda di sini..."></textarea>
                             </div>
 
-                            <button type="submit" class="btn-submit-bukti" style="margin-top: 18px; width: 100%;">
+                            <button type="submit" class="btn-submit-bukti bk-btn-full">
                                 Kirim Penilaian
                             </button>
                         </form>
@@ -317,7 +317,7 @@
     {{-- BUTTON --}}
     <div class="aksi-grid" data-aos="fade-up">
         @if(isset($reservasi) && in_array($reservasi->status, ['menunggu', 'dikonfirmasi']))
-            <form action="{{ route('pasien.reservasi.cancel', $reservasi->id_reservasi) }}" method="POST" style="width: 100%; display: block;" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan reservasi ini?')">
+            <form action="{{ route('pasien.reservasi.cancel', $reservasi->id_reservasi) }}" method="POST" class="bk-form-full" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan reservasi ini?')">
                 @csrf
                 @method('PUT')
                 <button type="submit" class="btn-cancel-bukti">
@@ -843,6 +843,53 @@
         .medical-detail-value {
             text-align: left;
         }
+    }
+
+    .bk-alert-success {
+        background: #dcfce7;
+        color: #15803d;
+        padding: 14px 18px;
+        border-radius: 12px;
+        margin-bottom: 22px;
+        font-size: 14px;
+        font-weight: 700;
+        box-shadow: 0 4px 12px rgba(22, 101, 52, 0.05);
+    }
+
+    .bk-alert-error {
+        background: #fee2e2;
+        color: #dc2626;
+        padding: 14px 18px;
+        border-radius: 12px;
+        margin-bottom: 22px;
+        font-size: 14px;
+        font-weight: 700;
+        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.05);
+    }
+
+    .bk-alert-error ul {
+        margin: 0;
+        padding-left: 18px;
+    }
+
+    .bk-mt-14 {
+        margin-top: 14px;
+    }
+
+    .bk-btn-full {
+        margin-top: 18px;
+        width: 100%;
+    }
+
+    .bk-actions-wrap {
+        margin-top: 18px;
+        display: flex;
+        gap: 10px;
+    }
+
+    .bk-form-full {
+        width: 100%;
+        display: block;
     }
 
 </style>

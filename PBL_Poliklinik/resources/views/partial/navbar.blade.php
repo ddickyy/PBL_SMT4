@@ -36,6 +36,10 @@
 
     {{-- RIGHT SECTION --}}
 <div class="nav-right">
+    
+    <button type="button" class="mobile-menu-btn" onclick="toggleMobileMenu()">
+        <i class="fa-solid fa-bars"></i>
+    </button>
 
     <div class="profile-dropdown">
 
@@ -111,22 +115,28 @@
 <script>
 
     function toggleProfileDropdown() {
-        const dropdown =
-            document.getElementById('profileDropdown');
-
+        const dropdown = document.getElementById('profileDropdown');
         dropdown.classList.toggle('show');
+    }
+    
+    function toggleMobileMenu() {
+        const menu = document.querySelector('.menu');
+        menu.classList.toggle('show');
     }
 
     // CLOSE DROPDOWN WHEN CLICK OUTSIDE
     window.addEventListener('click', function (e) {
-        const dropdown =
-            document.querySelector('.profile-dropdown');
+        const profileDropdown = document.querySelector('.profile-dropdown');
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const menu = document.querySelector('.menu');
 
-        if (!dropdown.contains(e.target)) {
-
-            document
-                .getElementById('profileDropdown')
-                .classList.remove('show');
+        if (profileDropdown && !profileDropdown.contains(e.target)) {
+            const dropdown = document.getElementById('profileDropdown');
+            if (dropdown) dropdown.classList.remove('show');
+        }
+        
+        if (menu && mobileMenuBtn && !menu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+            menu.classList.remove('show');
         }
     });
 
@@ -416,57 +426,90 @@
         opacity: 0.96;
     }
 
-    @media (max-width: 900px) {
+    .mobile-menu-btn {
+        display: none;
+    }
 
-        .navbar {
-            flex-wrap: wrap;
-            gap: 14px;
-        }
-        
+    @media (max-width: 900px) {
         .navbar.scrolled {
             left: 2%;
             right: 2%;
             border-radius: 20px;
         }
-
-        .menu {
-            order: 3;
-            width: 100%;
-            justify-content: center;
-            gap: 18px;
-        }
     }
 
-    @media (max-width: 560px) {
-
+    @media (max-width: 768px) {
         .navbar {
             padding: 12px 16px;
+            flex-wrap: wrap;
         }
 
         .navbar.scrolled {
             top: 10px;
             left: 10px;
             right: 10px;
+            border-radius: 16px;
         }
 
         .logo a {
             font-size: 14px;
         }
+        
+        .logo a span {
+            display: none;
+        }
+        
+        .logo-img {
+            width: 36px;
+            height: 36px;
+        }
+
+        .mobile-menu-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f1f5f9;
+            color: #102b57;
+            border: none;
+            border-radius: 10px;
+            width: 38px;
+            height: 38px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .mobile-menu-btn:hover {
+            background: #e2e8f0;
+        }
 
         .menu {
-            gap: 14px;
-            flex-wrap: wrap;
+            display: none;
+            width: 100%;
+            flex-direction: column;
+            gap: 5px;
+            padding-top: 16px;
+            border-top: 1px dashed rgba(16,43,87,0.1);
+            margin-top: 10px;
+        }
+        
+        .menu.show {
+            display: flex;
         }
 
-        .logout-btn {
-            padding: 9px 14px;
-            font-size: 13px;
-        }
-
-        .profile-circle {
-            width: 40px;
-            height: 40px;
+        .menu a {
             font-size: 14px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            width: 100%;
+        }
+        
+        .menu a::after {
+            display: none;
+        }
+        
+        .menu a.active {
+            background: #eef4ff;
         }
     }
 </style>

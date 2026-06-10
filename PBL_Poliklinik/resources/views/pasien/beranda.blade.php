@@ -49,7 +49,7 @@
  </div>
  </div>
 
- <div class="status-operational">
+ <div class="status-operational {{ $isOpen ? 'is-open' : 'is-close' }}">
  <span class="status-dot {{ $isOpen ? 'open' : 'close' }}"></span>
 
  <span>
@@ -100,7 +100,7 @@
  $spesialisasiLower = strtolower($namaSpesialisasi ?? '');
  @endphp
  
- <a href="{{ route('pasien.dokter.index', ['spesialisasi' => optional($group->first()?->spesialisasi)->id_spesialisasi]) }}" class="service-card" style="text-decoration: none; color: inherit;">
+ <a href="{{ route('pasien.dokter.index', ['spesialisasi' => optional($group->first()?->spesialisasi)->id_spesialisasi]) }}" class="service-card">
  <div class="service-top">
  <div class="service-icon">
  @if(str_contains($spesialisasiLower, 'gigi'))
@@ -149,7 +149,7 @@
 <div class="doctor-section" data-aos="fade-up">
  <div class="doctor-left">
  <h2>Daftar Dokter Hari ini</h2>
- <p style="margin-bottom: 24px;">
+ <p>
  Lihat daftar dokter yang tersedia di poliklinik
  untuk memudahkan kunjungan Anda.
  </p>
@@ -186,7 +186,7 @@
  }
  @endphp
 
- <a href="{{ route('pasien.reservasi.index') }}" class="doctor-item" style="text-decoration: none; color: inherit;">
+ <a href="{{ route('pasien.reservasi.index') }}" class="doctor-item" style="animation-delay: {{ $loop->index * 0.15 }}s;">
  <div class="doctor-profile">
  @if($fotoDokter)
  <img
@@ -206,7 +206,7 @@
 
  <div class="doctor-time">
  @if($jadwalHariIni)
- <span class="doctor-day" style="color: #102b57; font-weight: 700;">
+ <span class="doctor-day doctor-day--active">
  Hari Ini ({{ $hariSekarang }})
  </span>
  <strong>
@@ -215,10 +215,10 @@
  {{ \Carbon\Carbon::parse($jadwalHariIni->jam_selesai)->format('H:i') }} WIB
  </strong>
  @else
- <span class="doctor-day" style="color: #dc2626; font-weight: 700;">
+ <span class="doctor-day doctor-day--inactive">
  Tidak ada jadwal dokter
  </span>
- <strong style="color: #94a3b8; font-size: 13px;">
+ <strong class="doctor-time--inactive">
  Hari Ini ({{ $hariSekarang }})
  </strong>
  @endif
@@ -390,13 +390,35 @@
  width: 10px;
  height: 10px;
  border-radius: 50%;
+ position: relative;
+ }
+
+ .status-dot::after {
+ content: '';
+ position: absolute;
+ inset: 0;
+ border-radius: 50%;
+ animation: statusPing 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+ }
+
+ @keyframes statusPing {
+ 75%, 100% {
+ transform: scale(2.5);
+ opacity: 0;
+ }
  }
 
  .status-dot.open {
  background: #22c55e;
  }
+ .status-dot.open::after {
+ background: #22c55e;
+ }
 
  .status-dot.close {
+ background: #ef4444;
+ }
+ .status-dot.close::after {
  background: #ef4444;
  }
 
@@ -471,6 +493,8 @@
  border-radius: 28px;
  padding: 28px;
  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.06);
+ text-decoration: none;
+ color: inherit;
  }
 
  .service-top {
@@ -528,10 +552,13 @@
  }
 
  .doctor-left {
+ align-self: start;
  background: #102b57;
  color: white;
  border-radius: 22px;
  padding: 36px 28px;
+ position: sticky;
+ top: 100px;
  }
 
  .doctor-left h2 {
@@ -543,6 +570,7 @@
  .doctor-left p {
  color: rgba(255,255,255,.8);
  line-height: 1.7;
+ margin-bottom: 24px;
  }
 
  .doctor-right {
@@ -559,6 +587,14 @@
  background: #f8fafc;
  padding: 16px 18px;
  border-radius: 18px;
+ text-decoration: none;
+ color: inherit;
+ opacity: 0;
+ transform: translateY(-15px);
+ animation: slideDownRow 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+ }
+ @keyframes slideDownRow {
+ to { opacity: 1; transform: translateY(0); }
  }
 
  .doctor-profile {
@@ -640,14 +676,23 @@
  transform: translateY(-2px);
  }
 
- .empty-service,
- .empty-doctor-home {
+ .empty-service {
  grid-column: 1 / -1;
  background: white;
  border-radius: 28px;
  padding: 70px 30px;
  text-align: center;
  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.06);
+ }
+
+ .empty-doctor-home {
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ justify-content: center;
+ text-align: center;
+ padding: 20px;
+ height: 100%;
  }
 
  .empty-service-icon,
@@ -693,17 +738,65 @@
  @media (max-width: 768px) {
 
  .home-section {
- padding: 20px 14px 50px;
+ padding: 20px 0 50px;
+ }
+ 
+ .home-container {
+ padding: 0 16px;
  }
 
  .info-grid,
  .service-grid {
  grid-template-columns: 1fr;
+ gap: 16px;
+ }
+ 
+ .card {
+ padding: 20px;
+ }
+ 
+ .card-header h3 {
+ font-size: 18px;
+ }
+ 
+ .icon-box {
+ width: 40px;
+ height: 40px;
+ font-size: 16px;
+ }
+
+ .doctor-section {
+ grid-template-columns: 1fr;
+ padding: 20px;
+ gap: 20px;
+ }
+
+ .doctor-left {
+ padding: 24px 20px;
+ }
+
+ .doctor-left h2 {
+ font-size: 22px;
+ }
+ 
+ .doctor-left p {
+ font-size: 14px;
  }
 
  .doctor-item {
  grid-template-columns: 1fr;
  align-items: flex-start;
+ gap: 12px;
+ padding: 14px;
+ }
+ 
+ .doctor-profile img {
+ width: 46px;
+ height: 46px;
+ }
+ 
+ .doctor-profile h4 {
+ font-size: 15px;
  }
 
  .doctor-more {
@@ -711,18 +804,49 @@
  }
 
  .emergency-number {
- font-size: 28px;
- }
-
- .section-heading h2 {
  font-size: 24px;
  }
 
- .doctor-left h2 {
- font-size: 28px;
+ .section-heading h2 {
+ font-size: 20px;
+ }
+ 
+ .section-heading p {
+ font-size: 14px;
+ }
+ 
+ .service-icon {
+ width: 44px;
+ height: 44px;
+ font-size: 16px;
+ }
+ 
+ .service-card h3 {
+ font-size: 20px;
+ margin: 0 0 8px;
+ }
+ 
+ .service-card p {
+ font-size: 13px;
+ margin-bottom: 16px;
  }
 
  }
+
+  .doctor-day--active {
+  color: #102b57;
+  font-weight: 700;
+  }
+
+  .doctor-day--inactive {
+  color: #dc2626;
+  font-weight: 700;
+  }
+
+  .doctor-time--inactive {
+  color: #94a3b8;
+  font-size: 13px;
+  }
 
 </style>
 @endsection

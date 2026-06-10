@@ -133,7 +133,7 @@ class DokterController extends Controller
                 'Profil berhasil diperbarui.'
             );
     }
-    public function beranda()
+    public function beranda(Request $request)
     {
         $dokterLayout = true;
 
@@ -145,25 +145,37 @@ class DokterController extends Controller
             ->where('id_user', Auth::user()->id_user)
             ->firstOrFail();
 
-        $reservasiHariIni = Reservasi::with([
+        $filter = $request->query('filter', 'hari_ini');
+
+        $reservasiQuery = Reservasi::with([
             'user',
             'jadwal'
         ])
             ->whereHas('jadwal', function ($query) use ($dokter) {
-
                 $query->where(
                     'id_dokter',
                     $dokter->id_dokter
                 );
             })
-            ->whereDate(
-                'tanggal_reservasi',
-                now()->toDateString()
-            )
             ->whereIn('status', [
                 'menunggu',
                 'dikonfirmasi'
-            ])
+            ]);
+
+        if ($filter === 'hari_ini') {
+            $reservasiQuery->whereDate(
+                'tanggal_reservasi',
+                now()->toDateString()
+            );
+        } else {
+            $reservasiQuery->whereDate(
+                'tanggal_reservasi',
+                '>=',
+                now()->toDateString()
+            );
+        }
+
+        $reservasiHariIni = $reservasiQuery
             ->orderBy('tanggal_reservasi')
             ->orderBy('estimasi_jam')
             ->get();
@@ -195,7 +207,15 @@ class DokterController extends Controller
             ->where('status', 'selesai')
             ->count();
 
+        $antreanHariIniCount = Reservasi::whereHas('jadwal', function ($query) use ($dokter) {
+            $query->where('id_dokter', $dokter->id_dokter);
+        })
+            ->whereDate('tanggal_reservasi', now()->toDateString())
+            ->whereIn('status', ['menunggu', 'dikonfirmasi'])
+            ->count();
+
         $jadwalList = $dokter->jadwalDokter;
+        $groupedJadwal = $jadwalList->groupBy('hari');
 
         return view(
             'dokter.berandaDokter',
@@ -205,7 +225,10 @@ class DokterController extends Controller
                 'menunggu',
                 'selesai',
                 'jadwalList',
-                'dokterLayout'
+                'groupedJadwal',
+                'antreanHariIniCount',
+                'dokterLayout',
+                'filter'
             )
         );
     }

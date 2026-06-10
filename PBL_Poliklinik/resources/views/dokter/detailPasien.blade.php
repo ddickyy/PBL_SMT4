@@ -40,16 +40,16 @@
  <div class="det-container">
 
  @if(session('success'))
- <div class="alert-success" style="background: #dcfce7; color: #15803d; padding: 14px 18px; border-radius: 12px; margin-bottom: 20px; font-size: 14px; font-weight: 700; box-shadow: 0 4px 12px rgba(22, 101, 52, 0.05); display: flex; align-items: center; gap: 8px;">
+ <div class="det-alert-success">
  <i class="fa-solid fa-circle-check"></i>
  <span>{{ session('success') }}</span>
  </div>
  @endif
 
  @if($errors->any())
- <div class="alert-error" style="background: #fee2e2; color: #dc2626; padding: 14px 18px; border-radius: 12px; margin-bottom: 20px; font-size: 14px; font-weight: 700; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.05); display: flex; align-items: flex-start; gap: 8px;">
+ <div class="det-alert-error">
  <i class="fa-solid fa-circle-exclamation"></i>
- <ul style="margin: 0; padding-left: 18px;">
+ <ul>
  @foreach($errors->all() as $error)
  <li>{{ $error }}</li>
  @endforeach
@@ -143,29 +143,29 @@
  {{-- REKAM MEDIS --}}
  <div class="det-card">
 
- <h3 class="det-title" style="border-bottom: 2px solid #eef2f7; padding-bottom: 12px; margin-bottom: 20px;">
+ <h3 class="det-title det-title--border">
  Pemeriksaan & Rekam Medis Pasien
  </h3>
 
  <form action="{{ route('dokter.pasien.rekamMedis', $pasien->id_reservasi) }}" method="POST">
  @csrf
  
- <div style="margin-bottom: 20px;">
- <label for="diagnosis" style="display: block; font-size: 13px; font-weight: 700; color: #102b57; margin-bottom: 8px;">
+ <div class="det-form-group">
+ <label for="diagnosis" class="det-label">
  DIAGNOSA PENYAKIT
  </label>
- <textarea id="diagnosis" class="det-textarea" name="diagnosis" required placeholder="Tuliskan diagnosa penyakit pasien di sini..." style="min-height: 120px;">{{ optional($pasien->rekamMedis)->diagnosis }}</textarea>
+ <textarea id="diagnosis" class="det-textarea" name="diagnosis" required placeholder="Tuliskan diagnosa penyakit pasien di sini...">{{ optional($pasien->rekamMedis)->diagnosis }}</textarea>
  </div>
 
- <div style="margin-bottom: 24px;">
- <label for="catatan" style="display: block; font-size: 13px; font-weight: 700; color: #102b57; margin-bottom: 8px;">
+ <div class="det-form-group--large">
+ <label for="catatan" class="det-label">
  CATATAN DOKTER
  </label>
- <textarea id="catatan" class="det-textarea" name="catatan" placeholder="Tuliskan catatan tambahan, anjuran obat, atau petunjuk medis lainnya..." style="min-height: 120px;">{{ optional($pasien->rekamMedis)->catatan }}</textarea>
+ <textarea id="catatan" class="det-textarea" name="catatan" placeholder="Tuliskan catatan tambahan, anjuran obat, atau petunjuk medis lainnya...">{{ optional($pasien->rekamMedis)->catatan }}</textarea>
  </div>
 
- <div class="det-form-action" style="display: flex; justify-content: flex-end;">
- <button type="submit" class="det-save-btn" style="padding: 12px 30px; font-size: 14px; display: flex; align-items: center; gap: 8px;">
+ <div class="det-form-action">
+ <button type="submit" class="det-save-btn">
  <i class="fa-solid fa-floppy-disk"></i>
  Simpan Perubahan
  </button>
@@ -175,30 +175,30 @@
  </div>
 
  {{-- KRITIK & SARAN --}}
- <div class="det-card" style="margin-top: 24px;">
+ <div class="det-card det-card--mt">
 
- <h3 class="det-title" style="border-bottom: 2px solid #eef2f7; padding-bottom: 12px; margin-bottom: 20px;">
+ <h3 class="det-title det-title--border">
  Kritik & Saran dari Pasien
  </h3>
 
  @if($pasien->penilaian)
- <div class="det-info-list" style="display: grid; grid-template-columns: 1fr; gap: 14px;">
- <div class="det-info-item" style="background: #fff9e6; border-color: #ffe0b2; padding: 16px;">
- <small style="color: #b7791f; font-size: 11px; font-weight: 700; text-transform: uppercase;">Kritik Pasien</small>
- <strong style="color: #744210; font-weight: 500; font-size: 14px; margin-top: 6px; display: block;">
+ <div class="det-info-list det-kritik-saran-grid">
+ <div class="det-info-item det-info-item--yellow">
+ <small class="det-info-label--yellow">Kritik Pasien</small>
+ <strong class="det-info-value--yellow">
  {{ $pasien->penilaian->kritik ?? '-' }}
  </strong>
  </div>
- <div class="det-info-item" style="background: #ecfdf5; border-color: #a7f3d0; padding: 16px;">
- <small style="color: #047857; font-size: 11px; font-weight: 700; text-transform: uppercase;">Saran Pasien</small>
- <strong style="color: #064e3b; font-weight: 500; font-size: 14px; margin-top: 6px; display: block;">
+ <div class="det-info-item det-info-item--green">
+ <small class="det-info-label--green">Saran Pasien</small>
+ <strong class="det-info-value--green">
  {{ $pasien->penilaian->saran ?? '-' }}
  </strong>
  </div>
  </div>
  @else
- <div style="color: #94a3b8; font-size: 14px; text-align: center; padding: 24px 0;">
- <i class="fa-regular fa-comment-dots" style="font-size: 32px; margin-bottom: 10px; display: block; color: #cbd5e1;"></i>
+ <div class="det-feedback-empty">
+ <i class="fa-regular fa-comment-dots det-feedback-empty-icon"></i>
  Belum ada kritik dan saran yang diberikan oleh pasien.
  </div>
  @endif
@@ -349,6 +349,12 @@
  letter-spacing: -0.3px;
  }
 
+ .det-info-list {
+ display: flex;
+ flex-direction: column;
+ gap: 14px;
+ }
+
  .det-info-item {
  display: flex;
  flex-direction: column;
@@ -396,24 +402,136 @@
  box-shadow: 0 0 0 4px rgba(16, 43, 87, 0.06);
  }
 
- .det-save-btn {
- border: none;
- background: #102b57;
- color: #fff;
- padding: 14px 28px;
- border-radius: 14px;
- font-size: 14px;
- font-weight: 700;
- cursor: pointer;
- box-shadow: 0 4px 12px rgba(16, 43, 87, 0.15);
- transition: all 0.2s ease;
- }
+  .det-save-btn {
+  border: none;
+  background: #102b57;
+  color: #fff;
+  padding: 12px 30px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(16, 43, 87, 0.15);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  }
 
- .det-save-btn:hover {
- transform: translateY(-2px);
- box-shadow: 0 8px 24px rgba(16, 43, 87, 0.25);
- background: #0d2245;
- }
+  .det-save-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(16, 43, 87, 0.25);
+  background: #0d2245;
+  }
+
+  .det-alert-success {
+    background: #dcfce7;
+    color: #15803d;
+    padding: 14px 18px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(22, 101, 52, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .det-alert-error {
+    background: #fee2e2;
+    color: #dc2626;
+    padding: 14px 18px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.05);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .det-alert-error ul {
+    margin: 0;
+    padding-left: 18px;
+  }
+  .det-title--border {
+    border-bottom: 2px solid #eef2f7;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+  }
+  .det-form-group {
+    margin-bottom: 20px;
+  }
+  .det-form-group--large {
+    margin-bottom: 24px;
+  }
+  .det-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: #102b57;
+    margin-bottom: 8px;
+  }
+  .det-card--mt {
+    margin-top: 24px;
+  }
+  .det-kritik-saran-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .det-info-item--yellow {
+    background: #fff9e6;
+    border-color: #ffe0b2;
+    padding: 16px;
+  }
+  .det-info-label--yellow {
+    color: #b7791f;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .det-info-value--yellow {
+    color: #744210;
+    font-weight: 500;
+    font-size: 14px;
+    margin-top: 6px;
+    display: block;
+  }
+  .det-info-item--green {
+    background: #ecfdf5;
+    border-color: #a7f3d0;
+    padding: 16px;
+  }
+  .det-info-label--green {
+    color: #047857;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .det-info-value--green {
+    color: #064e3b;
+    font-weight: 500;
+    font-size: 14px;
+    margin-top: 6px;
+    display: block;
+  }
+  .det-feedback-empty {
+    color: #94a3b8;
+    font-size: 14px;
+    text-align: center;
+    padding: 24px 0;
+  }
+  .det-feedback-empty-icon {
+    font-size: 32px;
+    margin-bottom: 10px;
+    display: block;
+    color: #cbd5e1;
+  }
+  .det-form-action {
+    display: flex;
+    justify-content: flex-end;
+  }
 
  @media(max-width: 900px) {
  .det-grid {
