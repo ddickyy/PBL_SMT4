@@ -84,6 +84,7 @@ class JadwalDokterResource extends Resource
             ]);
     }
 
+
     public static function canAccess(): bool
     {
         /** @var \App\Models\User|null $user */
@@ -115,31 +116,26 @@ class JadwalDokterResource extends Resource
 
     public static function canCreate(): bool
     {
-        return Auth::user()?->role?->nama_role
-            === 'superadmin';
+        return static::canAccess();
     }
 
     public static function canEdit($record): bool
     {
-        return Auth::user()?->role?->nama_role
-            === 'superadmin';
+        return static::canAccess();
     }
 
     public static function canDelete($record): bool
     {
-        return Auth::user()?->role?->nama_role
-            === 'superadmin';
+        return static::canAccess();
     }
 
     public static function canForceDelete($record): bool
     {
-        return Auth::user()?->role?->nama_role
-            === 'superadmin';
+        return static::canAccess();
     }
 
     public static function canRestore($record): bool
     {
-        return Auth::user()?->role?->nama_role
-            === 'superadmin';
+        return static::canAccess();
     }
 }
