@@ -54,7 +54,9 @@ class UserForm
                         FileUpload::make('foto')
                             ->label('Foto Pengguna')
                             ->image()
-                            ->columnSpanFull(),
+                            ->columnSpanFull()
+                            ->directory('users')
+                            ->disk('public'),
                     ])
                     ->columns(2)
                     ->columnSpanFull()

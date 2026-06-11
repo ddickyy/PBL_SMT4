@@ -17,7 +17,6 @@ class ViewRiwayatStatusReservasi extends ViewRecord
             Action::make('Kembali')
                 ->url(RiwayatStatusReservasiResource::getUrl('index'))
                 ->color('success'),
-            EditAction::make(),
         ];
     }
 }

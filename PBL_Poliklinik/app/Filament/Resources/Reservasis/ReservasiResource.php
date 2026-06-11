@@ -120,25 +120,21 @@ class ReservasiResource extends Resource
 
     public static function canEdit($record): bool
     {
-        return Auth::user()?->role?->nama_role
-            === 'superadmin';
+        return static::canAccess();
     }
 
     public static function canDelete($record): bool
     {
-        return Auth::user()?->role?->nama_role
-            === 'superadmin';
+        return static::canAccess();
     }
 
     public static function canForceDelete($record): bool
     {
-        return Auth::user()?->role?->nama_role
-            === 'superadmin';
+        return static::canAccess();
     }
 
     public static function canRestore($record): bool
     {
-        return Auth::user()?->role?->nama_role
-            === 'superadmin';
+        return static::canAccess();
     }
 }

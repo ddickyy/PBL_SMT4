@@ -5,8 +5,9 @@ namespace App\Models;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
+use Filament\Models\Contracts\HasAvatar;
 
-class User extends Authenticatable
+class User extends Authenticatable implements HasAvatar
 {
     use Notifiable, SoftDeletes;
 
@@ -30,6 +31,15 @@ class User extends Authenticatable
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
     ];
+
+    public function getFilamentAvatarUrl(): ?string
+    {
+        if (! $this->foto) {
+            return null;
+        }
+
+        return asset('storage/' . $this->foto);
+    }
 
     public function role()
     {
