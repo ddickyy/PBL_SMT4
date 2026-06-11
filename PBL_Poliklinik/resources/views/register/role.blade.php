@@ -16,7 +16,6 @@
     <div class="page-wrap">
         <div class="blob blob-1"></div>
         <div class="blob blob-2"></div>
-        <div class="blob blob-3"></div>
         {{-- <header class="topbar">
             <a href="#" class="brand" aria-label="Poliklinik Polinema">
                 <img src="{{ asset('/images/logo.png') }}" alt="Logo" class="logo-img">
@@ -180,9 +179,12 @@
         .hero-card {
             width: min(1360px, calc(100vw - 60px));
             min-height: auto;
-            background: var(--card);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
             border-radius: 36px;
-            box-shadow: var(--shadow);
+            box-shadow: 0 24px 60px rgba(16, 43, 87, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
             padding: 80px 92px 78px;
             box-sizing: border-box;
             position: relative;
@@ -331,35 +333,44 @@
         .blob {
             position: absolute;
             border-radius: 50%;
-            filter: blur(50px);
-            opacity: .25;
+            filter: blur(40px);
+            opacity: .6;
             z-index: 0;
-            pointer-events: none;
+            mix-blend-mode: multiply;
         }
 
         .blob-1 {
-            width: 250px;
-            height: 250px;
+            width: 300px;
+            height: 300px;
             background: #f6c40b;
-            top: -80px;
-            left: -80px;
+            top: 0;
+            left: 0;
+            animation: moveBlob1 12s ease-in-out infinite alternate;
         }
 
         .blob-2 {
-            width: 300px;
-            height: 300px;
+            width: 360px;
+            height: 360px;
             background: #8bb7ff;
-            bottom: -100px;
-            right: -100px;
+            bottom: 0;
+            right: 0;
+            animation: moveBlob2 15s ease-in-out infinite alternate;
         }
 
-        .blob-3 {
-            width: 180px;
-            height: 180px;
-            background: #102b57;
-            top: 40%;
-            right: 10%;
-            opacity: .08;
+        @keyframes moveBlob1 {
+            0% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+            25% { transform: translate(150px, 100px) scale(1.2); opacity: 0.8; }
+            50% { transform: translate(300px, 250px) scale(0.9); opacity: 0.6; }
+            75% { transform: translate(100px, 350px) scale(1.3); opacity: 0.9; }
+            100% { transform: translate(250px, -50px) scale(1.1); opacity: 0.7; }
+        }
+
+        @keyframes moveBlob2 {
+            0% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+            25% { transform: translate(-150px, -150px) scale(1.3); opacity: 0.9; }
+            50% { transform: translate(-300px, -50px) scale(0.8); opacity: 0.6; }
+            75% { transform: translate(-100px, -300px) scale(1.2); opacity: 0.8; }
+            100% { transform: translate(-250px, 100px) scale(1.1); opacity: 0.7; }
         }
 
         @media (max-width: 1200px) {
