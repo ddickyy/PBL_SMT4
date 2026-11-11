@@ -18,14 +18,14 @@
         </li>
 
         <li>
-            <a href="{{ route('pasien.reservasi') }}"
-                class="{{ request()->routeIs('pasien.reservasi') ? 'active' : '' }}">
+            <a href="{{ route('pasien.reservasi.index') }}"
+                class="{{ request()->routeIs('pasien.reservasi.*') ? 'active' : '' }}">
                 Reservasi
             </a>
         </li>
 
         <li>
-            <a href="{{ route('pasien.riwayat') }}" class="{{ request()->routeIs('pasien.riwayat') ? 'active' : '' }}">
+            <a href="{{ route('pasien.riwayat') }}" class="{{ request()->routeIs('pasien.riwayat') || request()->routeIs('pasien.bukti') || request()->routeIs('pasien.penilaian.*') ? 'active' : '' }}">
 
                 Riwayat
 
@@ -36,6 +36,10 @@
 
     {{-- RIGHT SECTION --}}
 <div class="nav-right">
+    
+    <button type="button" class="mobile-menu-btn" onclick="toggleMobileMenu()">
+        <i class="fa-solid fa-bars"></i>
+    </button>
 
     <div class="profile-dropdown">
 
@@ -44,9 +48,9 @@
                 class="profile-trigger"
                 onclick="toggleProfileDropdown()">
 
-            <div class="profile-circle">
+            <div class="profile-circle {{ request()->routeIs('pasien.profil.*') ? 'active' : '' }}">
 
-                @if(auth()->user()->foto)
+                @if(auth()->check() && auth()->user()->foto)
 
                     <img src="{{ asset('storage/' . auth()->user()->foto) }}"
                          alt="Foto Profil"
@@ -54,7 +58,9 @@
 
                 @else
 
-                    {{ strtoupper(substr(auth()->user()->nama, 0, 1)) }}
+                    <div class="nav-profile-initials">
+                        {{ strtoupper(substr(auth()->user()->nama ?? 'D', 0, 1)) }}
+                    </div>
 
                 @endif
 
@@ -109,22 +115,38 @@
 <script>
 
     function toggleProfileDropdown() {
-        const dropdown =
-            document.getElementById('profileDropdown');
-
+        const dropdown = document.getElementById('profileDropdown');
         dropdown.classList.toggle('show');
+    }
+    
+    function toggleMobileMenu() {
+        const menu = document.querySelector('.menu');
+        menu.classList.toggle('show');
     }
 
     // CLOSE DROPDOWN WHEN CLICK OUTSIDE
     window.addEventListener('click', function (e) {
-        const dropdown =
-            document.querySelector('.profile-dropdown');
+        const profileDropdown = document.querySelector('.profile-dropdown');
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const menu = document.querySelector('.menu');
 
-        if (!dropdown.contains(e.target)) {
+        if (profileDropdown && !profileDropdown.contains(e.target)) {
+            const dropdown = document.getElementById('profileDropdown');
+            if (dropdown) dropdown.classList.remove('show');
+        }
+        
+        if (menu && mobileMenuBtn && !menu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+            menu.classList.remove('show');
+        }
+    });
 
-            document
-                .getElementById('profileDropdown')
-                .classList.remove('show');
+    // DYNAMIC NAVBAR SCROLL EFFECT
+    window.addEventListener('scroll', function() {
+        const navbar = document.querySelector('.navbar');
+        if (window.scrollY > 20) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
         }
     });
 
@@ -145,6 +167,20 @@
         right: 0;
         z-index: 1000;
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .navbar.scrolled {
+        top: 15px;
+        left: 4%;
+        right: 4%;
+        border-radius: 999px;
+        padding: 10px 24px;
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(16px);
+        box-shadow: 0 15px 35px rgba(16, 43, 87, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        border-bottom: none;
     }
 
     .logo {
@@ -204,12 +240,6 @@
         color: #102b57;
     }
 
-    .nav-right {
-        display: flex;
-        align-items: center;
-    }
-
-
     .profile-dropdown {
         position: relative;
     }
@@ -231,28 +261,6 @@
     .profile-trigger:hover {
         transform: translateY(-1px);
         box-shadow: 0 8px 18px rgba(246, 196, 11, 0.25);
-    }
-
-    .profile-circle {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: #102b57;
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 800;
-        font-size: 15px;
-        overflow: hidden;
-        border: 2px solid white;
-        flex-shrink: 0;
-    }
-
-    .profile-img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
     }
 
     .dropdown-icon {
@@ -379,6 +387,20 @@
         object-fit: cover;
     }
 
+    .nav-profile-initials {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #102b57;
+        color: white;
+        font-weight: 800;
+        text-transform: uppercase;
+        width: 100%;
+        height: 100%;
+        font-size: 16px;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
     .logout-form {
         margin: 0;
     }
@@ -404,45 +426,90 @@
         opacity: 0.96;
     }
 
+    .mobile-menu-btn {
+        display: none;
+    }
+
     @media (max-width: 900px) {
-
-        .navbar {
-            flex-wrap: wrap;
-            gap: 14px;
-        }
-
-        .menu {
-            order: 3;
-            width: 100%;
-            justify-content: center;
-            gap: 18px;
+        .navbar.scrolled {
+            left: 2%;
+            right: 2%;
+            border-radius: 20px;
         }
     }
 
-    @media (max-width: 560px) {
-
+    @media (max-width: 768px) {
         .navbar {
             padding: 12px 16px;
+            flex-wrap: wrap;
+        }
+
+        .navbar.scrolled {
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            border-radius: 16px;
         }
 
         .logo a {
             font-size: 14px;
         }
+        
+        .logo a span {
+            display: none;
+        }
+        
+        .logo-img {
+            width: 36px;
+            height: 36px;
+        }
+
+        .mobile-menu-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f1f5f9;
+            color: #102b57;
+            border: none;
+            border-radius: 10px;
+            width: 38px;
+            height: 38px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .mobile-menu-btn:hover {
+            background: #e2e8f0;
+        }
 
         .menu {
-            gap: 14px;
-            flex-wrap: wrap;
+            display: none;
+            width: 100%;
+            flex-direction: column;
+            gap: 5px;
+            padding-top: 16px;
+            border-top: 1px dashed rgba(16,43,87,0.1);
+            margin-top: 10px;
+        }
+        
+        .menu.show {
+            display: flex;
         }
 
-        .logout-btn {
-            padding: 9px 14px;
-            font-size: 13px;
-        }
-
-        .profile-circle {
-            width: 40px;
-            height: 40px;
+        .menu a {
             font-size: 14px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            width: 100%;
+        }
+        
+        .menu a::after {
+            display: none;
+        }
+        
+        .menu a.active {
+            background: #eef4ff;
         }
     }
 </style>

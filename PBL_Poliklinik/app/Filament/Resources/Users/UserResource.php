@@ -15,6 +15,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class UserResource extends Resource
 {
@@ -30,6 +31,7 @@ class UserResource extends Resource
 
     protected static ?int $navigationSort = 2;
 
+    protected static string $permission = 'user';
 
     public static function form(Schema $schema): Schema
     {
@@ -63,5 +65,64 @@ class UserResource extends Resource
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);
+    }
+
+    public static function canAccess(): bool
+    {
+        /** @var \App\Models\User|null $user */
+        $user = Auth::user();
+
+        if (! $user) {
+            return false;
+        }
+
+        return $user->hasPermission(
+            static::$permission
+        );
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return static::canAccess();
+    }
+
+    public static function canViewAny(): bool
+    {
+        return static::canAccess();
+    }
+
+    public static function canView($record): bool
+    {
+        return static::canAccess();
+    }
+
+    public static function canCreate(): bool
+    {
+        return Auth::user()?->role?->nama_role
+            === 'superadmin';
+    }
+
+    public static function canEdit($record): bool
+    {
+        return Auth::user()?->role?->nama_role
+            === 'superadmin';
+    }
+
+    public static function canDelete($record): bool
+    {
+        return Auth::user()?->role?->nama_role
+            === 'superadmin';
+    }
+
+    public static function canForceDelete($record): bool
+    {
+        return Auth::user()?->role?->nama_role
+            === 'superadmin';
+    }
+
+    public static function canRestore($record): bool
+    {
+        return Auth::user()?->role?->nama_role
+            === 'superadmin';
     }
 }

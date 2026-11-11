@@ -5,8 +5,9 @@ namespace App\Models;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
+use Filament\Models\Contracts\HasAvatar;
 
-class User extends Authenticatable
+class User extends Authenticatable implements HasAvatar
 {
     use Notifiable, SoftDeletes;
 
@@ -30,6 +31,15 @@ class User extends Authenticatable
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
     ];
+
+    public function getFilamentAvatarUrl(): ?string
+    {
+        if (! $this->foto) {
+            return null;
+        }
+
+        return asset('storage/' . $this->foto);
+    }
 
     public function role()
     {
@@ -74,5 +84,53 @@ class User extends Authenticatable
     public function getNameAttribute(): string
     {
         return $this->nama;
+    }
+
+    public function getJenisPasienAttribute()
+    {
+        if ($this->mahasiswa) {
+            return 'Mahasiswa';
+        }
+
+        if ($this->dosen) {
+            return 'Dosen';
+        }
+
+        if ($this->tendik) {
+            return 'Tendik';
+        }
+
+        return '-';
+    }
+
+    public function getIdentitasAttribute()
+    {
+        if ($this->mahasiswa) {
+            return $this->mahasiswa->nim;
+        }
+
+        if ($this->dosen) {
+            return $this->dosen->nidn;
+        }
+
+        if ($this->tendik) {
+            return $this->tendik->nip;
+        }
+
+        return '-';
+    }
+
+    public function hasPermission(
+        string $permission
+    ): bool
+    {
+        return $this->role
+            ?->permissions()
+            ->where(
+                'nama_permission',
+                $permission
+            )
+            ->exists()
+            ?? false;
     }
 }

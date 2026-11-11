@@ -17,7 +17,8 @@ class ViewDokter extends ViewRecord
             Action::make('Kembali') 
                 ->url(DokterResource::getUrl('index'))
                 ->color('success'),
-            EditAction::make(),
+            EditAction::make()
+                ->visible(fn () => DokterResource::canEdit($this->record)),
         ];
     }
 }

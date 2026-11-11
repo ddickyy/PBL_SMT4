@@ -16,91 +16,106 @@ class ReservasiInfolist
         return $schema
             ->components([
 
-                Section::make('Informasi Reservasi')
+                Section::make('Detail Reservasi')
                     ->icon('heroicon-o-calendar-days')
-                    ->description('Informasi utama mengenai reservasi pasien.')
+                    ->description('Informasi reservasi dan pasien.')
                     ->schema([
 
                         Group::make([
 
-                            TextEntry::make('user.nama')
-                                ->label('Nama Pasien')
-                                ->badge()
-                                ->color('primary')
-                                ->placeholder('-'),
+                            Section::make('Informasi Reservasi')
+                                ->icon('heroicon-o-clipboard-document-list')
+                                ->schema([
 
-                            TextEntry::make('jadwal.dokter.user.nama')
-                                ->label('Dokter')
-                                ->badge()
-                                ->color('success')
-                                ->placeholder('-'),
+                                    TextEntry::make('jadwal.dokter.user.nama')
+                                        ->label('Dokter')
+                                        ->badge()
+                                        ->color('success'),
 
-                            TextEntry::make('jadwal.hari')
-                                ->label('Hari Praktik')
-                                ->badge()
-                                ->color('warning')
-                                ->placeholder('-'),
+                                    TextEntry::make('jadwal.hari')
+                                        ->label('Hari Praktik')
+                                        ->badge()
+                                        ->color('warning'),
 
-                            TextEntry::make('tanggal_reservasi')
-                                ->label('Tanggal Reservasi')
-                                ->date('d F Y')
-                                ->icon('heroicon-o-calendar-days')
-                                ->placeholder('-'),
+                                    TextEntry::make('tanggal_reservasi')
+                                        ->label('Tanggal Pemeriksaan')
+                                        ->date('d F Y')
+                                        ->icon('heroicon-o-calendar-days'),
 
-                            TextEntry::make('estimasi_jam')
-                                ->label('Estimasi Jam')
-                                ->time('H:i')
-                                ->icon('heroicon-o-clock')
-                                ->placeholder('-'),
+                                    TextEntry::make('estimasi_jam')
+                                        ->label('Estimasi Jam')
+                                        ->time('H:i')
+                                        ->icon('heroicon-o-clock'),
 
-                            TextEntry::make('nomor_antrian')
-                                ->label('Nomor Antrian')
-                                ->badge()
-                                ->color('danger')
-                                ->placeholder('-'),
+                                    TextEntry::make('nomor_antrian')
+                                        ->label('Nomor Antrian')
+                                        ->badge()
+                                        ->color('danger'),
+
+                                    TextEntry::make('status')
+                                        ->label('Status Reservasi')
+                                        ->badge()
+                                        ->colors([
+                                            'warning' => 'pending',
+                                            'success' => 'dikonfirmasi',
+                                            'primary' => 'selesai',
+                                            'danger' => 'dibatalkan',
+                                        ]),
+
+                                    TextEntry::make('created_at')
+                                        ->label('Tanggal Reservasi Dibuat')
+                                        ->date('d F Y')
+                                        ->icon('heroicon-o-calendar-days'),
+
+                                ])
+                                ->columns(2),
 
                         ])
                         ->columnSpan(2),
 
                         Group::make([
 
-                            TextEntry::make('status')
-                                ->label('Status Reservasi')
-                                ->badge()
-                                ->colors([
-                                    'warning' => 'pending',
-                                    'success' => 'confirmed',
-                                    'primary' => 'completed',
-                                    'danger' => 'cancelled',
+                            Section::make('Informasi Pasien')
+                                ->icon('heroicon-o-user')
+                                ->schema([
+
+                                    TextEntry::make('user.nama')
+                                        ->label('Nama Pasien')
+                                        ->badge()
+                                        ->color('primary'),
+
+                                    TextEntry::make('user.email')
+                                        ->label('Email')
+                                        ->icon('heroicon-o-envelope'),
+
+                                    TextEntry::make('user.identitas')
+                                        ->label(function ($record) {
+
+                                            if ($record->user->mahasiswa) {
+                                                return 'NIM';
+                                            }
+
+                                            if ($record->user->dosen) {
+                                                return 'NIDN';
+                                            }
+
+                                            if ($record->user->tendik) {
+                                                return 'NIP';
+                                            }
+
+                                            return 'Identitas';
+                                        })
+                                        ->badge()
+                                        ->color('gray'),
+
+
                                 ]),
-
-                            TextEntry::make('created_at')
-                                ->label('Tanggal Dibuat')
-                                ->dateTime('d F Y, H:i')
-                                ->icon('heroicon-o-calendar')
-                                ->placeholder('-'),
-
-                            TextEntry::make('updated_at')
-                                ->label('Terakhir Diupdate')
-                                ->dateTime('d F Y, H:i')
-                                ->icon('heroicon-o-pencil-square')
-                                ->placeholder('-'),
-
-                            TextEntry::make('deleted_at')
-                                ->label('Tanggal Dihapus')
-                                ->dateTime('d F Y, H:i')
-                                ->icon('heroicon-o-trash')
-                                ->color('danger')
-                                ->placeholder('-')
-                                ->visible(fn (Reservasi $record): bool => $record->trashed()),
-
                         ])
                         ->columnSpan(1),
 
                     ])
                     ->columns(3)
                     ->columnSpanFull(),
-
             ]);
     }
 }

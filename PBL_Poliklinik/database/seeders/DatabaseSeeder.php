@@ -21,7 +21,10 @@ class DatabaseSeeder extends Seeder
             JabatanTendikSeeder::class,  
             SpesialisasiSeeder::class,   
             UserSeeder::class,
-            AdminSeeder::class
+            AdminSeeder::class,
+            DokterSeeder::class,
+            PermissionSeeder::class,
+            RolePermissionSeeder::class,
         ]);
     }
 }

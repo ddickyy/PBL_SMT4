@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('id_admin');
             $table->foreignId('id_user')->unique()->constrained('users', 'id_user')->cascadeOnDelete();
 
-            $table->string('tipe_admin');
+            $table->enum('tipe_admin', ['Super Admin', 'Admin'])->default('Super Admin');
 
             $table->timestamps();
             $table->softDeletes();

@@ -18,15 +18,15 @@ return new class extends Migration
             $table->foreignId('id_jadwal')->constrained('jadwal_dokter', 'id_jadwal')->cascadeOnDelete();
 
             $table->date('tanggal_reservasi');
-            $table->integer('nomor_antrian');
+            $table->string('nomor_antrian', 50);
             $table->time('estimasi_jam')->nullable();
 
             $table->enum('status', [
-                'pending',
+                'menunggu',
                 'dikonfirmasi',
                 'selesai',
                 'dibatalkan'
-            ])->default('pending');
+            ])->default('menunggu');
 
             $table->timestamps();
             $table->softDeletes();

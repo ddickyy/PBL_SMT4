@@ -19,11 +19,10 @@ class JadwalDokter extends Model
         'jam_selesai',
         'durasi_menit',
         'aktif',
+        'kuota_maksimal',
     ];
 
     protected $casts = [
-        'jam_mulai' => 'datetime:H:i:s',
-        'jam_selesai' => 'datetime:H:i:s',
         'aktif' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',

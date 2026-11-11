@@ -25,7 +25,7 @@ class MahasiswaRegisterController extends Controller
         $validated = $request->validate([
             'nama' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email',
-            'password' => 'required|min:6|confirmed',
+            'password' => 'required|min:5|confirmed',
             'nim' => 'required|string|max:30|unique:mahasiswa,nim',
             'no_hp' => 'required|string|max:20',
             'id_prodi' => 'required|exists:prodi,id_prodi',

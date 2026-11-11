@@ -19,7 +19,14 @@ class AdminSeeder extends Seeder
                 'tipe_admin' => 'Super Admin',
                 'created_at' => now(),
                 'updated_at' => now(),
-            ]
+            ],
+
+            [
+                'id_user' => '2',
+                'tipe_admin' => 'Admin',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ];
 
         DB::table('admin')->insert($admin);

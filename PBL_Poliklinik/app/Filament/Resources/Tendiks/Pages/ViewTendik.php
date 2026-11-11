@@ -19,7 +19,8 @@ class ViewTendik extends ViewRecord
             Action::make('Kembali') 
                 ->url(TendikResource::getUrl('index'))
                 ->color('success'),
-            EditAction::make(),
+            EditAction::make()
+                ->visible(fn () => TendikResource::canEdit($this->record)),
         ];
     }
 }

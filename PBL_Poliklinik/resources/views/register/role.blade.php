@@ -14,12 +14,14 @@
 @section('content')
 
     <div class="page-wrap">
-        <header class="topbar">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        {{-- <header class="topbar">
             <a href="#" class="brand" aria-label="Poliklinik Polinema">
                 <img src="{{ asset('/images/logo.png') }}" alt="Logo" class="logo-img">
                 <span>Poliklinik Polinema</span>
             </a>
-        </header>
+        </header> --}}
 
         <main class="hero-shell">
             <section class="hero-card">
@@ -106,7 +108,7 @@
 
         body {
             margin: 0;
-            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: var(--bg);
             color: var(--text);
         }
@@ -127,9 +129,15 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg,
+                    #eef4ff 0%,
+                    #f8fbff 50%,
+                    #edf2ff 100%);
         }
 
-        .topbar {
+        /* .topbar {
             height: 92px;
             display: flex;
             align-items: center;
@@ -137,9 +145,11 @@
             background: rgba(255, 255, 255, .72);
             backdrop-filter: saturate(180%) blur(10px);
             box-shadow: 0 1px 0 rgba(16, 43, 87, .03);
-        }
+            position: relative;
+            z-index: 3;
+        } */
 
-        .brand {
+        /* .brand {
             display: flex;
             align-items: center;
             gap: 14px;
@@ -154,7 +164,7 @@
             width: 34px;
             height: 34px;
             flex: none;
-        }
+        } */
 
         .hero-shell {
             flex: 1;
@@ -162,16 +172,23 @@
             align-items: center;
             justify-content: center;
             padding: 28px 30px 58px;
+            position: relative;
+            z-index: 2;
         }
 
         .hero-card {
             width: min(1360px, calc(100vw - 60px));
             min-height: auto;
-            background: var(--card);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
             border-radius: 36px;
-            box-shadow: var(--shadow);
+            box-shadow: 0 24px 60px rgba(16, 43, 87, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
             padding: 80px 92px 78px;
             box-sizing: border-box;
+            position: relative;
+            z-index: 2;
         }
 
         .title {
@@ -208,6 +225,34 @@
             align-items: center;
             justify-content: flex-start;
             box-shadow: inset 0 0 0 1px rgba(16, 43, 87, .02);
+            transition: .35s ease;
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        .option-card:hover {
+            transform: translateY(-10px);
+            background: white;
+            box-shadow: 0 25px 50px rgba(16, 43, 87, .12);
+        }
+
+        .option-card:nth-child(1) {
+            animation: cardShow .6s ease forwards;
+        }
+
+        .option-card:nth-child(2) {
+            animation: cardShow .6s .2s ease forwards;
+        }
+
+        .option-card:nth-child(3) {
+            animation: cardShow .6s .4s ease forwards;
+        }
+
+        @keyframes cardShow {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .auth-footer {
@@ -226,6 +271,11 @@
             place-items: center;
             margin-top: 3px;
             flex: none;
+            transition: .35s ease;
+        }
+
+        .option-card:hover .icon-badge {
+            transform: scale(1.1);
         }
 
         .icon-badge svg {
@@ -278,6 +328,49 @@
             transform: translateY(-1px);
             box-shadow: 0 16px 32px rgba(16, 43, 87, .24);
             opacity: .98;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(40px);
+            opacity: .6;
+            z-index: 0;
+            mix-blend-mode: multiply;
+        }
+
+        .blob-1 {
+            width: 300px;
+            height: 300px;
+            background: #f6c40b;
+            top: 0;
+            left: 0;
+            animation: moveBlob1 12s ease-in-out infinite alternate;
+        }
+
+        .blob-2 {
+            width: 360px;
+            height: 360px;
+            background: #8bb7ff;
+            bottom: 0;
+            right: 0;
+            animation: moveBlob2 15s ease-in-out infinite alternate;
+        }
+
+        @keyframes moveBlob1 {
+            0% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+            25% { transform: translate(150px, 100px) scale(1.2); opacity: 0.8; }
+            50% { transform: translate(300px, 250px) scale(0.9); opacity: 0.6; }
+            75% { transform: translate(100px, 350px) scale(1.3); opacity: 0.9; }
+            100% { transform: translate(250px, -50px) scale(1.1); opacity: 0.7; }
+        }
+
+        @keyframes moveBlob2 {
+            0% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+            25% { transform: translate(-150px, -150px) scale(1.3); opacity: 0.9; }
+            50% { transform: translate(-300px, -50px) scale(0.8); opacity: 0.6; }
+            75% { transform: translate(-100px, -300px) scale(1.2); opacity: 0.8; }
+            100% { transform: translate(-250px, 100px) scale(1.1); opacity: 0.7; }
         }
 
         @media (max-width: 1200px) {

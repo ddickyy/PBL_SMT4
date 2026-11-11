@@ -7,6 +7,8 @@
 @section('content')
 
     <div class="auth-wrapper">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
         <div class="auth-card">
             <div class="auth-logo">
                 <img src="{{ asset('images/logo.png') }}" alt="Poliklinik Polinema" onerror="this.style.display='none'">
@@ -49,7 +51,8 @@
                     <div class="form-group">
                         <label>NAMA LENGKAP</label>
                         <div class="input-wrapper">
-                            <input type="text" name="nama" value="{{ old('nama') }}" placeholder="Masukkan nama lengkap Anda">
+                            <input type="text" name="nama" value="{{ old('nama') }}"
+                                placeholder="Masukkan nama lengkap Anda">
                         </div>
                     </div>
                 </div>
@@ -91,9 +94,9 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5
-                                          c4.478 0 8.268 2.943 9.542 7
-                                          -1.274 4.057-5.064 7-9.542 7
-                                          -4.477 0-8.268-2.943-9.542-7z" />
+                                                                          c4.478 0 8.268 2.943 9.542 7
+                                                                          -1.274 4.057-5.064 7-9.542 7
+                                                                          -4.477 0-8.268-2.943-9.542-7z" />
                             </svg>
                         </button>
                     </div>
@@ -110,9 +113,9 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5
-                                          c4.478 0 8.268 2.943 9.542 7
-                                          -1.274 4.057-5.064 7-9.542 7
-                                          -4.477 0-8.268-2.943-9.542-7z" />
+                                                                          c4.478 0 8.268 2.943 9.542 7
+                                                                          -1.274 4.057-5.064 7-9.542 7
+                                                                          -4.477 0-8.268-2.943-9.542-7z" />
                             </svg>
                         </button>
                     </div>
@@ -168,23 +171,48 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: #eef1f7;
+            background: linear-gradient(135deg,
+                    #eef4ff 0%,
+                    #f8fbff 50%,
+                    #edf2ff 100%);
             position: relative;
             overflow: hidden;
             padding: 40px 16px;
-            font-family: 'Inter', system-ui, -apple-system,
+            font-family: 'Poppins', system-ui, -apple-system,
                 BlinkMacSystemFont, 'Segoe UI', sans-serif;
         }
 
         .auth-card {
-            background: white;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
             border-radius: 24px;
             padding: 48px 52px;
             width: 100%;
             max-width: 680px;
-            box-shadow: 0 20px 60px rgba(16, 43, 87, 0.1);
+            box-shadow: 0 20px 60px rgba(16, 43, 87, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
             position: relative;
             z-index: 1;
+            animation: cardReveal .7s ease;
+            transition: .4s ease;
+        }
+
+        .auth-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 30px 80px rgba(16, 43, 87, .15);
+        }
+
+        @keyframes cardReveal {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .auth-logo {
@@ -320,7 +348,7 @@
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(19, 54, 208, 0.3);
+            box-shadow: 0 10px 20px rgba(19, 54, 208, .4);
         }
 
         .btn-primary:active {
@@ -386,6 +414,49 @@
         .input-error {
             border: 1px solid #ef4444 !important;
             background: #fef2f2 !important;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(40px);
+            opacity: .6;
+            z-index: 0;
+            mix-blend-mode: multiply;
+        }
+
+        .blob-1 {
+            width: 300px;
+            height: 300px;
+            background: #f6c40b;
+            top: 0;
+            left: 0;
+            animation: moveBlob1 12s ease-in-out infinite alternate;
+        }
+
+        .blob-2 {
+            width: 360px;
+            height: 360px;
+            background: #8bb7ff;
+            bottom: 0;
+            right: 0;
+            animation: moveBlob2 15s ease-in-out infinite alternate;
+        }
+
+        @keyframes moveBlob1 {
+            0% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+            25% { transform: translate(150px, 100px) scale(1.2); opacity: 0.8; }
+            50% { transform: translate(300px, 250px) scale(0.9); opacity: 0.6; }
+            75% { transform: translate(100px, 350px) scale(1.3); opacity: 0.9; }
+            100% { transform: translate(250px, -50px) scale(1.1); opacity: 0.7; }
+        }
+
+        @keyframes moveBlob2 {
+            0% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+            25% { transform: translate(-150px, -150px) scale(1.3); opacity: 0.9; }
+            50% { transform: translate(-300px, -50px) scale(0.8); opacity: 0.6; }
+            75% { transform: translate(-100px, -300px) scale(1.2); opacity: 0.8; }
+            100% { transform: translate(-250px, 100px) scale(1.1); opacity: 0.7; }
         }
 
         @media (max-width: 560px) {

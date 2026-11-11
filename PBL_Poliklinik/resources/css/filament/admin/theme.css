@@ -1,0 +1,158 @@
+@import '/vendor/filament/filament/resources/css/theme.css';
+
+/*
+|--------------------------------------------------------------------------
+| LIGHT MODE
+|--------------------------------------------------------------------------
+*/
+
+:root {
+    --primary: #253b6e;
+}
+
+.fi-body {
+    background: #f7f8fc;
+}
+
+.fi-sidebar {
+    background: #ffffff;
+}
+
+.fi-topbar {
+    background: #ffffff;
+}
+
+/*
+|--------------------------------------------------------------------------
+| DARK MODE
+|--------------------------------------------------------------------------
+*/
+
+.dark .fi-body {
+    background: #0f172a;
+}
+
+.dark .fi-sidebar {
+    background: #111827;
+    border-right: 1px solid #374151;
+}
+
+.dark .fi-topbar {
+    background: #111827;
+    border-bottom: 1px solid #374151;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Sidebar
+|--------------------------------------------------------------------------
+*/
+
+.fi-sidebar-item-button {
+    border-radius: 14px;
+    margin-bottom: 6px;
+}
+
+.fi-sidebar-item-active .fi-sidebar-item-button {
+    background: #314675;
+    color: white;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Cards
+|--------------------------------------------------------------------------
+*/
+
+.fi-section {
+    border-radius: 24px;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Tables
+|--------------------------------------------------------------------------
+*/
+
+.fi-ta,
+.fi-ta-content,
+.fi-ta-table,
+.fi-ta-header {
+    border-radius: 20px !important;
+    overflow: hidden;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Tables - Light Mode
+|--------------------------------------------------------------------------
+*/
+
+:not(.dark) .fi-ta {
+    background: white;
+}
+
+:not(.dark) .fi-ta-header {
+    background: white;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Tables - Dark Mode
+|--------------------------------------------------------------------------
+*/
+
+.dark .fi-ta,
+.dark .fi-ta-content,
+.dark .fi-ta-table,
+.dark .fi-ta-header {
+    background-color: #1e293b !important;
+}
+
+/* Table Rows */
+.dark .fi-ta-row {
+    background-color: #1e293b !important;
+}
+
+/* Search Bar */
+.dark .fi-input-wrp {
+    background-color: #0f172a !important;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Buttons
+|--------------------------------------------------------------------------
+*/
+
+.fi-btn {
+    border-radius: 12px;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Dashboard Stats
+|--------------------------------------------------------------------------
+*/
+
+.fi-wi-stats-overview-stat {
+    border-radius: 28px;
+    padding: 2rem;
+}
+
+:not(.dark) .fi-wi-stats-overview-stat {
+    background: white;
+}
+
+.dark .fi-wi-stats-overview-stat {
+    background: #1e293b;
+}
+
+.fi-wi-stats-overview-stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.fi-wi-stats-overview-stat-label {
+    color: #64748b;
+}

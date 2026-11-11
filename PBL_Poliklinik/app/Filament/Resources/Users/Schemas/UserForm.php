@@ -2,11 +2,13 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\TextInput;
+use Illuminate\Support\Facades\Hash;
 
 class UserForm
 {
@@ -39,7 +41,8 @@ class UserForm
                             ->label('Password Pengguna')
                             ->password()
                             ->required()
-                            ->maxLength(50),
+                            ->maxLength(255)
+                            ->dehydrateStateUsing(fn ($state) => Hash::make($state)),
                         
                         Select::make('id_role')
                             ->label('Role Pengguna')
@@ -52,6 +55,8 @@ class UserForm
                             ->label('Foto Pengguna')
                             ->image()
                             ->columnSpanFull()
+                            ->directory('users')
+                            ->disk('public'),
                     ])
                     ->columns(2)
                     ->columnSpanFull()

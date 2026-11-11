@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BerandaController;
 use App\Http\Controllers\RoleSelectionController;
@@ -18,88 +19,238 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-// Guest
 
+// AUTHENTICATION ROUTES
 Route::middleware('guest')->group(function () {
 
-    // Login
-    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [AuthController::class, 'login'])->name('login.process');
+    Route::get(
+        '/login',
+        [AuthController::class, 'showLoginForm']
+    )->name('login');
 
-    // Lupa Password
-    Route::get('/forgot-password', [PasswordResetController::class, 'request'])
-        ->name('password.request');
+    Route::post(
+        '/login',
+        [AuthController::class, 'login']
+    )->name('login.process');
 
-    Route::post('/forgot-password', [PasswordResetController::class, 'email'])
-        ->name('password.email');
+    Route::get(
+        '/forgot-password',
+        [PasswordResetController::class, 'request']
+    )->name('password.request');
 
-    Route::get('/reset-password/{token}', [PasswordResetController::class, 'reset'])
-        ->name('password.reset');
+    Route::post(
+        '/forgot-password',
+        [PasswordResetController::class, 'email']
+    )->name('password.email');
 
-    Route::post('/reset-password', [PasswordResetController::class, 'update'])
-        ->name('password.update');
+    Route::get(
+        '/reset-password/{token}',
+        [PasswordResetController::class, 'reset']
+    )->name('password.reset');
 
-    // Register
-    Route::prefix('daftar')->name('daftar.')->group(function () {
+    Route::post(
+        '/reset-password',
+        [PasswordResetController::class, 'update']
+    )->name('password.update');
 
-        Route::get('/role', [RoleSelectionController::class, 'index'])->name('role');
+    Route::prefix('daftar')
+        ->name('daftar.')
+        ->group(function () {
+            Route::get(
+                '/role',
+                [RoleSelectionController::class, 'index']
+            )->name('role');
 
-        // Mahasiswa
-        Route::prefix('mahasiswa')->name('mhs.')->group(function () {
-            Route::get('/', [MahasiswaRegisterController::class, 'create'])->name('create');
-            Route::post('/', [MahasiswaRegisterController::class, 'store'])->name('store');
+            Route::prefix('mahasiswa')
+                ->name('mhs.')
+                ->group(function () {
+                    Route::get(
+                        '/',
+                        [MahasiswaRegisterController::class, 'create']
+                    )->name('create');
+
+                    Route::post(
+                        '/',
+                        [MahasiswaRegisterController::class, 'store']
+                    )->name('store');
+                });
+
+            Route::prefix('dosen')
+                ->name('dosen.')
+                ->group(function () {
+                    Route::get(
+                        '/',
+                        [DosenRegisterController::class, 'create']
+                    )->name('create');
+
+                    Route::post(
+                        '/',
+                        [DosenRegisterController::class, 'store']
+                    )->name('store');
+                });
+
+            Route::prefix('tendik')
+                ->name('tendik.')
+                ->group(function () {
+                    Route::get(
+                        '/',
+                        [TendikRegisterController::class, 'create']
+                    )->name('create');
+
+                    Route::post(
+                        '/',
+                        [TendikRegisterController::class, 'store']
+                    )->name('store');
+                });
         });
-
-        // Dosen
-        Route::prefix('dosen')->name('dosen.')->group(function () {
-            Route::get('/', [DosenRegisterController::class, 'create'])->name('create');
-            Route::post('/', [DosenRegisterController::class, 'store'])->name('store');
-        });
-
-        // Tendik
-        Route::prefix('tendik')->name('tendik.')->group(function () {
-            Route::get('/', [TendikRegisterController::class, 'create'])->name('create');
-            Route::post('/', [TendikRegisterController::class, 'store'])->name('store');
-        });
-    });
 });
 
-// Authenticated User
+// PATIENT ROUTES
+Route::middleware('auth')
+    ->prefix('pasien')
+    ->name('pasien.')
+    ->group(function () {
 
-Route::middleware('auth')->prefix('pasien')->name('pasien.')->group(function () {
+        Route::get(
+            '/beranda',
+            [BerandaController::class, 'index']
+        )->name('beranda');
 
-    // Beranda
-    Route::get('/beranda', [BerandaController::class, 'index'])->name('beranda');
 
-    // Reservasi
-    Route::get('/reservasi', [ReservasiController::class, 'index'])->name('reservasi');
-    Route::post('/reservasi', [ReservasiController::class, 'store'])->name('reservasi.store');
+        Route::prefix('reservasi')
+            ->name('reservasi.')
+            ->group(function () {
+                // PAGE RESERVASI
 
-    Route::get('/bukti-reservasi', function () {
-        return view('pasien.buktiReservasi');
-    })->name('bukti');
+                Route::get(
+                    '/',
+                    [ReservasiController::class, 'index']
+                )->name('index');
 
-    Route::get('/riwayat', [ReservasiController::class, 'riwayat'])->name('riwayat');
+                Route::post(
+                    '/',
+                    [ReservasiController::class, 'store']
+                )->name('store');
 
-    // Jadwal
-    Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal');
+                Route::get(
+                    '/{id}',
+                    [ReservasiController::class, 'show']
+                )->name('show');
 
-    // Dokter
-    Route::get('/dokter', [DokterController::class, 'index'])->name('dokter.index');
+                Route::put(
+                    '/{id}/cancel',
+                    [ReservasiController::class, 'cancel']
+                )->name('cancel');
+            });
 
-    // Penilaian
-    Route::get('/penilaian/{reservasi}', [PenilaianController::class, 'create'])
-        ->name('penilaian.create');
+        Route::get(
+            '/bukti-reservasi',
+            [ReservasiController::class, 'bukti']
+        )->name('bukti');
 
-    Route::post('/penilaian', [PenilaianController::class, 'store'])
-        ->name('penilaian.store');
+        Route::get(
+            '/riwayat',
+            [ReservasiController::class, 'riwayat']
+        )->name('riwayat');
 
-    // Profil
-    Route::prefix('profil')->name('profil.')->group(function () {
-        Route::get('/', [ProfilController::class, 'show'])->name('show');
-        Route::get('/edit', [ProfilController::class, 'edit'])->name('edit');
-        Route::put('/', [ProfilController::class, 'update'])->name('update');
+        Route::get(
+            '/jadwal',
+            [JadwalController::class, 'index']
+        )->name('jadwal');
+
+        Route::get(
+            '/dokter',
+            [DokterController::class, 'index']
+        )->name('dokter.index');
+
+        Route::get(
+            '/penilaian/{reservasi}',
+            [PenilaianController::class, 'create']
+        )->name('penilaian.create');
+
+        Route::post(
+            '/penilaian',
+            [PenilaianController::class, 'store']
+        )->name('penilaian.store');
+
+        Route::put(
+            '/penilaian/{id}',
+            [PenilaianController::class, 'update']
+        )->name('penilaian.update');
+
+        Route::prefix('profil')
+            ->name('profil.')
+            ->group(function () {
+                Route::get(
+                    '/',
+                    [ProfilController::class, 'show']
+                )->name('show');
+
+                Route::get(
+                    '/edit',
+                    [ProfilController::class, 'edit']
+                )->name('edit');
+
+                Route::put(
+                    '/',
+                    [ProfilController::class, 'update']
+                )->name('update');
+            });
     });
-});
 
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+// DOCTOR ROUTES
+Route::middleware('auth')
+    ->prefix('dokter')
+    ->name('dokter.')
+    ->group(function () {
+
+        Route::get(
+            '/beranda',
+            [DokterController::class, 'beranda']
+        )->name('beranda');
+
+        Route::get(
+            '/pasien',
+            [DokterController::class, 'pasien']
+        )->name('pasien');
+
+        Route::get(
+            '/pasien/{id}',
+            [DokterController::class, 'detailPasien']
+        )->name('pasien.detail');
+
+        Route::put(
+            '/pasien/{id}/status',
+            [DokterController::class, 'updateStatus']
+        )->name('pasien.updateStatus');
+
+        Route::post(
+            '/pasien/{id}/rekam-medis',
+            [DokterController::class, 'updateOrCreateRekamMedis']
+        )->name('pasien.rekamMedis');
+
+        Route::get(
+            '/riwayat',
+            [DokterController::class, 'riwayat']
+        )->name('riwayat');
+
+
+        Route::get(
+            '/profil',
+            [DokterController::class, 'profil']
+        )->name('profil');
+
+        Route::get(
+            '/profil/edit',
+            [DokterController::class, 'editProfil']
+        )->name('profil.edit');
+        Route::put(
+            '/profil/update',
+            [DokterController::class, 'updateProfil']
+        )->name('profil.update');
+    });
+
+Route::post(
+    '/logout',
+    [AuthController::class, 'logout']
+)->name('logout');

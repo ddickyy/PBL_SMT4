@@ -23,7 +23,7 @@ class UsersTable
                 TextColumn::make('nama'),
                 TextColumn::make('email'),
                 TextColumn::make('role.nama_role'),
-                ImageColumn::make('foto'),
+                // ImageColumn::make('foto'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

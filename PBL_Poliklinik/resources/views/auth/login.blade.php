@@ -6,18 +6,31 @@
 
 @section('content')
     <div class="auth-wrapper">
-
-        <div class="auth-card">
-
-            <div class="auth-logo">
-                <img src="{{ asset('images/logo.png') }}" alt="Poliklinik Polinema" onerror="this.style.display='none'">
-                <span class="logo-text">Poliklinik Polinema</span>
+        <div class="auth-cover">
+            <div class="auth-cover-overlay">
+                <div class="cover-content">
+                    <img src="{{ asset('images/logo.png') }}" alt="Poliklinik Polinema" class="cover-logo" onerror="this.style.display='none'">
+                    <h2>Sistem Informasi<br>Poliklinik Polinema</h2>
+                    <p>Layanan kesehatan terpadu dan profesional untuk seluruh Civitas Akademika Politeknik Negeri Malang.</p>
+                </div>
             </div>
+        </div>
 
-            <div class="auth-header">
-                <h1>Selamat Datang</h1>
-                <p>Masuk untuk melanjutkan akses ke layanan kesehatan Anda.</p>
-            </div>
+        <div class="auth-content">
+            <div class="blob blob-1"></div>
+            <div class="blob blob-2"></div>
+
+            <div class="auth-card">
+
+                <div class="auth-logo mobile-only">
+                    <img src="{{ asset('images/logo.png') }}" alt="Poliklinik Polinema" onerror="this.style.display='none'">
+                    <span class="logo-text">Poliklinik Polinema</span>
+                </div>
+
+                <div class="auth-header">
+                    <h1 id="dynamic-greeting">Selamat Datang</h1>
+                    <p>Masuk untuk melanjutkan akses ke layanan kesehatan Anda.</p>
+                </div>
 
             {{-- SUCCESS MESSAGE --}}
             @if(session('success'))
@@ -26,18 +39,7 @@
                 </div>
             @endif
 
-            {{-- ERROR MESSAGE
-            @if ($errors->any())
-                <div class="alert-error">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif --}}
-
-            <form action="{{ route('login.process') }}" method="POST" class="auth-form">
+            <form action="{{ route('login.process') }}" method="POST" class="auth-form" id="login-form">
                 @csrf
 
                 <div class="form-group">
@@ -66,7 +68,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                         </svg>
-                        <input type="password" id="password" name="password" placeholder="••••••••" required minlength="6"
+                        <input type="password" id="password" name="password" placeholder="••••••••" required minlength="5"
                             class="@error('password') input-error @enderror">
                         <button type="button" class="toggle-password" onclick="togglePassword()">
                             <svg id="eye-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -91,8 +93,12 @@
                     </label>
                 </div>
 
-                <button type="submit" class="btn-primary">
-                    Masuk Sekarang →
+                <button type="submit" class="btn-primary" id="submit-btn">
+                    <span id="btn-text">Masuk Sekarang →</span>
+                    <svg id="btn-spinner" class="spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" style="display: none; width: 20px; height: 20px; animation: spin 1s linear infinite;">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" style="opacity: 0.25;"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" style="opacity: 0.75;"></path>
+                    </svg>
                 </button>
 
                 <p class="auth-redirect">
@@ -101,8 +107,9 @@
             </form>
         </div>
 
-        <div class="auth-footer">
-            © 2026 POLIKLINIK POLINEMA • SISTEM RESERVASI POLIKLINIK POLINEMA
+            <div class="auth-footer">
+                © 2026 POLIKLINIK POLINEMA • SISTEM RESERVASI POLIKLINIK POLINEMA
+            </div>
         </div>
 
     </div>
@@ -112,36 +119,156 @@
             const input = document.getElementById('password');
             input.type = input.type === 'password' ? 'text' : 'password';
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Dynamic Greeting
+            const greetingElement = document.getElementById('dynamic-greeting');
+            const hour = new Date().getHours();
+            let greeting = 'Selamat Datang';
+
+            if (hour >= 5 && hour < 12) {
+                greeting = 'Selamat Pagi';
+            } else if (hour >= 12 && hour < 15) {
+                greeting = 'Selamat Siang';
+            } else if (hour >= 15 && hour < 18) {
+                greeting = 'Selamat Sore';
+            } else {
+                greeting = 'Selamat Malam';
+            }
+
+            if(greetingElement) {
+                greetingElement.innerText = greeting;
+            }
+
+            // Loading Spinner on Submit
+            const loginForm = document.getElementById('login-form');
+            const submitBtn = document.getElementById('submit-btn');
+            const btnText = document.getElementById('btn-text');
+            const spinner = document.getElementById('btn-spinner');
+
+            if(loginForm) {
+                loginForm.addEventListener('submit', function() {
+                    submitBtn.disabled = true;
+                    submitBtn.classList.add('loading-state');
+                    btnText.style.display = 'none';
+                    spinner.style.display = 'inline-block';
+                });
+            }
+        });
     </script>
 
     <style>
         main {
-            padding: 0;
+            padding: 0 !important;
             background: transparent;
         }
 
         .auth-wrapper {
             min-height: 100vh;
             display: flex;
+            font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        .auth-cover {
+            flex: 1.2;
+            background: url('{{ asset("images/poliklinik.jpg") }}') center/cover no-repeat;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .auth-cover-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(10, 31, 68, 0.85) 0%, rgba(16, 43, 87, 0.75) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .cover-content {
+            text-align: left;
+            color: white;
+            max-width: 500px;
+            animation: cardReveal 1s ease;
+        }
+
+        .cover-logo {
+            height: 70px;
+            margin-bottom: 24px;
+            background: white;
+            padding: 10px;
+            border-radius: 16px;
+        }
+
+        .cover-content h2 {
+            font-size: 40px;
+            font-weight: 800;
+            line-height: 1.3;
+            margin: 0 0 16px 0;
+            color: #ffffff;
+        }
+
+        .cover-content p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #e2e8f0;
+            margin: 0;
+        }
+
+        .auth-content {
+            flex: 1;
+            display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: #eef1f7;
             position: relative;
+            background: linear-gradient(135deg, #eef4ff 0%, #f8fbff 50%, #edf2ff 100%);
+            padding: 40px 20px;
             overflow: hidden;
-            padding: 40px 16px;
-            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            min-height: 100vh;
         }
 
         .auth-card {
-            background: white;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
             border-radius: 24px;
             padding: 48px 52px;
             width: 100%;
-            max-width: 680px;
-            box-shadow: 0 20px 60px rgba(16, 43, 87, 0.1);
+            max-width: 480px;
+            box-shadow: 0 20px 60px rgba(16, 43, 87, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
             position: relative;
             z-index: 1;
+            animation: cardReveal .8s ease;
+            transition: .4s ease;
+        }
+
+        @keyframes cardReveal {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .auth-card:hover {
+
+            transform: translateY(-4px);
+
+            box-shadow:
+                0 30px 80px rgba(16, 43, 87, .15);
+
         }
 
         .auth-logo {
@@ -253,25 +380,41 @@
             height: 18px;
             color: #94a3b8;
             pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-wrapper:focus-within .input-icon {
+            color: #102b57;
+            transform: scale(1.15);
         }
 
         .input-wrapper input {
             width: 100%;
             padding: 14px 44px;
-            border: none;
+            border: 2px solid transparent;
             border-radius: 12px;
-            background: #f1f5f9;
+            background: rgba(241, 245, 249, 0.7);
             font-size: 14px;
             color: #1e293b;
             outline: none;
-            transition: background 0.2s, box-shadow 0.2s, border 0.2s;
+            transition: all 0.3s ease;
             box-sizing: border-box;
         }
 
         .input-wrapper input:focus {
-            background: #e8edf5;
-            box-shadow: 0 0 0 3px rgba(16, 43, 87, 0.1);
+            background: rgba(255, 255, 255, 0.95);
+            border-color: #102b57;
+            box-shadow: 0 0 0 4px rgba(16, 43, 87, 0.15);
+            transform: translateY(-2px);
         }
+
+        /* .input-wrapper input:focus {
+                background: #ffffff;
+                transform: translateY(-2px);
+                box-shadow:
+                    0 0 0 3px rgba(16, 43, 87, .08),
+                    0 10px 25px rgba(16, 43, 87, .08);
+            } */
 
         .input-wrapper input::placeholder {
             color: #b0bcc8;
@@ -356,6 +499,41 @@
             align-items: center;
             text-decoration: none;
             box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: -120%;
+
+            width: 60px;
+            height: 100%;
+
+            background: linear-gradient(90deg,
+                    transparent,
+                    rgba(255, 255, 255, .35),
+                    transparent);
+
+            transform: skewX(-20deg);
+
+            animation: shine 3.5s infinite;
+        }
+
+        @keyframes shine {
+
+            0% {
+                left: -120%;
+            }
+
+            100% {
+                left: 150%;
+            }
+
         }
 
         .btn-primary:hover {
@@ -365,6 +543,16 @@
 
         .btn-primary:active {
             transform: translateY(0);
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-state {
+            cursor: not-allowed !important;
+            opacity: 0.8;
+            pointer-events: none;
         }
 
         .auth-redirect {
@@ -404,9 +592,66 @@
             background: #fef2f2 !important;
         }
 
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(40px);
+            opacity: .6;
+            z-index: 0;
+            mix-blend-mode: multiply;
+        }
+
+        .blob-1 {
+            width: 300px;
+            height: 300px;
+            background: #f6c40b;
+            top: 0;
+            left: 0;
+            animation: moveBlob1 12s ease-in-out infinite alternate;
+        }
+
+        .blob-2 {
+            width: 360px;
+            height: 360px;
+            background: #8bb7ff;
+            bottom: 0;
+            right: 0;
+            animation: moveBlob2 15s ease-in-out infinite alternate;
+        }
+
+        @keyframes moveBlob1 {
+            0% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+            25% { transform: translate(150px, 100px) scale(1.2); opacity: 0.8; }
+            50% { transform: translate(300px, 250px) scale(0.9); opacity: 0.6; }
+            75% { transform: translate(100px, 350px) scale(1.3); opacity: 0.9; }
+            100% { transform: translate(250px, -50px) scale(1.1); opacity: 0.7; }
+        }
+
+        @keyframes moveBlob2 {
+            0% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+            25% { transform: translate(-150px, -150px) scale(1.3); opacity: 0.9; }
+            50% { transform: translate(-300px, -50px) scale(0.8); opacity: 0.6; }
+            75% { transform: translate(-100px, -300px) scale(1.2); opacity: 0.8; }
+            100% { transform: translate(-250px, 100px) scale(1.1); opacity: 0.7; }
+        }
+
+        .mobile-only {
+            display: none;
+        }
+
+        @media (max-width: 1050px) {
+            .auth-cover {
+                display: none;
+            }
+            .mobile-only {
+                display: flex;
+            }
+        }
+
         @media (max-width: 560px) {
             .auth-card {
                 padding: 32px 24px;
+                box-shadow: 0 10px 30px rgba(16, 43, 87, 0.05);
             }
 
             .auth-header h1 {

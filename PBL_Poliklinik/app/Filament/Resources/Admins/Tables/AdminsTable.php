@@ -12,6 +12,8 @@ use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
+use Filament\Actions\DeleteAction;
 
 class AdminsTable
 {
@@ -36,8 +38,20 @@ class AdminsTable
                 TrashedFilter::make(),
             ])
             ->recordActions([
+
                 ViewAction::make(),
-                EditAction::make(),
+
+                EditAction::make()
+                    ->visible(fn () =>
+                        Auth::user()?->role?->nama_role
+                        === 'superadmin'
+                    ),
+
+                DeleteAction::make()
+                    ->visible(fn () =>
+                        Auth::user()?->role?->nama_role
+                        === 'superadmin'
+                    ),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

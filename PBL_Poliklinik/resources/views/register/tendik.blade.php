@@ -7,6 +7,8 @@
 @section('content')
 
     <div class="auth-wrapper">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
         <div class="auth-card">
             <div class="auth-logo">
                 <img src="{{ asset('images/logo.png') }}" alt="Poliklinik Polinema" onerror="this.style.display='none'">
@@ -23,7 +25,6 @@
                 </p>
             </div>
 
-            {{-- ERROR GLOBAL --}}
             @if ($errors->any())
                 <div class="alert-error">
                     <ul>
@@ -37,7 +38,6 @@
             <form action="{{ route('daftar.tendik.store') }}" method="POST" class="auth-form">
                 @csrf
                 <div class="form-row">
-                    {{-- NIP --}}
                     <div class="form-group">
                         <label>NIP</label>
                         <div class="input-wrapper">
@@ -45,7 +45,6 @@
                         </div>
                     </div>
 
-                    {{-- NAMA --}}
                     <div class="form-group">
                         <label>NAMA LENGKAP</label>
                         <div class="input-wrapper">
@@ -55,7 +54,6 @@
                     </div>
                 </div>
 
-                {{-- EMAIL --}}
                 <div class="form-group">
                     <label>EMAIL</label>
                     <div class="input-wrapper">
@@ -64,16 +62,23 @@
                     </div>
                 </div>
 
-                {{-- JABATAN --}}
                 <div class="form-group">
                     <label>JABATAN</label>
-                    <div class="input-wrapper">
-                        <input type="text" name="jabatan" value="{{ old('jabatan') }}" placeholder="Contoh: Teknisi"
-                            required>
+                    <div class="input-wrapper select-wrapper">
+                        <select name="jabatan" required>
+                            <option value="">
+                                --- Pilih Jabatan Anda ---
+                            </option>
+
+                            @foreach ($jabatans as $j)
+                                <option value="{{ $j->id_jabatan }}" {{ old('jabatan') == $j->id_jabatan ? 'selected' : '' }}>
+                                    {{ $j->nama_jabatan }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
 
-                {{-- PASSWORD --}}
                 <div class="form-group">
                     <label>PASSWORD</label>
                     <div class="input-wrapper">
@@ -81,19 +86,18 @@
                         <button type="button" class="toggle-password" onclick="togglePass('password')">
                             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0
-                                      3 3 0 016 0z" />
+                                                                      3 3 0 016 0z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943
-                                      7.523 5 12 5c4.478 0
-                                      8.268 2.943 9.542 7
-                                      -1.274 4.057-5.064 7
-                                      -9.542 7-4.477
-                                      0-8.268-2.943-9.542-7z" />
+                                                                      7.523 5 12 5c4.478 0
+                                                                      8.268 2.943 9.542 7
+                                                                      -1.274 4.057-5.064 7
+                                                                      -9.542 7-4.477
+                                                                      0-8.268-2.943-9.542-7z" />
                             </svg>
                         </button>
                     </div>
                 </div>
 
-                {{-- KONFIRMASI PASSWORD --}}
                 <div class="form-group">
                     <label>KONFIRMASI PASSWORD</label>
                     <div class="input-wrapper">
@@ -102,19 +106,18 @@
                         <button type="button" class="toggle-password" onclick="togglePass('password_confirmation')">
                             <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0
-                                      3 3 0 016 0z" />
+                                                                      3 3 0 016 0z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943
-                                      7.523 5 12 5c4.478 0
-                                      8.268 2.943 9.542 7
-                                      -1.274 4.057-5.064 7
-                                      -9.542 7-4.477
-                                      0-8.268-2.943-9.542-7z" />
+                                                                      7.523 5 12 5c4.478 0
+                                                                      8.268 2.943 9.542 7
+                                                                      -1.274 4.057-5.064 7
+                                                                      -9.542 7-4.477
+                                                                      0-8.268-2.943-9.542-7z" />
                             </svg>
                         </button>
                     </div>
                 </div>
 
-                {{-- NOMOR HP --}}
                 <div class="form-group">
                     <label>NOMOR TELEPON</label>
                     <div class="input-wrapper">
@@ -170,23 +173,45 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: #eef1f7;
+            background: linear-gradient(135deg, #eef4ff 0%, #f8fbff 50%, #edf2ff 100%);
             position: relative;
             overflow: hidden;
             padding: 40px 16px;
-            font-family: 'Inter', system-ui, -apple-system,
+            font-family: 'Poppins', system-ui, -apple-system,
                 BlinkMacSystemFont, 'Segoe UI', sans-serif;
         }
 
         .auth-card {
-            background: white;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
             border-radius: 24px;
             padding: 48px 52px;
             width: 100%;
             max-width: 680px;
-            box-shadow: 0 20px 60px rgba(16, 43, 87, 0.1);
+            box-shadow: 0 20px 60px rgba(16, 43, 87, 0.08), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
             position: relative;
             z-index: 1;
+            animation: cardReveal .7s ease;
+            transition: .4s ease;
+        }
+
+        .auth-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 30px 80px rgba(16, 43, 87, .15);
+        }
+
+        @keyframes cardReveal {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .auth-logo {
@@ -255,7 +280,8 @@
             align-items: center;
         }
 
-        .input-wrapper input {
+        .input-wrapper input,
+        .input-wrapper select {
             width: 100%;
             padding: 14px 16px;
             border: none;
@@ -269,15 +295,42 @@
                 box-shadow 0.2s,
                 border 0.2s;
             box-sizing: border-box;
+            font-family: inherit;
         }
 
-        .input-wrapper input:focus {
+        .input-wrapper input:focus,
+        .input-wrapper select:focus {
             background: #e8edf5;
             box-shadow: 0 0 0 3px rgba(16, 43, 87, 0.1);
         }
 
         .input-wrapper input::placeholder {
             color: #b0bcc8;
+        }
+
+        .select-wrapper {
+            position: relative;
+        }
+
+        .select-wrapper select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            padding-right: 50px;
+            cursor: pointer;
+        }
+
+        .select-wrapper::after {
+            content: "";
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            width: 8px;
+            height: 8px;
+            border-right: 2px solid #64748b;
+            border-bottom: 2px solid #64748b;
+            transform: translateY(-70%) rotate(45deg);
+            pointer-events: none;
         }
 
         .toggle-password {
@@ -364,6 +417,49 @@
         .alert-error ul {
             margin: 0;
             padding-left: 18px;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(40px);
+            opacity: .6;
+            z-index: 0;
+            mix-blend-mode: multiply;
+        }
+
+        .blob-1 {
+            width: 300px;
+            height: 300px;
+            background: #f6c40b;
+            top: 0;
+            left: 0;
+            animation: moveBlob1 12s ease-in-out infinite alternate;
+        }
+
+        .blob-2 {
+            width: 360px;
+            height: 360px;
+            background: #8bb7ff;
+            bottom: 0;
+            right: 0;
+            animation: moveBlob2 15s ease-in-out infinite alternate;
+        }
+
+        @keyframes moveBlob1 {
+            0% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+            25% { transform: translate(150px, 100px) scale(1.2); opacity: 0.8; }
+            50% { transform: translate(300px, 250px) scale(0.9); opacity: 0.6; }
+            75% { transform: translate(100px, 350px) scale(1.3); opacity: 0.9; }
+            100% { transform: translate(250px, -50px) scale(1.1); opacity: 0.7; }
+        }
+
+        @keyframes moveBlob2 {
+            0% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+            25% { transform: translate(-150px, -150px) scale(1.3); opacity: 0.9; }
+            50% { transform: translate(-300px, -50px) scale(0.8); opacity: 0.6; }
+            75% { transform: translate(-100px, -300px) scale(1.2); opacity: 0.8; }
+            100% { transform: translate(-250px, 100px) scale(1.1); opacity: 0.7; }
         }
 
         @media (max-width: 560px) {

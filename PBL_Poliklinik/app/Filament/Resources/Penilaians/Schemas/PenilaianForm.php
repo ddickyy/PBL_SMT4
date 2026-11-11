@@ -6,6 +6,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Carbon\Carbon;
 
 class PenilaianForm
 {
@@ -19,10 +20,24 @@ class PenilaianForm
                     ->schema([
                         Select::make('id_reservasi')
                             ->label('Reservasi')
-                            ->relationship('reservasi', 'id_reservasi')
-                            ->required()
+                            ->options(
+                                \App\Models\Reservasi::with('user')
+                                    ->orderByDesc('tanggal_reservasi')
+                                    ->orderByDesc('nomor_antrian')
+                                    ->get()
+                                    ->mapWithKeys(fn ($reservasi) => [
+                                        $reservasi->id_reservasi =>
+                                            'Antrian #' . $reservasi->nomor_antrian .
+                                            ' - ' .
+                                            Carbon::parse($reservasi->tanggal_reservasi)
+                                                ->format('d F Y') .
+                                            ' - ' .
+                                            $reservasi->user->nama
+                                    ])
+                            )
                             ->searchable()
-                            ->preload(),
+                            ->preload()
+                            ->required(),
 
                         Textarea::make('kritik')
                             ->label('Kritik')

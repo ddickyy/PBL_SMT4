@@ -3,701 +3,823 @@
 @section('title', 'Riwayat Reservasi')
 
 @section('hero')
-    @include('partial.hero', [
-        'badge'      => 'Layanan Kesehatan',
-        'title'      => "Riwayat\nReservasi",
-        'desc'       => "Pantau status reservasi aktif Anda dan lihat riwayat kunjungan medis sebelumnya secara mudah.",
-        'buttonText' => null,
-        'bg'         => asset('images/poliklinik.jpg')
-    ])
-@endsection
-```blade id="k5v9ns"
-@extends('layout.app')
-
-@section('title', 'Riwayat Reservasi')
-
-@section('hero')
-@include('partial.hero', [
-    'badge' => 'Layanan Kesehatan',
-    'title' => "Riwayat\nReservasi",
-    'desc' => "Pantau status reservasi aktif Anda dan lihat riwayat kunjungan medis sebelumnya secara mudah.",
-    'buttonText' => null,
-    'bg' => asset('images/poliklinik.jpg')
-])
+ @include('partial.hero', [
+ 'badge' => 'Layanan Kesehatan',
+ 'title' => "Riwayat\nReservasi",
+ 'desc' => "Pantau status reservasi aktif Anda dan lihat riwayat kunjungan medis sebelumnya secara mudah.",
+ 'buttonText' => null,
+ 'bg' => asset('images/poliklinik.jpg')
+ ])
 @endsection
 
 @section('content')
 
-@php use Carbon\Carbon; @endphp
+@php
 
-<div class="riwayat-wrap">
+ use Carbon\Carbon;
 
-    {{-- RESERVASI AKTIF --}}
-    <div class="riwayat-section-block">
+ Carbon::setLocale('id');
 
-        <div class="riwayat-section-header">
-            <h2 class="riwayat-section-title">Reservasi Aktif</h2>
-        </div>
+@endphp
 
-        @php
-            $reservasiAktif = $reservasis->whereIn('status', ['menunggu', 'dikonfirmasi'])->first();
-        @endphp
+<section class="riwayat-page">
+ <div class="riwayat-wrap">
 
-        @if($reservasiAktif)
-            <div class="aktif-card">
-                <div class="aktif-left">
-                    <span class="status-badge badge-dikonfirmasi">
-                        <span class="status-badge-dot"></span>
-                        {{ strtoupper($reservasiAktif->status) }}
-                    </span>
-                    <h3 class="aktif-layanan">
-                        {{ optional(optional($reservasiAktif->jadwal)->dokter)->spesialisasi->nama_spesialisasi ?? '-' }}
-                    </h3>
-                    <p class="aktif-dokter">
-                        {{ optional(optional($reservasiAktif->jadwal)->dokter->user)->nama ?? 'Dokter' }}
-                    </p>
-                    <div class="aktif-info-row">
-                        <div class="aktif-info-item">
-                            <span class="aktif-info-label">Tanggal</span>
-                            <span class="aktif-info-value">
-                                {{ Carbon::parse($reservasiAktif->tanggal_reservasi)->translatedFormat('d F Y') }}
-                            </span>
-                        </div>
+ @if(session('success'))
+ <div class="rw-alert-success">
+ {{ session('success') }}
+ </div>
+ @endif
 
-                        <div class="aktif-info-item">
-                            <span class="aktif-info-label">Waktu</span>
-                            <span class="aktif-info-value">
-                                {{ Carbon::parse($reservasiAktif->estimasi_jam)->format('H:i') }} WIB
-                            </span>
-                        </div>
+ @if ($errors->any())
+ <div class="rw-alert-error">
+ <ul style="margin: 0; padding-left: 18px;">
+ @foreach ($errors->all() as $error)
+ <li>{{ $error }}</li>
+ @endforeach
+ </ul>
+ </div>
+ @endif
 
-                        <div class="aktif-info-item">
-                            <span class="aktif-info-label">Lokasi</span>
-                            <span class="aktif-info-value">
-                                Poliklinik Polinema
-                            </span>
-                        </div>
-                    </div>
+ <div class="riwayat-container-box" data-aos="fade-up">
 
-                    <div class="aktif-btn-row">
-                        <a href="{{ route('pasien.reservasi.show', $reservasiAktif->id_reservasi) }}"
-                           class="btn-lihat-detail">
-                            Lihat Detail
-                        </a>
+ <div class="riwayat-section-header">
 
-                        <a href="{{ route('pasien.reservasi') }}"
-                           class="btn-ubah-jadwal">
-                            Mengubah Jadwal
-                        </a>
-                    </div>
-                </div>
+ <div class="riwayat-section-meta">
 
-                <div class="aktif-right">
-                    <div class="antrian-label">
-                        NO. ANTRIAN
-                    </div>
-                    <div class="antrian-num">
-                        #{{ $reservasiAktif->nomor_antrian }}
-                    </div>
-                </div>
-            </div>
+ <svg class="riwayat-section-icon"
+ fill="none"
+ viewBox="0 0 24 24"
+ stroke="currentColor">
 
-        @else
-            <div class="empty-riwayat">
-                <div class="empty-icon">
-                    <i class="fa-solid fa-calendar-xmark"></i>
-                </div>
-                <h3>Belum Ada Reservasi Aktif</h3>
-                <p>
-                    Anda belum memiliki reservasi aktif saat ini.
-                </p>
-            </div>
-        @endif
-    </div>
+ <path stroke-linecap="round"
+ stroke-linejoin="round"
+ stroke-width="2"
+ d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
 
-    {{-- RIWAYAT --}}
-    <div class="riwayat-section-block">
-        <div class="riwayat-section-header">
-            <div class="riwayat-section-meta">
-                <svg class="riwayat-section-icon"
-                     fill="none"
-                     viewBox="0 0 24 24"
-                     stroke="currentColor">
-                    <path stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <h2 class="riwayat-section-title">
-                    Riwayat Kunjungan
-                </h2>
-            </div>
-        </div>
+ </svg>
 
-        <div class="riwayat-grid">
-            @forelse($reservasis as $item)
-                <div class="riwayat-card">
-                    <div class="riwayat-card-top">
-                        <h4 class="riwayat-dokter-nama">
-                            {{ optional(optional($item->jadwal)->dokter)->spesialisasi->nama_spesialisasi ?? '-' }}
-                        </h4>
+ <h2 class="riwayat-section-title">
+ Reservasi Aktif
+ </h2>
 
-                        @php
-                            $badgeClass = match($item->status) {
-                                'selesai' => 'badge-selesai',
-                                'dibatalkan' => 'badge-batal',
-                                default => 'badge-dikonfirmasi'
-                            };
-                        @endphp
+ </div>
 
-                        <span class="status-badge {{ $badgeClass }}">
-                            <span class="status-badge-dot"></span>
-                            {{ strtoupper($item->status) }}
-                        </span>
-                    </div>
+ </div>
 
-                    <p class="riwayat-desc">
-                        Reservasi dengan
-                        {{ optional(optional($item->jadwal)->dokter->user)->nama ?? 'Dokter' }}
-                        pada tanggal
-                        {{ Carbon::parse($item->tanggal_reservasi)->translatedFormat('d F Y') }}.
-                    </p>
+ @if($reservasiAktif->count())
 
-                    @if($item->status === 'selesai')
-                        <a href="{{ route('pasien.penilaian.create', $item->id_reservasi) }}"
-                           class="btn-penilaian">
-                            BERIKAN PENILAIAN
-                        </a>
+ <div class="reservasi-aktif-grid">
 
-                    @elseif($item->status === 'dibatalkan')
-                        <a href="{{ route('pasien.reservasi') }}"
-                           class="btn-reschedule">
-                            RESCHEDULE
-                        </a>
+ @foreach($reservasiAktif as $item)
 
-                    @else
-                        <form action="{{ route('pasien.reservasi.cancel', $item->id_reservasi) }}"
-                              method="POST">
-                            @csrf
-                            @method('PUT')
+ @php
 
-                            <button type="submit"
-                                    class="btn-reschedule">
-                                BATALKAN RESERVASI
-                            </button>
-                        </form>
-                    @endif
-                </div>
+ $badgeClass = match($item->status) {
 
-                @empty
-                <div class="empty-riwayat">
-                    <div class="empty-icon">
-                        <i class="fa-solid fa-file-circle-xmark"></i>
-                    </div>
+ 'menunggu' =>
+ 'badge-menunggu',
 
-                    <h3>Belum Ada Riwayat Reservasi</h3>
-                    <p>
-                        Anda belum pernah melakukan reservasi.
-                    </p>
-                </div>
+ 'dikonfirmasi' =>
+ 'badge-dikonfirmasi',
 
-            @endforelse
-        </div>
-    </div>
-</div>
+ 'dibatalkan' =>
+ 'badge-batal',
 
-@section('content')
+ default =>
+ 'badge-dikonfirmasi'
+ };
+
+ $namaDokter =
+ optional(
+ optional(
+ $item->jadwal
+ )->dokter->user
+ )->nama ?? 'Dokter';
+
+ $spesialisasi =
+ optional(
+ optional(
+ $item->jadwal
+ )->dokter
+ )->spesialisasi
+ ->nama_spesialisasi ?? '-';
+
+ @endphp
+
+ <a href="{{ route('pasien.reservasi.show', $item->id_reservasi) }}"
+ class="aktif-card-link">
+
+ <div class="aktif-card">
+
+ <div class="activity-main-layout">
+ <div class="activity-left">
+ <div class="activity-icon">
+ <i class="fa-solid fa-stethoscope"></i>
+ </div>
+ <div class="activity-info">
+ <h3>{{ $spesialisasi }}</h3>
+ <p>{{ $namaDokter }}</p>
+ <div class="activity-meta">
+ <span>
+ {{ Carbon::parse($item->tanggal_reservasi)
+ ->locale('id')
+ ->translatedFormat('l, d F Y') }}
+ </span>
+ <span class="dot"></span>
+ <span>
+ {{ Carbon::parse($item->estimasi_jam)->format('H:i') }} WIB
+ </span>
+ </div>
+ <div class="aktif-cta">
+ Klik untuk melihat bukti reservasi
+ </div>
+ </div>
+ </div>
+
+ <div class="activity-right">
+ <div class="activity-antrian">
+ {{ $item->nomor_antrian }}
+ </div>
+ <span class="status-badge {{ $badgeClass }}">
+ <span class="status-badge-dot"></span>
+ {{ strtoupper($item->status) }}
+ </span>
+ </div>
+ </div>
+
+ </div>
+
+ </a>
+
+ @endforeach
+
+ </div>
+
+ @else
+
+ <div class="empty-riwayat">
+
+ <div class="empty-icon">
+ <i class="fa-solid fa-calendar-xmark"></i>
+ </div>
+
+ <h3>
+ Belum Ada Reservasi Aktif
+ </h3>
+
+ <p>
+ Anda belum memiliki reservasi aktif saat ini.
+ </p>
+
+ </div>
+
+ @endif
+
+ </div>
+
+ <div class="riwayat-container-box" data-aos="fade-up">
+
+ <div class="riwayat-section-header">
+
+ <div class="riwayat-section-meta">
+
+ <svg class="riwayat-section-icon"
+ fill="none"
+ viewBox="0 0 24 24"
+ stroke="currentColor">
+
+ <path stroke-linecap="round"
+ stroke-linejoin="round"
+ stroke-width="2"
+ d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+
+ </svg>
+
+ <h2 class="riwayat-section-title">
+ Riwayat Reservasi
+ </h2>
+
+ </div>
+
+ <!-- Sorting Form -->
+ <form action="{{ route('pasien.riwayat') }}" method="GET" class="filter-form">
+ <div class="filter-group">
+ <i class="fa-solid fa-sort filter-icon"></i>
+ <select name="sort" onchange="this.form.submit()" class="filter-select">
+ <option value="latest" {{ $sort === 'latest' ? 'selected' : '' }}>Tanggal Terbaru</option>
+ <option value="oldest" {{ $sort === 'oldest' ? 'selected' : '' }}>Tanggal Terlama</option>
+ </select>
+ </div>
+ </form>
+
+ </div>
+
+ @if($riwayatSelesai->count())
+
+ <div class="riwayat-grid">
+
+ @foreach($riwayatSelesai as $item)
+
+ @php
+
+ $badgeClass = match($item->status) {
+
+ 'selesai' =>
+ 'badge-selesai',
+
+ 'done' =>
+ 'badge-selesai',
+
+ default =>
+ 'badge-dikonfirmasi'
+ };
+
+ $namaDokter =
+ optional(
+ optional(
+ $item->jadwal
+ )->dokter->user
+ )->nama ?? 'Dokter';
+
+ $spesialisasi =
+ optional(
+ optional(
+ $item->jadwal
+ )->dokter
+ )->spesialisasi
+ ->nama_spesialisasi ?? '-';
+
+ @endphp
+
+ <a href="{{ route('pasien.reservasi.show', $item->id_reservasi) }}"
+ class="aktif-card-link">
+ <div class="riwayat-card">
+
+ <div class="activity-main-layout">
+ <div class="activity-left">
+ <div class="activity-icon">
+ <i class="fa-solid fa-stethoscope"></i>
+ </div>
+ <div class="activity-info">
+ <h3>{{ $spesialisasi }}</h3>
+ <p>{{ $namaDokter }}</p>
+ <div class="activity-meta">
+ <span>
+ {{ Carbon::parse($item->tanggal_reservasi)
+ ->locale('id')
+ ->translatedFormat('l, d F Y') }}
+ </span>
+ <span class="dot"></span>
+ <span>
+ {{ Carbon::parse($item->estimasi_jam)->format('H:i') }} WIB
+ </span>
+ </div>
+ </div>
+ </div>
+
+ <div class="activity-right">
+ <div class="activity-antrian">
+ {{ $item->nomor_antrian }}
+ </div>
+ <span class="status-badge {{ $badgeClass }}">
+ <span class="status-badge-dot"></span>
+ {{ strtoupper($item->status) }}
+ </span>
+ </div>
+ </div>
+
+ @if($item->rekamMedis)
+ <div class="riwayat-medical-info">
+ <div class="medical-icon">
+ <i class="fa-solid fa-file-medical"></i>
+ </div>
+ <div class="medical-body">
+ <div class="medical-meta">
+ <h3>{{ $item->rekamMedis->diagnosis }}</h3>
+ </div>
+ <p>{{ $item->rekamMedis->catatan ?? '-' }}</p>
+ </div>
+ </div>
+ @endif
+
+ @if($item->status === 'selesai' || $item->status === 'done')
+ <div class="riwayat-actions">
+ @if(!$item->penilaian)
+ <div class="btn-penilaian">
+ Berikan Penilaian
+ </div>
+ @else
+ <div class="badge-penilaian-done">
+ <i class="fa-solid fa-circle-check"></i>
+ <span>Sudah Dinilai</span>
+ </div>
+ @endif
+ </div>
+ @endif
+
+ </div>
+ </a>
+
+ @endforeach
+
+ </div>
+
+ @if($riwayatSelesai->hasPages())
+
+ <div class="pagination-wrap">
+
+ {{ $riwayatSelesai->links() }}
+
+ </div>
+
+ @endif
+
+ @else
+
+ <div class="empty-riwayat">
+
+ <div class="empty-icon">
+ <i class="fa-solid fa-file-circle-xmark"></i>
+ </div>
+
+ <h3>
+ Belum Ada Riwayat Reservasi
+ </h3>
+
+ <p>
+ Anda belum pernah melakukan reservasi selesai.
+ </p>
+
+ </div>
+
+ @endif
+
+ </div>
+
+</section>
 
 <style>
-    main {
-        background: #f7f7f8;
-        padding: 40px 0 80px;
-        font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    }
-
-    .riwayat-wrap {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 32px;
-    }
-
-    .riwayat-section-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 20px;
-    }
-
-    .riwayat-section-title {
-        font-size: 1.45rem;
-        font-weight: 800;
-        color: #102b57;
-        margin: 0;
-        letter-spacing: -0.02em;
-    }
-
-    .riwayat-section-block {
-        margin-bottom: 36px;
-    }
-
-    .aktif-card {
-        background: #ffffff;
-        border-radius: 20px;
-        padding: 28px 32px;
-        box-shadow: 0 8px 32px rgba(16, 43, 87, 0.07);
-        border: 1.5px solid #eef0f5;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 32px;
-        transition: box-shadow 0.25s ease, transform 0.2s ease;
-    }
-
-    .aktif-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 16px 48px rgba(16, 43, 87, 0.12);
-    }
-
-    .aktif-left {
-        flex: 1;
-        min-width: 0;
-    }
-
-    .status-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 4px 12px;
-        border-radius: 999px;
-        font-size: 11px;
-        font-weight: 700;
-        letter-spacing: 0.06em;
-        margin-bottom: 14px;
-    }
-
-    .status-badge-dot {
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        flex-shrink: 0;
-    }
-
-    .badge-dikonfirmasi {
-        background: #fef9e0;
-        color: #b59008;
-    }
-
-    .badge-dikonfirmasi .status-badge-dot {
-        background: #f6c40b;
-    }
-
-    .badge-selesai {
-        background: #ecfdf5;
-        color: #15803d;
-    }
-
-    .badge-selesai .status-badge-dot {
-        background: #22c55e;
-    }
-
-    .badge-batal {
-        background: #fff0f0;
-        color: #dc2626;
-    }
-
-    .badge-batal .status-badge-dot {
-        background: #ef4444;
-    }
-
-    .aktif-layanan {
-        font-size: 1.3rem;
-        font-weight: 800;
-        color: #102b57;
-        margin: 0 0 4px;
-        letter-spacing: -0.02em;
-    }
-
-    .aktif-dokter {
-        font-size: 0.9rem;
-        color: #6f7380;
-        margin: 0 0 18px;
-        font-weight: 500;
-    }
-
-    .aktif-info-row {
-        display: flex;
-        gap: 28px;
-        flex-wrap: wrap;
-        margin-bottom: 22px;
-    }
-
-    .aktif-info-item {
-        display: flex;
-        flex-direction: column;
-        gap: 3px;
-    }
-
-    .aktif-info-label {
-        font-size: 10.5px;
-        font-weight: 700;
-        color: #a0a8b8;
-        letter-spacing: 0.07em;
-        text-transform: uppercase;
-    }
-
-    .aktif-info-value {
-        font-size: 0.92rem;
-        font-weight: 600;
-        color: #102b57;
-    }
-
-    .aktif-btn-row {
-        display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-    }
-
-    .btn-lihat-detail {
-        display: inline-flex;
-        align-items: center;
-        gap: 7px;
-        padding: 11px 22px;
-        background: #102b57;
-        color: #ffffff;
-        border-radius: 12px;
-        font-size: 0.88rem;
-        font-weight: 700;
-        text-decoration: none;
-        border: none;
-        cursor: pointer;
-        transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
-        box-shadow: 0 6px 20px rgba(16, 43, 87, 0.18);
-    }
-
-    .btn-lihat-detail:hover {
-        background: #0d2247;
-        transform: translateY(-2px);
-        box-shadow: 0 10px 28px rgba(16, 43, 87, 0.26);
-    }
-
-    .btn-ubah-jadwal {
-        display: inline-flex;
-        align-items: center;
-        gap: 7px;
-        padding: 11px 22px;
-        background: transparent;
-        color: #102b57;
-        border-radius: 12px;
-        font-size: 0.88rem;
-        font-weight: 700;
-        text-decoration: none;
-        border: 2px solid #dde1ea;
-        cursor: pointer;
-        transition: border-color 0.2s, background 0.2s, transform 0.15s;
-    }
-
-    .btn-ubah-jadwal:hover {
-        border-color: #102b57;
-        background: #f1f5fb;
-        transform: translateY(-2px);
-    }
-
-    .aktif-right {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        background: #f7f8fc;
-        border-radius: 18px;
-        padding: 24px 32px;
-        border: 1.5px solid #eef0f5;
-        text-align: center;
-        min-width: 120px;
-    }
-
-    .antrian-label {
-        font-size: 10px;
-        font-weight: 700;
-        color: #a0a8b8;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        margin-bottom: 8px;
-    }
-
-    .antrian-num {
-        font-size: 2.6rem;
-        font-weight: 900;
-        color: #102b57;
-        letter-spacing: -0.03em;
-        line-height: 1;
-    }
-
-    .riwayat-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 18px;
-    }
-
-    .riwayat-card {
-        background: #ffffff;
-        border-radius: 18px;
-        padding: 24px 26px;
-        box-shadow: 0 6px 24px rgba(16, 43, 87, 0.06);
-        border: 1.5px solid #eef0f5;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        transition: box-shadow 0.25s ease, transform 0.2s ease;
-        overflow: hidden;
-    }
-
-    .riwayat-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 18px 48px rgba(16, 43, 87, 0.12);
-    }
-
-    .riwayat-card-top {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .riwayat-dokter-nama {
-        font-size: 1.05rem;
-        font-weight: 800;
-        color: #102b57;
-        margin: 0;
-    }
-
-    .riwayat-desc {
-        font-size: 0.88rem;
-        color: #6f7380;
-        line-height: 1.6;
-        margin: 0;
-        flex: 1;
-    }
-
-    .btn-penilaian {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        padding: 12px 20px;
-        background: #102b57;
-        color: #ffffff;
-        border-radius: 12px;
-        font-size: 0.85rem;
-        font-weight: 700;
-        text-decoration: none;
-        border: none;
-        cursor: pointer;
-        letter-spacing: 0.04em;
-        transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
-        box-shadow: 0 6px 20px rgba(16, 43, 87, 0.16);
-        box-sizing: border-box;
-    }
-
-    .btn-penilaian:hover {
-        background: #0d2247;
-        transform: translateY(-2px);
-        box-shadow: 0 10px 28px rgba(16, 43, 87, 0.24);
-    }
-
-    .btn-reschedule {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        padding: 12px 20px;
-        background: #eef0f5;
-        color: #102b57;
-        border-radius: 12px;
-        font-size: 0.85rem;
-        font-weight: 700;
-        text-decoration: none;
-        border: none;
-        cursor: pointer;
-        letter-spacing: 0.04em;
-        transition: background 0.2s, transform 0.15s;
-        box-sizing: border-box;
-    }
-
-    .btn-reschedule:hover {
-        background: #dde2ee;
-        transform: translateY(-2px);
-    }
-
-    .section-divider-icon {
-        width: 18px;
-        height: 18px;
-        color: #a0a8b8;
-        flex-shrink: 0;
-    }
-
-    .riwayat-section-meta {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .riwayat-section-icon {
-        width: 20px;
-        height: 20px;
-        color: #102b57;
-        flex-shrink: 0;
-    }
-
-    @media (max-width: 768px) {
-        .riwayat-wrap {
-            padding: 0 18px;
-        }
-
-        .aktif-card {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 20px;
-            padding: 22px 20px;
-        }
-
-        .aktif-right {
-            width: 100%;
-            flex-direction: row;
-            justify-content: space-between;
-            padding: 16px 20px;
-        }
-
-        .antrian-label {
-            margin-bottom: 0;
-        }
-
-        .riwayat-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .aktif-info-row {
-            gap: 18px;
-        }
-
-        .riwayat-section-title {
-            font-size: 1.2rem;
-        }
-    }
-
-    @media (max-width: 480px) {
-        .aktif-btn-row {
-            flex-direction: column;
-        }
-
-        .btn-lihat-detail,
-        .btn-ubah-jadwal {
-            width: 100%;
-            justify-content: center;
-        }
-    }
-</style>
-
-<div class="riwayat-wrap">
-
-    <div class="riwayat-section-block">
-
-        <div class="riwayat-section-header">
-            <h2 class="riwayat-section-title">Reservasi Aktif</h2>
-        </div>
-
-        <div class="aktif-card">
-
-            <div class="aktif-left">
-                <span class="status-badge badge-dikonfirmasi">
-                    <span class="status-badge-dot"></span>
-                    DIKONFIRMASI
-                </span>
-                <h3 class="aktif-layanan">Pemeriksaan Gigi</h3>
-                <p class="aktif-dokter">Dr. Nathanial</p>
-
-                <div class="aktif-info-row">
-                    <div class="aktif-info-item">
-                        <span class="aktif-info-label">Tanggal</span>
-                        <span class="aktif-info-value">23 Mei 2026</span>
-                    </div>
-                    <div class="aktif-info-item">
-                        <span class="aktif-info-label">Waktu</span>
-                        <span class="aktif-info-value">14.00 – 16.00</span>
-                    </div>
-                    <div class="aktif-info-item">
-                        <span class="aktif-info-label">Lokasi</span>
-                        <span class="aktif-info-value">Poliklinik Politeknik Negeri Malang</span>
-                    </div>
-                </div>
-
-                <div class="aktif-btn-row">
-                    <a href="#" class="btn-lihat-detail">
-                        Lihat Detail
-                    </a>
-                    <a href="{{ route('pasien.reservasi') }}" class="btn-ubah-jadwal">
-                        Mengubah Jadwal
-                    </a>
-                </div>
-
-            </div>
-
-            <div class="aktif-right">
-                <div class="antrian-label">NO. ANTRIAN</div>
-                <div class="antrian-num">G-02</div>
-            </div>
-
-        </div>
-    </div>
-
-    <div class="riwayat-section-block">
-
-        <div class="riwayat-section-header">
-            <div class="riwayat-section-meta">
-                <svg class="riwayat-section-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <h2 class="riwayat-section-title">Riwayat Kunjungan</h2>
-            </div>
-        </div>
-
-        <div class="riwayat-grid">
-
-            <div class="riwayat-card">
-                <div class="riwayat-card-top">
-                    <h4 class="riwayat-dokter-nama">Dokter Gigi</h4>
-                    <span class="status-badge badge-selesai">
-                        <span class="status-badge-dot"></span>
-                        SELESAI
-                    </span>
-                </div>
-                <p class="riwayat-desc">
-                    Layanan pembersihan karang gigi rutin dan pemeriksaan kondisi gigi secara menyeluruh.
-                </p>
-                <a href="{{ route('pasien.penilaian.create', 1) }}" class="btn-penilaian">
-                    BERIKAN PENILAIAN
-                </a>
-            </div>
-
-            <div class="riwayat-card">
-                <div class="riwayat-card-top">
-                    <h4 class="riwayat-dokter-nama">Dokter Umum</h4>
-                    <span class="status-badge badge-batal">
-                        <span class="status-badge-dot"></span>
-                        BATAL
-                    </span>
-                </div>
-                <p class="riwayat-desc">
-                    Melakukan pemeriksaan kesehatan rutin dan medical check-up dasar yang dibatalkan.
-                </p>
-                <a href="{{ route('pasien.reservasi') }}" class="btn-reschedule">
-                    RESCHEDULE
-                </a>
-            </div>
-
-        </div>
-    </div>
-
-</div>
+
+ .riwayat-page {
+ background: #f5f7fb;
+ padding: 40px 0 80px;
+ min-height: 80vh;
+ }
+
+ .riwayat-wrap {
+ max-width: 1400px;
+ margin: 0 auto;
+ padding: 0 32px;
+ }
+
+ .riwayat-container-box {
+ background: white;
+ border-radius: 28px;
+ padding: 42px;
+ box-shadow: 0 16px 40px rgba(15, 23, 42, 0.05);
+ border: 1.5px solid #eef0f5;
+ margin-top: 10px;
+ }
+ .riwayat-container-box:not(:last-child) {
+ margin-bottom: 28px;
+ }
+
+ .riwayat-section-header {
+ display: flex;
+ align-items: center;
+ justify-content: space-between;
+ margin-bottom: 20px;
+ }
+
+ .riwayat-section-meta {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ }
+
+ .riwayat-section-icon {
+ width: 20px;
+ height: 20px;
+ color: #102b57;
+ }
+
+ .riwayat-section-title {
+ font-size: 1.45rem;
+ font-weight: 900;
+ color: #102b57;
+ }
+
+ .reservasi-aktif-grid {
+ display: grid;
+ grid-template-columns: repeat(2, minmax(0, 1fr));
+ gap: 18px;
+ }
+
+ .aktif-card-link {
+ text-decoration: none;
+ color: inherit;
+ }
+
+ .aktif-card,
+ .riwayat-card {
+ background: #f8fafc;
+ border-radius: 24px;
+ padding: 24px;
+ border: 1.5px solid #eef2f6;
+ box-shadow: none;
+ transition: .25s ease;
+ display: flex;
+ flex-direction: column;
+ gap: 14px;
+ }
+
+ .aktif-card:hover,
+ .riwayat-card:hover {
+ transform: translateY(-3px);
+ background: white;
+ border-color: #cbd5e1;
+ box-shadow: 0 14px 32px rgba(16,43,87,.08);
+ }
+
+ .activity-main-layout {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ gap: 18px;
+ width: 100%;
+ }
+
+ .activity-left {
+ display: flex;
+ align-items: center;
+ gap: 18px;
+ }
+
+ .activity-icon {
+ width: 58px;
+ height: 58px;
+ border-radius: 18px;
+ background: #dbeafe;
+ color: #1d4ed8;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 22px;
+ flex-shrink: 0;
+ }
+
+ .activity-info h3 {
+ margin: 0 0 4px;
+ color: #102b57;
+ font-size: 20px;
+ font-weight: 900;
+ }
+
+ .activity-info p {
+ margin: 0 0 4px;
+ color: #64748b;
+ font-size: 14px;
+ }
+
+ .activity-meta {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ flex-wrap: wrap;
+ color: #64748b;
+ font-size: 13px;
+ font-weight: 600;
+ }
+
+ .dot {
+ width: 5px;
+ height: 5px;
+ border-radius: 50%;
+ background: #cbd5e1;
+ }
+
+ .aktif-cta {
+ font-size: 12px;
+ font-weight: 700;
+ color: #b59008;
+ margin-top: 8px;
+ }
+
+ .activity-right {
+ display: flex;
+ flex-direction: column;
+ align-items: flex-end;
+ gap: 12px;
+ flex-shrink: 0;
+ }
+
+ .activity-antrian {
+ background: #f7f8fc;
+ border: 1.5px solid #eef0f5;
+ border-radius: 14px;
+ padding: 10px 16px;
+ font-size: 18px;
+ font-weight: 900;
+ color: #102b57;
+ }
+
+ .riwayat-grid {
+ display: grid;
+ grid-template-columns: repeat(2, minmax(0, 1fr));
+ gap: 18px;
+ }
+
+ .status-badge {
+ display: inline-flex;
+ align-items: center;
+ gap: 5px;
+
+ padding: 3px 8px;
+ border-radius: 999px;
+
+ font-size: 10px;
+ font-weight: 800;
+ line-height: 1;
+ }
+
+ .status-badge-dot {
+ width: 5px;
+ height: 5px;
+ border-radius: 50%;
+ }
+
+ .badge-menunggu {
+ background: #fef9e0;
+ color: #b59008;
+ }
+
+ .badge-menunggu .status-badge-dot {
+ background: #f6c40b;
+ }
+
+ .badge-dikonfirmasi {
+ background: #eef2ff;
+ color: #1d4ed8;
+ }
+
+ .badge-dikonfirmasi .status-badge-dot {
+ background: #3b82f6;
+ }
+
+ .badge-selesai {
+ background: #ecfdf5;
+ color: #15803d;
+ }
+
+ .badge-selesai .status-badge-dot {
+ background: #22c55e;
+ }
+
+ .badge-batal {
+ background: #fff0f0;
+ color: #dc2626;
+ }
+
+ .badge-batal .status-badge-dot {
+ background: #ef4444;
+ }
+
+ .empty-riwayat {
+ width: 100%;
+ max-width: 1400px;
+
+ background: white;
+
+ border-radius: 24px;
+
+ padding: 54px 24px;
+
+ text-align: center;
+
+ border: 1.5px solid #eef0f5;
+
+ box-shadow:
+ 0 10px 34px rgba(16,43,87,.07);
+ }
+
+ .empty-icon {
+ width: 64px;
+ height: 64px;
+
+ margin: 0 auto 14px;
+
+ border-radius: 50%;
+
+ display: flex;
+ align-items: center;
+ justify-content: center;
+
+ background: #f1f5fb;
+
+ color: #94a3b8;
+
+ font-size: 26px;
+ }
+
+ .empty-riwayat h3 {
+ margin-bottom: 8px;
+ color: #102b57;
+ }
+
+ .empty-riwayat p {
+ color: #64748b;
+ }
+
+ .btn-penilaian {
+ width: 100%;
+
+ display: flex;
+ align-items: center;
+ justify-content: center;
+
+ padding: 12px 18px;
+
+ border-radius: 14px;
+
+ background: #102b57;
+ color: white;
+
+ font-size: .88rem;
+ font-weight: 800;
+
+ text-decoration: none;
+
+ transition: .2s ease;
+ }
+
+ .btn-penilaian:hover {
+ background: #0d2247;
+ transform: translateY(-2px);
+ }
+
+ .riwayat-medical-info {
+ display: flex;
+ gap: 12px;
+ background: #f8fafc;
+ border: 1.5px solid #edf0f5;
+ border-radius: 12px;
+ padding: 10px 14px;
+ margin-bottom: 4px;
+ box-shadow: inset 0 2px 4px rgba(15, 23, 42, 0.02);
+ }
+
+ .riwayat-medical-info .medical-icon {
+ color: #1d4ed8;
+ font-size: 16px;
+ flex-shrink: 0;
+ margin-top: 2px;
+ }
+
+ .riwayat-medical-info .medical-body {
+ flex: 1;
+ display: flex;
+ flex-direction: column;
+ gap: 6px;
+ }
+
+ .riwayat-medical-info .medical-meta h3 {
+ margin: 0;
+ font-size: 14px;
+ font-weight: 800;
+ color: #102b57;
+ }
+
+ .riwayat-medical-info .medical-body p {
+ margin: 0;
+ font-size: 13px;
+ color: #475569;
+ line-height: 1.5;
+ }
+
+ .filter-form {
+ display: flex;
+ align-items: center;
+ gap: 10px;
+ }
+
+ .filter-group {
+ display: flex;
+ align-items: center;
+ gap: 8px;
+ background: white;
+ border: 1.5px solid #edf0f5;
+ border-radius: 12px;
+ padding: 8px 14px;
+ box-shadow: 0 4px 10px rgba(15, 23, 42, 0.03);
+ transition: border-color .2s ease;
+ }
+
+ .filter-group:hover {
+ border-color: #cbd5e1;
+ }
+
+ .filter-icon {
+ color: #102b57;
+ font-size: 13px;
+ }
+
+ .filter-select {
+ border: none;
+ outline: none;
+ background: transparent;
+ font-size: 13px;
+ font-weight: 700;
+ color: #102b57;
+ cursor: pointer;
+ padding-right: 4px;
+ font-family: inherit;
+ }
+
+ .pagination-wrap {
+ margin-top: 30px;
+ display: flex;
+ justify-content: center;
+ }
+
+ .pagination-wrap svg {
+ width: 18px;
+ height: 18px;
+ }
+
+ @media (max-width: 768px)
+ {
+ .riwayat-wrap {
+ padding: 0 18px;
+ }
+
+ .riwayat-container-box {
+ padding: 24px 20px;
+ border-radius: 20px;
+ }
+
+ .reservasi-aktif-grid,
+ .riwayat-grid {
+ grid-template-columns: 1fr;
+ }
+
+ .aktif-card {
+ flex-direction: column;
+ }
+
+ .aktif-right {
+ width: 100%;
+ flex-direction: row;
+ justify-content: space-between;
+ }
+ }
+
+  .rw-alert-success {
+  background: #dcfce7;
+  color: #15803d;
+  padding: 14px 18px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  font-weight: 700;
+  }
+
+  .rw-alert-error {
+  background: #fee2e2;
+  color: #dc2626;
+  padding: 14px 18px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  font-weight: 700;
+  }
+
+  .rw-alert-error ul {
+  margin: 0;
+  padding-left: 18px;
+  }
+
+  .riwayat-actions {
+  margin-top: 4px;
+  width: 100%;
+  }
+
+  .badge-penilaian-done {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border-radius: 12px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #16a34a;
+  font-size: 13px;
+  font-weight: 700;
+  width: 100%;
+  box-sizing: border-box;
+  }
+
+ </style>
 
 @endsection

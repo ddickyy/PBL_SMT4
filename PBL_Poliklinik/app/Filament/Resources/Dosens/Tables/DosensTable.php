@@ -12,6 +12,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Filament\Actions\DeleteAction;
+use Illuminate\Support\Facades\Auth;
 
 class DosensTable
 {
@@ -29,6 +30,10 @@ class DosensTable
                 TextColumn::make('user.nama')
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('id_jurusan')
+                    ->numeric()
+                    ->sortable()
+                    ->toggleable(),
                 TextColumn::make('nidn')
                     ->searchable()
                     ->sortable(),
@@ -52,9 +57,20 @@ class DosensTable
                 TrashedFilter::make(),
             ])
             ->recordActions([
+
                 ViewAction::make(),
-                EditAction::make(),
-                DeleteAction::make(),
+
+                EditAction::make()
+                    ->visible(fn () =>
+                        Auth::user()?->role?->nama_role
+                        === 'superadmin'
+                    ),
+
+                DeleteAction::make()
+                    ->visible(fn () =>
+                        Auth::user()?->role?->nama_role
+                        === 'superadmin'
+                    ),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

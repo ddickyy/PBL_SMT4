@@ -12,6 +12,8 @@ use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Filament\Tables\Filters\SelectFilter;
+
 
 class ReservasisTable
 {
@@ -19,7 +21,7 @@ class ReservasisTable
     {
         return $table
             ->columns([
-                TextColumn::make('id')
+                TextColumn::make('id_reservasi')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('id_user')
@@ -27,6 +29,7 @@ class ReservasisTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('user.nama')
+                    ->label('Pasien')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('id_jadwal')
@@ -34,9 +37,11 @@ class ReservasisTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('jadwal.dokter.user.nama')
+                    ->label('Dokter')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('tanggal_reservasi')
+                    ->label('Tanggal Pemeriksaan')
                     ->date()
                     ->sortable(),
                 TextColumn::make('nomor_antrian')
@@ -49,6 +54,7 @@ class ReservasisTable
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('created_at')
+                    ->label('Dibuat Pada')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -62,6 +68,15 @@ class ReservasisTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+                SelectFilter::make('status')
+                    ->label('Status Reservasi')
+                    ->options([
+                        'pending' => 'Pending',
+                        'dikonfirmasi' => 'Dikonfirmasi',
+                        'selesai' => 'Selesai',
+                        'dibatalkan' => 'Dibatalkan',
+                    ]),
+
                 TrashedFilter::make(),
             ])
             ->recordActions([

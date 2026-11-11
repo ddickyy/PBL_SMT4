@@ -18,6 +18,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use App\Http\Middleware\FilamentRoleMiddleware;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -27,13 +28,15 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            ->viteTheme('resources/css/filament/admin/theme.css')
             ->login()
+            ->darkMode(true)
 
-            ->brandName('StayAlive')
+            ->brandName('Poliklinik Polinema')
             // ->brandLogo(asset('images/StayAlive.jpg'))
 
             ->colors([
-                'primary' => Color::Indigo,
+                'primary' => Color::Blue,
                 'secondary' => Color::Slate,
                 'success' => Color::Emerald,
                 'danger' => Color::Red,
@@ -48,8 +51,14 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
-                AccountWidget::class,
-                FilamentInfoWidget::class,
+
+                \App\Filament\Widgets\DashboardStats::class,
+
+                \App\Filament\Widgets\ReservasiChart::class,
+
+                \App\Filament\Widgets\StatusReservasiChart::class,
+
+                \App\Filament\Widgets\ReservasiTerbaru::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -64,6 +73,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+                FilamentRoleMiddleware::class,
             ]);
     }
 }

@@ -31,6 +31,11 @@ class RoleInfolist
                                 ->placeholder('Tidak ada deskripsi.')
                                 ->markdown(),
 
+                            TextEntry::make('permissions.nama_permission')
+                                ->label('Hak Akses Menu')
+                                ->badge()
+                                ->separator(',')
+                                ->color('success'),
                         ])
                         ->columnSpan(2),
 

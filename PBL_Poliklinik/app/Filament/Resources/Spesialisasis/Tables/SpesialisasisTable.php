@@ -22,6 +22,10 @@ class SpesialisasisTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('nama_spesialisasi')
+                    ->label('Nama Keahlian')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('deskripsi')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('created_at')

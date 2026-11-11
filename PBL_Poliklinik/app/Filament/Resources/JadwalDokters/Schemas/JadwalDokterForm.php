@@ -39,26 +39,40 @@ class JadwalDokterForm
                                 'Rabu' => 'Rabu',
                                 'Kamis' => 'Kamis',
                                 'Jumat' => 'Jumat',
-                                'Sabtu' => 'Sabtu',
-                                'Minggu' => 'Minggu',
                             ])
                             ->required()
                             ->searchable(),
 
                         TimePicker::make('jam_mulai')
                             ->label('Jam Mulai')
+                            ->seconds(false)
                             ->required(),
 
                         TimePicker::make('jam_selesai')
                             ->label('Jam Selesai')
+                            ->seconds(false)
                             ->required(),
 
                         TextInput::make('durasi_menit')
-                            ->label('Durasi Menit')
+                            ->label('Durasi per sesi (menit)')
+                            ->placeholder('Masukkan estimasi durasi per sesi (menit)')
                             ->numeric()
                             ->required()
                             ->minValue(1)
                             ->maxValue(1440),
+
+                        TextInput::make('kuota_maksimal')
+                            ->label('Kuota Harian')
+                            ->placeholder('Masukkan kuota harian untuk jadwal ini')
+                            ->numeric()
+                            ->required()
+                            ->minValue(1)
+                            ->maxValue(1000)
+                            ->dehydrated(false),
+
+                        Toggle::make('aktif')
+                            ->label('Aktif')
+                            ->default(true),
                     ])
                     ->columnSpanFull(),
             ]);
